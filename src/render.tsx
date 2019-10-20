@@ -19,7 +19,7 @@ function App() {
   }, []);
 
   return <React.Fragment>
-    <div>React Babylon.js2 Typescript Electron</div>
+    <div>React Babylon.js Typescript Electron</div>
     <Canvas id="visu3d"></Canvas>
   </React.Fragment>
 }
