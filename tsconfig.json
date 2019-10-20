@@ -6,6 +6,7 @@
     "outDir": "app",
     "baseUrl": ".",
     "jsx": "react",
+    "incremental": true,
     "paths": {
       "*": [
         "node_modules/*"

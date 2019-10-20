@@ -5,13 +5,38 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Main",
       "type": "node",
       "request": "launch",
-      "name": "Debug Program",
-      "program": "${workspaceFolder}/app/src/main.js",
       "preLaunchTask": "tsc: build - tsconfig.json",
-      "outFiles": [
-        "${workspaceFolder}/app/**/*.js"
+      "outFiles": ["${workspaceFolder}/app/**/*.js"],
+      "protocol": "inspector",
+      "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron",
+      "runtimeArgs": [
+        "--remote-debugging-port=9223",
+        "./app/src/main.js"
+      ],
+      "windows": {
+        "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron.cmd"
+      },
+      "internalConsoleOptions": "openOnSessionStart",
+      "sourceMaps": true
+    },
+    {
+      "name": "Render",
+      "type": "chrome",
+      "request": "attach",
+      "webRoot": "${workspaceFolder}/app/src",
+      "port": 9223,
+      "timeout": 30000
+    },
+  ],
+  "compounds": [
+    {
+      "name": "All",
+      "configurations": [
+        "Main",
+        "Render"
       ]
     }
   ]
