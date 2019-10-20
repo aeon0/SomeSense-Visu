@@ -7,7 +7,9 @@
     "baseUrl": ".",
     "jsx": "react",
     "paths": {
-      "*": ["node_modules/*"]
+      "*": [
+        "node_modules/*"
+      ]
     }
   },
   "include": [

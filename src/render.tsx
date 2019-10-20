@@ -1,28 +1,27 @@
 import * as React from 'react'; 
 import * as ReactDOM from 'react-dom';
+import styled from 'styled-components';
 import { Visu3D } from './visu3D/visu3d';
 
+const Canvas = styled.canvas`
+  touch-action: none;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+`
 
-class App extends React.Component<{}, {}> {
-  // Before the component mounts, we initialise our state
-  componentWillMount() {
-
-  }
-
-  // After the component did mount, we set the state each second.
-  componentDidMount() {
-    const canvas: HTMLCanvasElement = document.getElementById('visu3d') as HTMLCanvasElement;
-    const visu3D: Visu3D = new Visu3D(canvas);
+function App() {
+  // Only runs on mount
+  React.useEffect(() => {
+    const visu3D: Visu3D = new Visu3D(document.getElementById('visu3d') as HTMLCanvasElement);
     visu3D.load();
     visu3D.run();
-  }
+  }, []);
 
-  render() {
-    return <React.Fragment>
-      <div>React Babylon.js Typescript Electron</div>
-      <canvas id="visu3d"></canvas>
-    </React.Fragment>
-  }
+  return <React.Fragment>
+    <div>React Babylon.js2 Typescript Electron</div>
+    <Canvas id="visu3d"></Canvas>
+  </React.Fragment>
 }
 
 ReactDOM.render(
