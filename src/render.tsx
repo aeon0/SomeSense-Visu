@@ -1,14 +1,17 @@
 import * as React from 'react'; 
 import * as ReactDOM from 'react-dom';
 import styled from 'styled-components';
+import { ThemeProvider } from '@rmwc/theme';
+import { Overlay } from './overlay';
 import { Visu3D } from './visu3D/visu3d';
-import { blurPixelShader } from 'babylonjs/Shaders/blur.fragment';
 
-const Canvas = styled.canvas`
+
+const ThemeProviderS = styled(ThemeProvider)`
+  all: inherit;
+`
+const CanvasS = styled.canvas`
+  all: inherit;
   touch-action: none;
-  overflow: hidden;
-  width: 100%;
-  height: 100%;
 `
 
 function App() {
@@ -19,15 +22,15 @@ function App() {
     visu3D.run();
   }, []);
 
-  function buhYeah() {
-    console.log("Something to log!");
-  }
-
-  return <React.Fragment>
-    <div>React Babylon.js Typescript Electron</div>
-    <button onClick={() => buhYeah()}>click me</button>
-    <Canvas id="visu3d"></Canvas>
-  </React.Fragment>
+  return <ThemeProviderS
+    options={{
+      primary: '#424242',
+      secondary: '#424242'
+    }}
+  >
+    <Overlay />
+    <CanvasS id="visu3d" />
+  </ThemeProviderS>
 }
 
 ReactDOM.render(

@@ -12,9 +12,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/classnames": "^2.2.9",
     "babylonjs": "^4.0.3",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
+    "rmwc": "^5.7.1",
     "styled-components": "^4.4.0"
   },
   "devDependencies": {
