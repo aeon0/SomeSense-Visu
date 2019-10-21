@@ -1,16 +1,32 @@
 {
   "name": "visu",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "build": "tsc",
-    "start": "electron ./app/src/main.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "app": "build"
+  "author": {
+    "name": "j-o-d-o",
+    "email": "jdobler@protonmail.com"
   },
-  "author": "",
+  "version": "1.0.0",
+  "description": "visu for driving",
+  "main": "app/src/main.js",
+  "homepage": "http://hompage.com",
   "license": "ISC",
+  "scripts": {
+    "start": "tsc && electron ./app/src/main.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "build": {
+    "appId": "visu.id",
+    "extraFiles": {
+      "from": "./assets",
+      "to": "./dist"
+    },
+    "linux": {
+      "icon" : "assets/logo.png",
+      "target": ["AppImage", "deb"]
+    }
+  },
   "dependencies": {
     "@types/classnames": "^2.2.9",
     "babylonjs": "^4.0.3",
@@ -24,6 +40,7 @@
     "@types/react-dom": "^16.9.2",
     "@types/styled-components": "4.1.8",
     "electron": "^6.0.12",
+    "electron-builder": "^21.2.0",
     "typescript": "^3.6.4"
   }
 }
