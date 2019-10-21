@@ -10,7 +10,8 @@
   "homepage": "http://hompage.com",
   "license": "ISC",
   "scripts": {
-    "start": "tsc && electron ./app/src/main.js",
+    "build-sass": "node-sass --include-path node_modules --include-path src src/index.scss app/src/index.css --output-style compressed",
+    "start": "build-sass && tsc && electron ./app/src/main.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
@@ -23,8 +24,11 @@
       "to": "./dist"
     },
     "linux": {
-      "icon" : "assets/logo.png",
-      "target": ["AppImage", "deb"]
+      "icon": "assets/logo.png",
+      "target": [
+        "AppImage",
+        "deb"
+      ]
     }
   },
   "dependencies": {
@@ -41,6 +45,7 @@
     "@types/styled-components": "4.1.8",
     "electron": "^6.0.12",
     "electron-builder": "^21.2.0",
+    "node-sass": "^4.12.0",
     "typescript": "^3.6.4"
   }
 }

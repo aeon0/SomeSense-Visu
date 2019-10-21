@@ -1,5 +1,6 @@
 app/**/*.js
 app/**/*.js.map
+app/**/*.css
 node_modules
 *.tsbuildinfo
 dist
