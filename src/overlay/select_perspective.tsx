@@ -11,14 +11,13 @@ const SelectS = styled(Select)`
   right: 25px;
   top: 25px;
   pointer-events: auto;
-  background-color: #aaa !important;
+  /* background-color: #aaa !important; */
 `
 
 export function SelectPerspective() {
   const dispatch = useDispatch();
-  const perspective = useSelector((store: any) => store.perspective.type);
-
-  const perspectiveOptions: any = Object.entries(EPerspectiveTypes).map(entry => entry[1]);
+  const perspective: string = useSelector((store: any) => store.perspective.type);
+  const perspectiveOptions: string[] = Object.entries(EPerspectiveTypes).map(entry => entry[1]);
 
   return <React.Fragment>
     <SelectS

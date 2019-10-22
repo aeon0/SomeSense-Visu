@@ -1,15 +1,13 @@
 // MDC Theme
-$mdc-theme-primary: #501fc2;
-$mdc-theme-on-primary: #fff;
+$mdc-theme-primary: #b6e6f5;
 
-$mdc-theme-secondary: #424242;;
-$mdc-theme-on-secondary: #fff;
+$mdc-theme-secondary: #424242;
 
 $mdc-theme-error: #e84e4e;
 $mdc-theme-on-error: #fff;
 
-$mdc-theme-background: #323232;
-$mdc-theme-surface: #fff;
+$mdc-theme-surface: #323232;
+$mdc-theme-on-surface: #fff;
 
 // MDC SCSS files
 @import 'material-components-web/material-components-web';
