@@ -1,8 +1,11 @@
-import * as React from 'react'; 
-import * as ReactDOM from 'react-dom';
-import styled from 'styled-components';
-import { Overlay } from './overlay';
-import { Visu3D } from './visu3D/visu3d';
+import * as React from 'react'
+import * as ReactDOM from 'react-dom'
+import styled from 'styled-components'
+import { Snackbar, SnackbarAction } from '@rmwc/snackbar'
+import { Provider } from 'react-redux'
+import { store } from './redux/store'
+import { Overlay } from './overlay'
+import { Visu3D } from './visu3D/visu3d'
 
 
 const MainWrapper = styled.div`
@@ -28,6 +31,8 @@ function App() {
 }
 
 ReactDOM.render(
-  <App />,
+  <Provider store={store}> 
+    <App />
+  </Provider>,
   document.getElementById('app') as HTMLElement
 );

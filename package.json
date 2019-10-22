@@ -36,12 +36,15 @@
     "babylonjs": "^4.0.3",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
+    "react-redux": "^7.1.1",
+    "redux": "^4.0.4",
     "rmwc": "^5.7.1",
     "styled-components": "^4.4.0"
   },
   "devDependencies": {
     "@types/react": "^16.9.9",
     "@types/react-dom": "^16.9.2",
+    "@types/react-redux": "^7.1.5",
     "@types/styled-components": "4.1.8",
     "electron": "^6.0.12",
     "electron-builder": "^21.2.0",
