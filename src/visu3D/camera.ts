@@ -1,15 +1,18 @@
-import * as BABYLON from 'babylonjs';
+import * as BABYLON from 'babylonjs'
+import { store } from '../redux/store'
+
 
 export class Camera {
-  //Members
   private camera: BABYLON.ArcRotateCamera;
   private scene: BABYLON.Scene;
   private canvas: any;
   private radius: number = 55;
+  private perspective: string;
 
   constructor(scene: BABYLON.Scene) {
     this.scene = scene;
     this.canvas = scene.getEngine().getRenderingCanvas();
+    this.perspective = store.getState().perspective.type;
   }
 
   public init() {
@@ -22,5 +25,13 @@ export class Camera {
 
   public getCamDirection(): BABYLON.Vector3 {
     return this.camera.getTarget().subtract(this.camera.position).normalize();
+  }
+
+  public update(): void {
+    const storedPerspective = store.getState().perspective.type;
+    if(storedPerspective !== this.perspective) {
+      this.perspective = storedPerspective;
+      console.log("Update Perspective to: " + this.perspective);
+    }
   }
 }

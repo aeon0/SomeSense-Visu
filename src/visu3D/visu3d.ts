@@ -36,6 +36,7 @@ export class Visu3D {
 
   public run(): void {
     this.engine.runRenderLoop(() => {
+      this.camera.update();
       this.scene.render();
     });
   }
