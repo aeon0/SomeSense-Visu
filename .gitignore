@@ -1,6 +1,4 @@
-app/**/*.js
-app/**/*.js.map
-app/**/*.css
+app
 node_modules
 *.tsbuildinfo
 dist
