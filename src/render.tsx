@@ -1,11 +1,12 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import styled from 'styled-components'
-import { Snackbar, SnackbarAction } from '@rmwc/snackbar'
+import { SnackbarQueue } from '@rmwc/snackbar'
 import { Provider } from 'react-redux'
 import { store } from './redux/store'
 import { Overlay } from './overlay'
 import { Visu3D } from './visu3D/visu3d'
+import { snackbarQueue } from './snackbar_queue';
 
 
 const MainWrapper = styled.div`
@@ -27,6 +28,11 @@ function App() {
   return <MainWrapper>
     <Overlay />
     <CanvasS id="visu3d" />
+
+    <SnackbarQueue
+      messages={snackbarQueue.messages}
+      dismissIcon
+    />
   </MainWrapper>
 }
 
