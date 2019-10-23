@@ -1,4 +1,4 @@
-import { Engine, Scene }from 'babylonjs'
+import { Engine, Scene, Vector3 }from 'babylonjs'
 import { Lights } from './lights'
 import { Camera } from './camera'
 import { EgoVehicle } from './ego_vehicle'
@@ -26,7 +26,7 @@ export class World {
     this.camera = new Camera(this.scene);
     this.lights = new Lights(this.scene);
     this.egoVehicle = new EgoVehicle(this.scene);
-    // this.cameraFrustum = new CameraFrustum(this.scene);
+    this.cameraFrustum = new CameraFrustum(this.scene, new Vector3(0, 1.2, -0.5), (1/2)*Math.PI, (1/4)*Math.PI);
     this.image2D = new Image2D(this.scene);
 
     window.addEventListener("resize", () => {
@@ -36,14 +36,15 @@ export class World {
 
   public load(): void {
     this.scene.clearColor = new BABYLON.Color4(0.09, 0.09, 0.09, 1);
+    this.scene.ambientColor = new BABYLON.Color3(.1, .1, .1);
 
     this.camera.init();
     this.lights.init();
     this.egoVehicle.init();
-    // this.cameraFrustum.init();
+    this.cameraFrustum.init();
     this.image2D.init();
 
-    showAxis(10, this.scene);
+    showAxis(4, this.scene);
   }
 
   public run(): void {

@@ -16,13 +16,13 @@ export class Image2D {
 
   public init(): void {
     let material = new StandardMaterial("image2D_texture", this.scene);
-    material.diffuseTexture = new Texture("assets/example_img.jpg", this.scene);
-    material.specularColor = new Color3(0, 0, 0);
-    material.backFaceCulling = false;//Allways show the front and the back of an element
+    material.ambientTexture = new Texture("assets/example_img.jpg", this.scene);
+    material.ambientColor = new Color3(10, 10, 10);
+    material.backFaceCulling = true;
 
     this.image2DLayer = Mesh.CreateGround("image2D", 1, 0.5, 1, this.scene);
     this.image2DLayer.rotate(new Vector3(1, 0, 0), -Math.PI/2);
-    this.image2DLayer.position = new Vector3(0, 0.4, 1);
+    this.image2DLayer.position = new Vector3(0, 0, 1);
     this.image2DLayer.material = material;
     this.image2DLayer.renderingGroupId = 1;
   }

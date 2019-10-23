@@ -36,7 +36,6 @@ export class Camera {
         this.camera.lowerAlphaLimit = -Math.PI/2;
         this.camera.upperBetaLimit = Math.PI/2;
         this.camera.lowerBetaLimit = Math.PI/2;
-        // We would need to change the image position and rotation while panning
         this.camera.panningAxis = new Vector3(0, 0, 0);
         this.camera.target = new Vector3(0, 0, imgDistance);
         this.camera.position = new Vector3(0, 0, 0);
