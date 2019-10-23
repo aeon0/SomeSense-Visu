@@ -4,9 +4,10 @@ import { Camera } from './camera'
 import { EgoVehicle } from './ego_vehicle'
 import { showAxis } from './axis'
 import { Image2D } from './image2d';
+import { CameraFrustum } from './sensor_views/camera_frustum';
 
 
-export class Visu3D {
+export class World {
   private canvas: HTMLCanvasElement;
   private engine: Engine;
   private scene: Scene;
@@ -14,6 +15,8 @@ export class Visu3D {
   private lights: Lights;
   private egoVehicle: EgoVehicle;
   private image2D: Image2D;
+  private cameraFrustum: CameraFrustum;
+
 
   constructor(canvasElement: HTMLCanvasElement) {
     this.canvas = canvasElement;
@@ -23,6 +26,7 @@ export class Visu3D {
     this.camera = new Camera(this.scene);
     this.lights = new Lights(this.scene);
     this.egoVehicle = new EgoVehicle(this.scene);
+    // this.cameraFrustum = new CameraFrustum(this.scene);
     this.image2D = new Image2D(this.scene);
 
     window.addEventListener("resize", () => {
@@ -36,6 +40,7 @@ export class Visu3D {
     this.camera.init();
     this.lights.init();
     this.egoVehicle.init();
+    // this.cameraFrustum.init();
     this.image2D.init();
 
     showAxis(10, this.scene);

@@ -5,7 +5,7 @@ import { SnackbarQueue } from '@rmwc/snackbar'
 import { Provider } from 'react-redux'
 import { store } from './redux/store'
 import { Overlay } from './overlay'
-import { Visu3D } from './visu3D/visu3d'
+import { World } from './world3D/world'
 import { snackbarQueue } from './snackbar_queue';
 
 
@@ -20,14 +20,14 @@ const CanvasS = styled.canvas`
 function App() {
   // Only runs on mount
   React.useEffect(() => {
-    const visu3D: Visu3D = new Visu3D(document.getElementById('visu3d') as HTMLCanvasElement);
-    visu3D.load();
-    visu3D.run();
+    const world: World = new World(document.getElementById('world') as HTMLCanvasElement);
+    world.load();
+    world.run();
   }, []);
 
   return <MainWrapper>
     <Overlay />
-    <CanvasS id="visu3d" />
+    <CanvasS id="world" />
 
     <SnackbarQueue
       messages={snackbarQueue.messages}
