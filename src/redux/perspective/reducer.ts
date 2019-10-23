@@ -10,7 +10,7 @@ interface IReduxPerspective {
 }
 
 const initialState: IReduxPerspective = {
-  type: EPerspectiveTypes.FREE_3D,
+  type: EPerspectiveTypes.IMAGE_2D,
 }
 
 export default function(state: IReduxPerspective = initialState, action: any) {

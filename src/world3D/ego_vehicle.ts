@@ -23,20 +23,28 @@ export class EgoVehicle {
 
     // Test mesh
     var testBox = BABYLON.MeshBuilder.CreateBox("box", {height: height, width: 2, depth: length}, this.scene);
-    testBox.position = new BABYLON.Vector3(0, (height/2), 20);
+    testBox.position = new BABYLON.Vector3(0, (height/2), 50);
     testBox.edgesWidth = 4.0;
-    testBox.edgesColor = new BABYLON.Color4(0.1, 0.3, 0.7, 1);
+    testBox.edgesColor = new BABYLON.Color4(0.7, 0.3, 0.1, 1);
     testBox.enableEdgesRendering(.9999);
     testBox.material  = transparentMaterial;
     testBox.renderingGroupId = 2;
 
     var testBox2 = BABYLON.MeshBuilder.CreateBox("box", {height: height, width: 2, depth: length}, this.scene);
-    testBox2.position = new BABYLON.Vector3(7, (height/2), 35);
+    testBox2.position = new BABYLON.Vector3(3, (height/2), 35);
     testBox2.edgesWidth = 4.0;
-    testBox2.edgesColor = new BABYLON.Color4(0.1, 0.3, 0.7, 1);
+    testBox2.edgesColor = new BABYLON.Color4(0.7, 0.3, 0.1, 1);
     testBox2.enableEdgesRendering(.9999);
     testBox2.material  = transparentMaterial;
     testBox2.renderingGroupId = 2;
-    
+
+    var testBox3 = BABYLON.MeshBuilder.CreateBox("box", {height: height, width: 2, depth: length}, this.scene);
+    testBox3.position = new BABYLON.Vector3(-6, (height/2), 25);
+    testBox3.edgesWidth = 4.0;
+    testBox3.edgesColor = new BABYLON.Color4(0.7, 0.3, 0.1, 1);
+    testBox3.enableEdgesRendering(.9999);
+    testBox3.material  = transparentMaterial;
+    testBox3.renderingGroupId = 2;
+    testBox3.addRotation(0, 0.2, 0);
   }
 }

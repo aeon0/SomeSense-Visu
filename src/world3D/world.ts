@@ -26,7 +26,7 @@ export class World {
     this.camera = new Camera(this.scene);
     this.lights = new Lights(this.scene);
     this.egoVehicle = new EgoVehicle(this.scene);
-    this.cameraFrustum = new CameraFrustum(this.scene, new Vector3(0, 1.2, -0.5), (1/2)*Math.PI, (1/4)*Math.PI);
+    this.cameraFrustum = new CameraFrustum(this.scene, new Vector3(0, 1.0, -0.5), (1/2)*Math.PI, (1/4)*Math.PI);
     this.image2D = new Image2D(this.scene);
 
     window.addEventListener("resize", () => {

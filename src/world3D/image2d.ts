@@ -18,11 +18,11 @@ export class Image2D {
     let material = new StandardMaterial("image2D_texture", this.scene);
     material.ambientTexture = new Texture("assets/example_img.jpg", this.scene);
     material.ambientColor = new Color3(10, 10, 10);
-    material.backFaceCulling = true;
+    material.backFaceCulling = false;
 
-    this.image2DLayer = Mesh.CreateGround("image2D", 1, 0.5, 1, this.scene);
+    this.image2DLayer = Mesh.CreateGround("image2D", 4, 1.8, 1, this.scene);
     this.image2DLayer.rotate(new Vector3(1, 0, 0), -Math.PI/2);
-    this.image2DLayer.position = new Vector3(0, 0, 1);
+    this.image2DLayer.position = new Vector3(0, 1.0, 2 - 0.5);
     this.image2DLayer.material = material;
     this.image2DLayer.renderingGroupId = 1;
   }
