@@ -11,7 +11,7 @@
   "license": "ISC",
   "scripts": {
     "build-sass": "node-sass --include-path node_modules --include-path src src/index.scss app/src/index.css --output-style compressed",
-    "start": "build-sass && tsc && electron ./app/src/main.js",
+    "start": "npm run build-sass && tsc && electron ./app/src/main.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
