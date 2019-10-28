@@ -23,6 +23,8 @@ export class Camera {
       if(this.perspective == EPerspectiveTypes.IMAGE_2D) {
         const zoomFactor = Math.max(Math.min(this.camera.viewport.width + (e.deltaY / 550), 3), 0.1);
         // console.log(e.pageX + ", " + e.pageY);
+        // TODO: when zooming larger it does not show objects outside of camera frustum. Think about how to handle this
+        //       e.g. increase field of view?
         this.camera.viewport = new Viewport((1 - zoomFactor) / 2, (1 - zoomFactor) / 2, zoomFactor, zoomFactor);
       }
     });
