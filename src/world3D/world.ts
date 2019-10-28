@@ -4,11 +4,11 @@ import { Camera } from './camera'
 import { EgoVehicle } from './ego_vehicle'
 import { showAxis } from './axis'
 import { Image2D } from './image2d';
-import { CameraFrustum } from './sensor_views/camera_frustum';
+import { CameraFrustum } from './sensors/camera_frustum';
+import { CameraSensor } from './sensors/camera_sensor';
 
 
 export class World {
-  private canvas: HTMLCanvasElement;
   private engine: Engine;
   private scene: Scene;
   private camera: Camera;
@@ -17,17 +17,23 @@ export class World {
   private image2D: Image2D;
   private cameraFrustum: CameraFrustum;
 
+  constructor(private canvas: HTMLCanvasElement) {
+    const camSensor = new CameraSensor(
+      new Vector3(0, 1.2, -0.7),
+      (1/2)*Math.PI, // 90 degree
+      (1/4)*Math.PI, // 45 degree
+      0.0, 0.0, 0.0,
+    );
 
-  constructor(canvasElement: HTMLCanvasElement) {
-    this.canvas = canvasElement;
     this.engine = new Engine(this.canvas, true);
     this.scene = new Scene(this.engine);
 
-    this.camera = new Camera(this.scene);
+    this.camera = new Camera(this.scene, camSensor);
     this.lights = new Lights(this.scene);
     this.egoVehicle = new EgoVehicle(this.scene);
-    this.cameraFrustum = new CameraFrustum(this.scene, new Vector3(0, 1.0, -0.5), (1/2)*Math.PI, (1/4)*Math.PI);
-    this.image2D = new Image2D(this.scene);
+
+    this.cameraFrustum = new CameraFrustum(this.scene, camSensor);
+    this.image2D = new Image2D(this.scene, camSensor);
 
     window.addEventListener("resize", () => {
       this.engine.resize();
@@ -49,8 +55,10 @@ export class World {
 
   public run(): void {
     this.engine.runRenderLoop(() => {
-      this.camera.update();
+      this.egoVehicle.update();
       this.image2D.update();
+      this.camera.update();
+
       this.scene.render();
     });
   }

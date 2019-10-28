@@ -1,18 +1,14 @@
-import { StandardMaterial, Texture, Color3, Scene, Mesh, Vector3 } from 'babylonjs'
+import { StandardMaterial, Texture, Color3, Scene, Mesh, MeshBuilder, Vector3, Quaternion } from 'babylonjs'
 import { store } from '../redux/store'
 import { EPerspectiveTypes } from '../redux/perspective/reducer'
+import { CameraSensor } from './sensors/camera_sensor'
 
 
 export class Image2D {
-  private scene: Scene;
-  private perspective: EPerspectiveTypes;
-  private image2DLayer: Mesh;
+  private perspective: EPerspectiveTypes = null;
+  private image2DLayer: Mesh = null;
 
-  constructor(scene: Scene) {
-    this.scene = scene;
-    this.perspective = null;
-    this.image2DLayer = null;
-  }
+  constructor(private scene: Scene, private camSensor: CameraSensor) {}
 
   public init(): void {
     let material = new StandardMaterial("image2D_texture", this.scene);
@@ -20,9 +16,16 @@ export class Image2D {
     material.ambientColor = new Color3(10, 10, 10);
     material.backFaceCulling = false;
 
-    this.image2DLayer = Mesh.CreateGround("image2D", 4, 1.8, 1, this.scene);
-    this.image2DLayer.rotate(new Vector3(1, 0, 0), -Math.PI/2);
-    this.image2DLayer.position = new Vector3(0, 1.0, 2 - 0.5);
+    const width = 2 * Math.tan(this.camSensor.getFovHorizontal() * 0.5);
+    const height = 2 * Math.tan(this.camSensor.getFovVertical() * 0.5);
+    this.image2DLayer = MeshBuilder.CreatePlane("image2D", { width: width, height: height}, this.scene);
+    this.image2DLayer.position = this.camSensor.getPosition();
+    // Rotate image
+    this.image2DLayer.addRotation(this.camSensor.getPitch(), this.camSensor.getYaw(), this.camSensor.getRoll());
+
+    // Move camera 1 forward
+    this.image2DLayer.position = this.image2DLayer.position.add(this.camSensor.getDirection());
+
     this.image2DLayer.material = material;
     this.image2DLayer.renderingGroupId = 1;
   }
