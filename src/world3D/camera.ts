@@ -1,12 +1,12 @@
 import { store } from '../redux/store'
 import { EPerspectiveTypes } from '../redux/perspective/reducer'
-import { Scene, ArcRotateCamera, Viewport, Vector3, Quaternion } from 'babylonjs'
+import { Scene, ArcRotateCamera, Viewport, Vector3, FlyCamera } from 'babylonjs'
 import { CameraSensor } from './sensors/camera_sensor'
 // import { createGlobalStyle } from 'styled-components'
 
 
 export class Camera {
-  private camera: ArcRotateCamera;
+  private camera: ArcRotateCamera | FlyCamera;
   private canvas: any;
   private perspective: EPerspectiveTypes;
 
@@ -16,9 +16,6 @@ export class Camera {
   }
 
   public init() {
-    this.camera = new ArcRotateCamera("main_cam", 1, 1, 50, new Vector3(0.0, 0.0, 0.0), this.scene);
-    this.scene.activeCamera = this.camera;
-    this.camera.attachControl(this.canvas, true);
 
     this.updatePerspective();
 
@@ -26,31 +23,25 @@ export class Camera {
       if(this.perspective == EPerspectiveTypes.IMAGE_2D) {
         const zoomFactor = Math.max(Math.min(this.camera.viewport.width + (e.deltaY / 550), 3), 0.1);
         // console.log(e.pageX + ", " + e.pageY);
-        // this.camera.viewport = new Viewport((1 - zoomFactor) / 2, (1 - zoomFactor) / 2, zoomFactor, zoomFactor);
+        this.camera.viewport = new Viewport((1 - zoomFactor) / 2, (1 - zoomFactor) / 2, zoomFactor, zoomFactor);
       }
     });
-   }
-
-  public getCamDirection(): Vector3 {
-    return this.camera.getTarget().subtract(this.camera.position).normalize();
   }
 
   public updatePerspective(): void {
     switch(this.perspective) {
       case EPerspectiveTypes.IMAGE_2D:
-        // TODO: Can not handle roll angles...
-        this.camera.upperAlphaLimit = -Math.PI/2 - this.camSensor.getYaw();
-        this.camera.lowerAlphaLimit = -Math.PI/2 - this.camSensor.getYaw();
-        this.camera.upperBetaLimit = Math.PI/2 - this.camSensor.getPitch();
-        this.camera.lowerBetaLimit = Math.PI/2 - this.camSensor.getPitch();
-        this.camera.lowerRadiusLimit = 0.1;
-        this.camera.upperRadiusLimit = 10;
-        this.camera.panningAxis = new Vector3(0, 0, 0);
-        this.camera.target = this.camSensor.getPosition().add(this.camSensor.getDirection());
-        this.camera.position = this.camSensor.getPosition();
-        console.log(this.camera.target);
+        const pos = this.camSensor.getPosition();
+        const target = this.camSensor.getPosition().add(this.camSensor.getDirection().normalize());
+        this.camera = new FlyCamera("2D_cam", pos, this.scene);
+        this.camera.setTarget(target);
+        this.camera.applyGravity = false;
+        this.camera.bankedTurn = false
+        this.camera.bankedTurnMultiplier = 0
+        this.camera.rotationQuaternion = this.camSensor.getQuaternion()
         break;
       default: // EPerspectiveTypes.FREE_3D
+        this.camera = new ArcRotateCamera("3D_cam", 1, 1, 50, new Vector3(0.0, 0.0, 0.0), this.scene);
         this.camera.viewport = new Viewport(0, 0, 1, 1);
         this.camera.upperAlphaLimit = null;
         this.camera.lowerAlphaLimit = null;
@@ -64,6 +55,9 @@ export class Camera {
         this.camera.position = new Vector3(30, 20, -30);
         break;
     }
+
+    this.scene.activeCamera = this.camera;
+    this.camera.attachControl(this.canvas, true);
   }
 
   public update(): void {
