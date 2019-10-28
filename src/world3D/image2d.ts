@@ -16,15 +16,15 @@ export class Image2D {
     material.ambientColor = new Color3(10, 10, 10);
     material.backFaceCulling = false;
 
-    const width = 2 * Math.tan(this.camSensor.getFovHorizontal() * 0.5);
-    const height = 2 * Math.tan(this.camSensor.getFovVertical() * 0.5);
+    const width = 4 * Math.tan(this.camSensor.getFovHorizontal() * 0.5);
+    const height = 4 * Math.tan(this.camSensor.getFovVertical() * 0.5);
     this.image2DLayer = MeshBuilder.CreatePlane("image2D", { width: width, height: height}, this.scene);
     this.image2DLayer.position = this.camSensor.getPosition();
     // Rotate image
     this.image2DLayer.addRotation(this.camSensor.getPitch(), this.camSensor.getYaw(), this.camSensor.getRoll());
 
     // Move camera 1 forward
-    this.image2DLayer.position = this.image2DLayer.position.add(this.camSensor.getDirection());
+    this.image2DLayer.position = this.image2DLayer.position.add(this.camSensor.getDirection().normalize().multiply(new Vector3(2, 2, 2)));
 
     this.image2DLayer.material = material;
     this.image2DLayer.renderingGroupId = 1;
