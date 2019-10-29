@@ -5,6 +5,9 @@ import { EPerspectiveTypes } from '../redux/perspective/reducer'
 import { CameraSensor } from './sensors/camera_sensor'
 
 
+//const IMG_PATH = "assets/example_img.jpg";
+const IMG_PATH: any = null;
+
 export class Image2D {
   private perspective: EPerspectiveTypes = null;
   private image3DMesh: Mesh = null;
@@ -61,12 +64,12 @@ export class Image2D {
 
     // Update Texture
     if(this.image3DMesh.isEnabled()) {
-      this.textureMaterial.ambientTexture = new Texture("assets/example_img.jpg", this.scene);
+      this.textureMaterial.ambientTexture = new Texture(IMG_PATH, this.scene);
       this.image3DMesh.material.dispose();
       this.image3DMesh.material = this.textureMaterial;
     }
     else {
-      this.image2DGUI = new Image("gui_cam_view", "assets/example_img.jpg");
+      this.image2DGUI = new Image("gui_cam_view", IMG_PATH);
       // Place image in bottom right corner
       const canvasWidth = this.scene.getEngine().getRenderingCanvas().width;
       const canvasHeight = this.scene.getEngine().getRenderingCanvas().height;
@@ -75,7 +78,7 @@ export class Image2D {
       this.image2DGUI.widthInPixels = this.image2DGUI.heightInPixels * this.ratio;
       this.image2DGUI.left = canvasWidth * 0.5 - this.image2DGUI.widthInPixels * 0.5 - imgOffset;
       this.image2DGUI.top = canvasHeight * 0.5 - this.image2DGUI.heightInPixels * 0.5 - imgOffset;
-      
+
       this.dynamicTexture.addControl(this.image2DGUI);
     }
   }
