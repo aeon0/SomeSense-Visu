@@ -1,19 +1,19 @@
 import { EReduxActionTypes } from "../action_types"
 
 
-export function connecting() {
+export function setConnecting() {
   return {
     type: EReduxActionTypes.CONNECTING,
   }
 }
 
-export function disconnected() {
+export function setDisconnected() {
   return {
     type: EReduxActionTypes.DISCONNECTED,
   }
 }
 
-export function connected() {
+export function setConnected() {
   return {
     type: EReduxActionTypes.CONNECTED,
   }
