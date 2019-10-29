@@ -23,6 +23,7 @@ export class EgoVehicle {
     this.mesh.renderingGroupId = 2;
 
     // Test mesh
+    /*
     var testBox = MeshBuilder.CreateBox("box", {height: height, width: 2, depth: length}, this.scene);
     testBox.position = new Vector3(0, (height/2), 50);
     testBox.edgesWidth = 4.0;
@@ -47,6 +48,7 @@ export class EgoVehicle {
     testBox3.material  = transparentMaterial;
     testBox3.renderingGroupId = 2;
     testBox3.addRotation(0, 0.2, 0);
+    */
   }
 
   public update() {

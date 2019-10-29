@@ -6,8 +6,12 @@ import { Provider } from 'react-redux'
 import { store } from './redux/store'
 import { Overlay } from './overlay'
 import { World } from './world3D/world'
-import { snackbarQueue } from './snackbar_queue';
+import { snackbarQueue } from './snackbar_queue'
+import { StartIPC } from './com/unix_sockets'
 
+
+// Try to connect to server
+StartIPC();
 
 const MainWrapper = styled.div`
   all: inherit;
