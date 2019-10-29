@@ -22,7 +22,7 @@ export class World {
       new Vector3(0, 1.2, -0.7),
       (1/2)*Math.PI, // 90 degree
       (1/4)*Math.PI, // 45 degree
-      0.3, 0.3, 0.3,
+      0.0, 0.0, 0.0,
     );
 
     this.engine = new Engine(this.canvas, true);
