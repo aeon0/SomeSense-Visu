@@ -2,7 +2,6 @@ import { store } from '../redux/store'
 import { EPerspectiveTypes } from '../redux/perspective/reducer'
 import { Scene, ArcRotateCamera, Viewport, Vector3, FlyCamera } from 'babylonjs'
 import { CameraSensor } from './sensors/camera_sensor'
-// import { createGlobalStyle } from 'styled-components'
 
 
 export class Camera {
