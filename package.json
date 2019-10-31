@@ -44,6 +44,7 @@
     "styled-components": "^4.4.0"
   },
   "devDependencies": {
+    "@types/electron-devtools-installer": "^2.2.0",
     "@types/node-ipc": "^9.1.1",
     "@types/react": "^16.9.9",
     "@types/react-dom": "^16.9.2",
@@ -51,6 +52,7 @@
     "@types/styled-components": "4.1.8",
     "electron": "^6.0.12",
     "electron-builder": "^21.2.0",
+    "electron-devtools-installer": "^2.2.4",
     "node-sass": "^4.12.0",
     "typescript": "^3.6.4"
   }

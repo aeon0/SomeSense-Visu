@@ -1,15 +1,18 @@
-import { createStore } from 'redux'
-// import { loadingBarReducer } from 'react-redux-loading-bar'
+import { createStore, compose } from 'redux'
 import { combineReducers } from 'redux'
 import perspective from './perspective/reducer'
 import connection from './connection/reducer'
+import world from './world/reducer'
 
+
+declare global { interface Window { __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: typeof compose; } }
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 export const store = createStore(
   combineReducers({
-    // loadingBar: loadingBarReducer,
     perspective,
     connection,
+    world,
   }),
-  // window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),  // this is not working with typescript, needs some google time
+  composeEnhancers(),
 );

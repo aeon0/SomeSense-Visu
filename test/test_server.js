@@ -1,37 +1,74 @@
 const ipc = require('../node_modules/node-ipc');
+const fs = require('fs');
 
-let baseData = {
-  "objects": [
+let frameData = {
+  objects: [
     {
-      "trackId": "0",
-      "class": "PED",
-      "depth": false,
-      "position": [10, 1, 10],
-      "height": 1.5,
-      "width": 0.5
+      trackId: "0",
+      class: "PED",
+      depth: false,
+      position: [10, 1, 10],
+      height: 1.5,
+      width: 0.5,
+      ttc: 1,
     },
     {
-      "trackId": "1",
-      "class": "Car",
-      "depth": false,
-      "position": [-2, 0, 20],
-      "height": 1.5,
-      "width": 2
+      trackId: "1",
+      class: "Car",
+      depth: false,
+      position: [-2, 0, 20],
+      height: 1.5,
+      width: 2,
+      ttc: 0.4,
     }
   ],
-  "timestamp": 0
+  sensorData: {
+    position: [0, 1.2, -0.5],
+    rotation: [0, 0, 0],
+    image: null,
+    fovHorizontal: (1/2)*Math.PI,
+    fovVertical: (1/4)*Math.PI,
+  },
+  timestamp: 0
 };
 
 var sockets = {};
-var frame = null;
+var frame = 0;
 
 ipc.config.id = 'server';
+ipc.config.silent=true;
 
-setInterval(() => { 
+// Create binary data
+async function readFile(path) {
+  return new Promise((resolve, reject) => {
+    fs.readFile(path, function (err, data) {
+      if (err) {
+        reject(err);
+      }
+      resolve(data);
+    });
+  });
+}
+
+
+setInterval(async () => { 
   // Send data to each socket (stop in case there is no client to serve)
   if(Object.keys(sockets).length > 0) {
+    frame++;
+    frameData.timestamp = frame;
+    frameData.objects[0].position[0] -= 0.5;
+    if(frameData.objects[0].position[0] > 20) frameData.objects[0].position[0] = -10;
+    frameData.objects[1].position[3] += 0.1;
+    if(frameData.objects[0].position[3] > 60) frameData.objects[0].position[3] = 10;
+    const imgPath = frame % 2 ? '../assets/example_img2.jpg' : '../assets/example_img.jpg';
+    const binaryImg = await readFile(imgPath);
+    const base64Img = new Buffer(binaryImg).toString('base64');
+    frameData.sensorData.image = base64Img;
     for (const key of Object.keys(sockets)) {
-      console.log("Send data to: " + key);
+      console.log("Sending to: " + key);
+      ipc.server.emit(sockets[key], 'server.frame', {
+        frame: JSON.stringify(frameData),
+      });
     }
   }
 }, 2000);
@@ -39,11 +76,9 @@ setInterval(() => {
 ipc.serve(() => {
   ipc.server.on('client.register', (data, socket) => {
     // Register Client
-    console.log("CLIENT REGISTERS " + data.id);
     sockets[data.id] = socket;
   });
   ipc.server.on("socket.disconnected", socket => {
-    console.log("Remove: " + socket.id);
     delete sockets[socket.id];
   });
 });

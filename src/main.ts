@@ -1,5 +1,6 @@
 import { app, BrowserWindow } from "electron";
 import * as path from "path";
+import installExtension, { REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } from 'electron-devtools-installer'
 
 
 let mainWindow: Electron.BrowserWindow;
@@ -26,6 +27,14 @@ function createWindow() {
     // when you should delete the corresponding element.
     mainWindow = null;
   });
+
+  // Install google chrome extensions for electron
+  installExtension(REACT_DEVELOPER_TOOLS)
+    .then((name) => console.log(`Added Extension:  ${name}`))
+    .catch((err) => console.log('An error occurred: ', err));
+  installExtension(REDUX_DEVTOOLS)
+    .then((name) => console.log(`Added Extension:  ${name}`))
+    .catch((err) => console.log('An error occurred: ', err));
 }
 
 // This method will be called when Electron has finished

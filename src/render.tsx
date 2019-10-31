@@ -10,7 +10,7 @@ import { snackbarQueue } from './snackbar_queue'
 import { StartIPC } from './com/unix_sockets'
 
 
-// Try to connect to server
+// Connect to server
 StartIPC();
 
 const MainWrapper = styled.div`
