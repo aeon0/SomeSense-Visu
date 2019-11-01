@@ -1,4 +1,3 @@
-import { store } from '../redux/store'
 import { EPerspectiveTypes } from '../redux/perspective/reducer'
 import { Scene, ArcRotateCamera, Viewport, Vector3, FlyCamera } from 'babylonjs'
 import { CameraSensor } from './sensors/camera_sensor'
@@ -11,11 +10,10 @@ export class Camera {
 
   constructor(private scene: Scene, private camSensor: CameraSensor) {
     this.canvas = scene.getEngine().getRenderingCanvas();
-    this.perspective = store.getState().perspective.type;
+    this.perspective = null;
   }
 
   public init() {
-
     this.updatePerspective();
 
     window.addEventListener("wheel", e => {
@@ -27,6 +25,10 @@ export class Camera {
         this.camera.viewport = new Viewport((1 - zoomFactor) / 2, (1 - zoomFactor) / 2, zoomFactor, zoomFactor);
       }
     });
+  }
+
+  public updateCamera(camSensor: CameraSensor) {
+    this.camSensor = camSensor;
   }
 
   public updatePerspective(): void {
@@ -61,10 +63,9 @@ export class Camera {
     this.camera.attachControl(this.canvas, true);
   }
 
-  public update(): void {
-    const storedPerspective = store.getState().perspective.type;
-    if(storedPerspective !== this.perspective) {
-      this.perspective = storedPerspective;
+  public update(perspective: EPerspectiveTypes): void {
+    if(perspective !== this.perspective) {
+      this.perspective = perspective;
       this.updatePerspective();
     }
   }

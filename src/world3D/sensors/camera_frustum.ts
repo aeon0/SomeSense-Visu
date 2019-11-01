@@ -3,9 +3,16 @@ import { CameraSensor } from './camera_sensor'
 
 
 export class CameraFrustum {
+  private frustum : Mesh;
   constructor(private scene: Scene, private camSensor: CameraSensor) {}
 
-  public init(){
+  public updateCamera(camSensor: CameraSensor) {
+    this.camSensor = camSensor;
+    this.frustum.dispose();
+    this.init();
+  }
+
+  public init() {
     let transparentMaterial = new StandardMaterial("transparent_object", this.scene);
     transparentMaterial.alpha = 0.1;
     transparentMaterial.backFaceCulling = false;
@@ -14,7 +21,7 @@ export class CameraFrustum {
     const delta_x = Math.tan(this.camSensor.getFovHorizontal() / 2) * d;
     const delta_y = Math.tan(this.camSensor.getFovVertical() / 2) * d;
 
-    let frustum = new Mesh("custom", this.scene);
+    this.frustum = new Mesh("custom", this.scene);
 
     let vertexData = new VertexData();
     vertexData.positions = [
@@ -32,13 +39,13 @@ export class CameraFrustum {
     ];
     vertexData.normals = [];
     VertexData.ComputeNormals(vertexData.positions, vertexData.indices, vertexData.normals);
-    vertexData.applyToMesh(frustum);
-    frustum.material  = transparentMaterial;
-    frustum.edgesColor = new Color4(1, 1, 1, 1);
-    frustum.enableEdgesRendering(.9999);
+    vertexData.applyToMesh(this.frustum);
+    this.frustum.material  = transparentMaterial;
+    this.frustum.edgesColor = new Color4(1, 1, 1, 1);
+    this.frustum.enableEdgesRendering(.9999);
 
     // rotate frustum
-    frustum.setPivotPoint(this.camSensor.getPosition());
-    frustum.addRotation(this.camSensor.getPitch(), this.camSensor.getYaw(), this.camSensor.getRoll());
+    this.frustum.setPivotPoint(this.camSensor.getPosition());
+    this.frustum.addRotation(this.camSensor.getPitch(), this.camSensor.getYaw(), this.camSensor.getRoll());
   }
 }

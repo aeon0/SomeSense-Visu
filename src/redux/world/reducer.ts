@@ -2,9 +2,7 @@ import { EReduxActionTypes } from "../action_types"
 import { IReduxWorld } from "./types"
 
 
-let intialState = {} as IReduxWorld;
-
-export default function(state: IReduxWorld = intialState, action: any) {
+export default function(state: IReduxWorld = null, action: any) {
   switch (action.type) {
     case EReduxActionTypes.RESET_WORLD:
       const resetState = {} as IReduxWorld;

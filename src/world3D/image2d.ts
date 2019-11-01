@@ -1,11 +1,9 @@
 import { StandardMaterial, Texture, Color3, Scene, Mesh, MeshBuilder, Vector3 } from 'babylonjs'
 import { AdvancedDynamicTexture, Image } from 'babylonjs-gui'
-import { store } from '../redux/store'
 import { EPerspectiveTypes } from '../redux/perspective/reducer'
 import { CameraSensor } from './sensors/camera_sensor'
 
 
-//const IMG_PATH = "assets/example_img.jpg";
 const IMG_PATH: any = null;
 
 export class Image2D {
@@ -48,10 +46,16 @@ export class Image2D {
     this.dynamicTexture.addControl(this.image2DGUI);
   }
 
-  public update(): void {
-    const storedPerspective = store.getState().perspective.type;
-    if(storedPerspective !== this.perspective) {
-      this.perspective = storedPerspective;
+  public updateCamera(camSensor: CameraSensor) {
+    this.camSensor = camSensor;
+    this.image3DMesh.dispose();
+    this.textureMaterial.dispose();
+    this.init();
+  }
+
+  public update(perspective: EPerspectiveTypes): void {
+    if(perspective !== this.perspective) {
+      this.perspective = perspective;
       if (this.perspective !== EPerspectiveTypes.IMAGE_2D) {
         this.image3DMesh.setEnabled(false);
         this.dynamicTexture =  AdvancedDynamicTexture.CreateFullscreenUI("UI");
