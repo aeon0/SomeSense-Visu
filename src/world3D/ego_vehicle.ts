@@ -20,17 +20,6 @@ export class EgoVehicle {
     this.mesh.enableEdgesRendering(.9999);
     this.mesh.material  = transparentMaterial;
     this.mesh.renderingGroupId = 2;
-
-    // Test mesh
-    /*
-    var testBox = MeshBuilder.CreateBox("box", {height: height, width: 2, depth: length}, this.scene);
-    testBox.position = new Vector3(0, (height/2), 50);
-    testBox.edgesWidth = 4.0;
-    testBox.edgesColor = new Color4(0.7, 0.3, 0.1, 1);
-    testBox.enableEdgesRendering(.9999);
-    testBox.material  = transparentMaterial;
-    testBox.renderingGroupId = 2;
-    */
   }
 
   public update(perspective: EPerspectiveTypes) {

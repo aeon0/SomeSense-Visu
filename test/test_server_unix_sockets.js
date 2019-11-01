@@ -3,7 +3,7 @@ const fs = require('fs');
 
 
 let frameData = {
-  objects: [
+  tracks: [
     {
       trackId: "0",
       class: 0,
@@ -61,10 +61,10 @@ const runServer = async _ => {
       frame++;
       if(frame >= 30) frame = 1; // There are only 30 frames for the video data
       frameData.timestamp++;
-      frameData.objects[0].position[0] -= 0.5;
-      if(frameData.objects[0].position[0] > 20) frameData.objects[0].position[0] = -10;
-      frameData.objects[1].position[3] += 0.1;
-      if(frameData.objects[0].position[3] > 60) frameData.objects[0].position[3] = 10;
+      frameData.tracks[0].position[0] -= 0.5;
+      if(frameData.tracks[0].position[0] > 20) frameData.tracks[0].position[0] = -10;
+      frameData.tracks[1].position[3] += 0.1;
+      if(frameData.tracks[0].position[3] > 60) frameData.tracks[0].position[3] = 10;
 
       // Read from video frames on file system
       let imgPath = "00000" + frame.toString();

@@ -24,11 +24,11 @@ export function parseWorldObj(worldObj: any) : IReduxWorld {
   fs.writeFileSync(worldObj.sensor.imagePath, imgBuffer);
   delete worldObj.sensor.image;
 
-  // Convert Objects
-  for(let i = 0; i < worldObj.objects.length; ++i) {
-    let obj = worldObj.objects[i];
-    obj.class = Math.floor(obj.class);
-    obj.position = toVec3(obj.position);
+  // Convert tracks
+  for(let i = 0; i < worldObj.tracks.length; ++i) {
+    let track = worldObj.tracks[i];
+    track.class = Math.floor(track.class);
+    track.position = toVec3(track.position);
   }
 
   return worldObj as IReduxWorld;

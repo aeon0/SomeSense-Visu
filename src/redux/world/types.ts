@@ -11,11 +11,11 @@ export enum ECLass {
   SIZE,
 }
 
-export interface IObject {
+export interface ITrack {
   trackId: string;
   class: ECLass;
   depth: false;
-  position: Vector3; // [m]
+  position: Vector3; // [m] center bottom point
   height: number; // [m]
   width: number; // [m]
   ttc: number; // [s]
@@ -30,7 +30,7 @@ export interface ISensor {
 }
 
 export interface IReduxWorld {
-  objects: IObject[];
+  tracks: ITrack[];
   sensor: ISensor;
   timestamp: number;
 }

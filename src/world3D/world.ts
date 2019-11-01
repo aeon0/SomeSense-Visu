@@ -8,7 +8,7 @@ import { showAxis } from './axis'
 import { Image2D } from './image2d'
 import { CameraFrustum } from './sensors/camera_frustum'
 import { CameraSensor } from './sensors/camera_sensor'
-import { ISensor } from '../redux/world/types'
+import { ISensor, IReduxWorld } from '../redux/world/types'
 
 
 export class World {
@@ -63,7 +63,7 @@ export class World {
 
   public run(): void {
     this.engine.runRenderLoop(() => {
-      const worldData = store.getState().world;
+      const worldData: IReduxWorld = store.getState().world;
       if (worldData) {
         this.timestamp = worldData.timestamp;
         
@@ -85,6 +85,11 @@ export class World {
         // Update image
         const imagePath = worldData.sensor.imagePath;
         this.image2D.updateImage(imagePath);
+
+        // Update objects
+        for(var i = 0; i < worldData.tracks.length; ++i) {
+          
+        }
       }
 
       // Update scene
