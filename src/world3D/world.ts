@@ -9,6 +9,7 @@ import { Image2D } from './image2d'
 import { CameraFrustum } from './sensors/camera_frustum'
 import { CameraSensor } from './sensors/camera_sensor'
 import { ISensor, IReduxWorld } from '../redux/world/types'
+import { TrackManager } from './objects/track_manager'
 
 
 export class World {
@@ -21,6 +22,7 @@ export class World {
   private cameraFrustum: CameraFrustum;
   private timestamp: number;
   private camSensor: CameraSensor;
+  private trackManager: TrackManager;
 
   constructor(private canvas: HTMLCanvasElement) {
     // default camera
@@ -46,6 +48,7 @@ export class World {
     });
 
     this.timestamp = -1;
+    this.trackManager = new TrackManager(this.scene);
   }
 
   public load(): void {
@@ -86,10 +89,8 @@ export class World {
         const imagePath = worldData.sensor.imagePath;
         this.image2D.updateImage(imagePath);
 
-        // Update objects
-        for(var i = 0; i < worldData.tracks.length; ++i) {
-          
-        }
+        // Update tracks
+        this.trackManager.update(worldData.tracks);
       }
 
       // Update scene

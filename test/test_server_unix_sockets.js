@@ -7,19 +7,19 @@ let frameData = {
     {
       trackId: "0",
       class: 0,
-      depth: false,
-      position: [10, 1, 10],
+      position: [5, 1, 10],
       height: 1.5,
       width: 0.5,
+      depth: 0,
       ttc: 1,
     },
     {
       trackId: "1",
       class: 4,
-      depth: false,
       position: [-2, 0, 20],
       height: 1.5,
       width: 2,
+      depth: 0,
       ttc: 0.4,
     }
   ],
@@ -61,10 +61,10 @@ const runServer = async _ => {
       frame++;
       if(frame >= 30) frame = 1; // There are only 30 frames for the video data
       frameData.timestamp++;
-      frameData.tracks[0].position[0] -= 0.5;
-      if(frameData.tracks[0].position[0] > 20) frameData.tracks[0].position[0] = -10;
+      frameData.tracks[0].position[0] += 0.1;
+      if(frameData.tracks[0].position[0] > 5) frameData.tracks[0].position[0] = -5;
       frameData.tracks[1].position[3] += 0.1;
-      if(frameData.tracks[0].position[3] > 60) frameData.tracks[0].position[3] = 10;
+      if(frameData.tracks[1].position[3] > 60) frameData.tracks[0].position[3] = 10;
 
       // Read from video frames on file system
       let imgPath = "00000" + frame.toString();

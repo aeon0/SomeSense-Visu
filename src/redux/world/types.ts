@@ -14,10 +14,10 @@ export enum ECLass {
 export interface ITrack {
   trackId: string;
   class: ECLass;
-  depth: false;
   position: Vector3; // [m] center bottom point
   height: number; // [m]
   width: number; // [m]
+  depth: number; // [m] can be 0, then it is just a 2D plane in a 3D world
   ttc: number; // [s]
 }
 
