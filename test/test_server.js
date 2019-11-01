@@ -39,33 +39,9 @@ var frame = 0;
 ipc.config.id = 'server';
 ipc.config.silent=true;
 
-setInterval(async () => { 
-  // Send data to each socket (stop in case there is no client to serve)
-  if(Object.keys(sockets).length > 0) {
-    frame++;
-    if(frame >= 30) frame = 1; // There are only 30 frames for the video data
-    frameData.timestamp = frame;
-    frameData.objects[0].position[0] -= 0.5;
-    if(frameData.objects[0].position[0] > 20) frameData.objects[0].position[0] = -10;
-    frameData.objects[1].position[3] += 0.1;
-    if(frameData.objects[0].position[3] > 60) frameData.objects[0].position[3] = 10;
-
-    // Read from video frames on file system
-    let imgPath = "00000" + frame.toString();
-    imgPath = "../assets/sample_video_frames/" + imgPath.substring(imgPath.length - 6) + ".jpg";
-
-    const binaryImg = fs.readFileSync(imgPath);
-    const base64Img = new Buffer(binaryImg).toString('base64');
-
-    frameData.sensor.image = base64Img;
-    for (const key of Object.keys(sockets)) {
-      console.log("Sending to: " + key);
-      ipc.server.emit(sockets[key], 'server.frame', {
-        frame: JSON.stringify(frameData),
-      });
-    }
-  }
-}, 100);
+function Sleep(milliseconds) {
+  return new Promise(resolve => setTimeout(resolve, milliseconds));
+}
 
 ipc.serve(() => {
   ipc.server.on('client.register', (data, socket) => {
@@ -77,3 +53,36 @@ ipc.serve(() => {
   });
 });
 ipc.server.start()
+
+const runServer = async _ => {
+  while (true) {
+    // Send data to each socket (stop in case there is no client to serve)
+    if(Object.keys(sockets).length > 0) {
+      frame++;
+      if(frame >= 30) frame = 1; // There are only 30 frames for the video data
+      frameData.timestamp = frame;
+      frameData.objects[0].position[0] -= 0.5;
+      if(frameData.objects[0].position[0] > 20) frameData.objects[0].position[0] = -10;
+      frameData.objects[1].position[3] += 0.1;
+      if(frameData.objects[0].position[3] > 60) frameData.objects[0].position[3] = 10;
+
+      // Read from video frames on file system
+      let imgPath = "00000" + frame.toString();
+      imgPath = "../assets/sample_video_frames/" + imgPath.substring(imgPath.length - 6) + ".jpg";
+
+      const binaryImg = fs.readFileSync(imgPath);
+      const base64Img = new Buffer.from(binaryImg).toString('base64');
+
+      frameData.sensor.image = base64Img;
+      for (const key of Object.keys(sockets)) {
+        console.log("Sending to: " + key);
+        ipc.server.emit(sockets[key], 'server.frame', {
+          frame: JSON.stringify(frameData),
+        });
+      }
+    }
+    await Sleep(33);
+  }
+};
+
+runServer();

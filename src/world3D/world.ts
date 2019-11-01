@@ -1,12 +1,13 @@
 import { Engine, Scene, Vector3 }from 'babylonjs'
+import * as fs from 'fs'
 import { store } from '../redux/store'
 import { Lights } from './lights'
 import { Camera } from './camera'
 import { EgoVehicle } from './ego_vehicle'
 import { showAxis } from './axis'
-import { Image2D } from './image2d';
-import { CameraFrustum } from './sensors/camera_frustum';
-import { CameraSensor } from './sensors/camera_sensor';
+import { Image2D } from './image2d'
+import { CameraFrustum } from './sensors/camera_frustum'
+import { CameraSensor } from './sensors/camera_sensor'
 import { ISensor } from '../redux/world/types'
 
 
@@ -45,31 +46,7 @@ export class World {
       this.engine.resize();
     });
 
-    // Subscribe to the store to listen for changes in the world
     this.timestamp = -1;
-    store.subscribe(() => {
-      // Check if the frame has changed, if it has not
-      const worldData = store.getState().world;
-      if (worldData && this.timestamp !== worldData.timestamp) {
-        this.timestamp = worldData.timestamp;
-        const sensorData: ISensor = worldData.sensor;
-        this.image2D.updateImage(sensorData.imagePath);
-  
-        // In case current cam sensor differs from received one, update
-        const camSensor = new CameraSensor(
-          sensorData.position,
-          sensorData.rotation,
-          sensorData.fovHorizontal,
-          sensorData.fovVertical,
-        );
-        if (!camSensor.equals(this.camSensor)) {
-          this.camSensor = camSensor;
-          this.cameraFrustum.updateCamera(camSensor);
-          this.image2D.updateCamera(camSensor);
-          this.camera.updateCamera(camSensor);
-        }
-      }
-    });
   }
 
   public load(): void {
@@ -87,6 +64,30 @@ export class World {
 
   public run(): void {
     this.engine.runRenderLoop(() => {
+      const worldData = store.getState().world;
+      if (worldData) {
+        this.timestamp = worldData.timestamp;
+        
+        // In case current cam sensor differs from received one, update
+        const sensorData: ISensor = worldData.sensor;
+        const camSensor = new CameraSensor(
+          sensorData.position,
+          sensorData.rotation,
+          sensorData.fovHorizontal,
+          sensorData.fovVertical,
+        );
+        if (!camSensor.equals(this.camSensor)) {
+          this.camSensor = camSensor;
+          this.cameraFrustum.updateCamera(camSensor);
+          this.image2D.updateCamera(camSensor);
+          this.camera.updateCamera(camSensor);
+        }
+
+        // Update image
+        const imagePath = worldData.sensor.imagePath;
+        this.image2D.updateImage(imagePath);
+      }
+
       // Update scene
       const perspective = store.getState().perspective.type;
       this.egoVehicle.update(perspective);
