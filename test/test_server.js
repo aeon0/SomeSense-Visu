@@ -56,7 +56,6 @@ setInterval(async () => {
 
     const binaryImg = fs.readFileSync(imgPath);
     const base64Img = new Buffer(binaryImg).toString('base64');
-    console.log(imgPath);
 
     frameData.sensor.image = base64Img;
     for (const key of Object.keys(sockets)) {
