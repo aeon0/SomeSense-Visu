@@ -14,6 +14,10 @@ export class Image2D {
   private imagePath: string = null;
 
   constructor(private scene: Scene, private camSensor: CameraSensor) {
+    // Setup the 2D GUI texture for the 3D View
+    this.dynamicTexture =  AdvancedDynamicTexture.CreateFullscreenUI("UI");
+    this.image2DGUI = new Image();
+
     window.addEventListener("resize", () => {
       if(this.dynamicTexture !== null) {
         this.dynamicTexture.dispose();
@@ -38,18 +42,15 @@ export class Image2D {
     this.image3DMesh.addRotation(this.camSensor.getPitch(), this.camSensor.getYaw(), this.camSensor.getRoll());
     // Move camera 1 forward
     this.image3DMesh.position = this.image3DMesh.position.add(this.camSensor.getDirection().normalize().multiply(new Vector3(2, 2, 2)));
-
-    // Setup the 2D GUI texture for the 3D View
-    this.dynamicTexture =  AdvancedDynamicTexture.CreateFullscreenUI("UI");
-    this.image2DGUI = new Image();
-    this.dynamicTexture.addControl(this.image2DGUI);
   }
 
   public updateCamera(camSensor: CameraSensor) {
     this.camSensor = camSensor;
+    const isEnabled = this.image3DMesh.isEnabled();
     this.image3DMesh.dispose();
     this.textureMaterial.dispose();
     this.init();
+    this.image3DMesh.setEnabled(isEnabled);
   }
 
   public updateImage(imagePath: string) {
@@ -60,11 +61,14 @@ export class Image2D {
     if(perspective !== this.perspective) {
       this.perspective = perspective;
       if (this.perspective !== EPerspectiveTypes.IMAGE_2D) {
+        console.log("Switch to 3D View");
         this.image3DMesh.setEnabled(false);
         this.dynamicTexture =  AdvancedDynamicTexture.CreateFullscreenUI("UI");
       }
       else {
+        console.log("Switch to 2D View");
         this.dynamicTexture.dispose();
+        this.image2DGUI.dispose();
         this.image3DMesh.setEnabled(true);
       }
     }
@@ -72,8 +76,6 @@ export class Image2D {
     // Update Texture
     if(this.image3DMesh.isEnabled()) {
       this.textureMaterial.ambientTexture = new Texture(this.imagePath, this.scene);
-      this.image3DMesh.material.dispose();
-      this.image3DMesh.material = this.textureMaterial;
     }
     else {
       this.image2DGUI = new Image("gui_cam_view", this.imagePath);
