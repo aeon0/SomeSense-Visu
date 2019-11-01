@@ -22,7 +22,6 @@ export class World {
   private timestamp: number;
   private camSensor: CameraSensor;
 
-
   constructor(private canvas: HTMLCanvasElement) {
     // default camera
     this.camSensor = new CameraSensor(
