@@ -1,8 +1,10 @@
 import { IPC } from 'node-ipc'
 import { store } from '../redux/store'
 import { IReduxWorld } from '../redux/world/types'
+import { parseWorldObj } from '../redux/world/parse'
 import { setConnecting, setConnected } from '../redux/connection/actions'
 import { updateWorld, resetWorld } from '../redux/world/actions'
+import { Vector3 } from 'babylonjs'
 
 
 // Listen to the change in variable for connection
@@ -20,6 +22,7 @@ store.subscribe(() => {
 export function StartIPC() {
   const ipc = new IPC();
   ipc.config.id = 'visu_client';
+  ipc.config.silent = true;
   ipc.config.retry = 2000; // time between reconnects in ms#
 
   store.dispatch(setConnecting());
@@ -42,7 +45,7 @@ export function StartIPC() {
       ipc.of.server.on('server.frame', (data: any) => {
         // TODO: the parsing could have all sorts of missing fields or additional fields
         //       Ideally this would be checked somehow, but for now... whatever
-        const frameData: IReduxWorld = JSON.parse(data.frame);
+        const frameData: IReduxWorld = parseWorldObj(JSON.parse(data.frame));
         store.dispatch(updateWorld(frameData));
       });
   });

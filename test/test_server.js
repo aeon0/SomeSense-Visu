@@ -5,7 +5,7 @@ let frameData = {
   objects: [
     {
       trackId: "0",
-      class: "PED",
+      class: 0,
       depth: false,
       position: [10, 1, 10],
       height: 1.5,
@@ -14,7 +14,7 @@ let frameData = {
     },
     {
       trackId: "1",
-      class: "Car",
+      class: 4,
       depth: false,
       position: [-2, 0, 20],
       height: 1.5,
@@ -22,7 +22,7 @@ let frameData = {
       ttc: 0.4,
     }
   ],
-  sensorData: {
+  sensor: {
     position: [0, 1.2, -0.5],
     rotation: [0, 0, 0],
     image: null,
@@ -63,7 +63,7 @@ setInterval(async () => {
     const imgPath = frame % 2 ? '../assets/example_img2.jpg' : '../assets/example_img.jpg';
     const binaryImg = await readFile(imgPath);
     const base64Img = new Buffer(binaryImg).toString('base64');
-    frameData.sensorData.image = base64Img;
+    frameData.sensor.image = base64Img;
     for (const key of Object.keys(sockets)) {
       console.log("Sending to: " + key);
       ipc.server.emit(sockets[key], 'server.frame', {

@@ -2,11 +2,13 @@ import { Vector3 } from 'babylonjs'
 
 
 export enum ECLass {
-  CAR = "CAR",
-  PED = "PED",
-  BICYCLE = "BICYCLE",
-  MOTORBIKE = "MOTORBIKE",
-  UNKOWN = "UNKOWN"
+  CAR = 0,
+  TRUCK,
+  MOTORBIKE,
+  BICYCLE,
+  PED,
+  UNKOWN,
+  SIZE,
 }
 
 export interface IObject {
@@ -19,7 +21,7 @@ export interface IObject {
   ttc: number; // [s]
 }
 
-export interface ISensorData {
+export interface ISensor {
   position: Vector3; // [m]
   rotation: Vector3; // pitch, yaw, roll in [rad]
   fovHorizontal: number, // [rad]
@@ -29,6 +31,6 @@ export interface ISensorData {
 
 export interface IReduxWorld {
   objects: IObject[];
-  sensor: ISensorData;
+  sensor: ISensor;
   timestamp: number;
 }
