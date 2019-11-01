@@ -43,7 +43,7 @@ setInterval(async () => {
   // Send data to each socket (stop in case there is no client to serve)
   if(Object.keys(sockets).length > 0) {
     frame++;
-    if(frame >= 30) frame = 0; // There are only 30 frames for the video data
+    if(frame >= 30) frame = 1; // There are only 30 frames for the video data
     frameData.timestamp = frame;
     frameData.objects[0].position[0] -= 0.5;
     if(frameData.objects[0].position[0] > 20) frameData.objects[0].position[0] = -10;
@@ -65,7 +65,7 @@ setInterval(async () => {
       });
     }
   }
-}, 2000);
+}, 100);
 
 ipc.serve(() => {
   ipc.server.on('client.register', (data, socket) => {

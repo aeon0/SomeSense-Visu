@@ -49,11 +49,11 @@ export class World {
       // Check if the frame has changed, if it has not
       const worldData = store.getState().world;
       if (worldData && this.timestamp !== worldData.timestamp) {
-        console.log("WORLD UPDATE");
         this.timestamp = worldData.timestamp;
-
-        // Update stuff of the world
         const sensorData: ISensor = worldData.sensor;
+        this.image2D.updateImage(sensorData.imagePath);
+
+        // TODO: only update if sensor meta data actually changed...
         const camSensor = new CameraSensor(
           sensorData.position,
           sensorData.rotation,
@@ -64,7 +64,7 @@ export class World {
         this.image2D.updateCamera(camSensor);
         this.camera.updateCamera(camSensor);
 
-        this.image2D.updateImage(sensorData.imagePath);
+        
       }
     });
   }
