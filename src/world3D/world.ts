@@ -64,9 +64,9 @@ export class World {
         );
         if (!camSensor.equals(this.camSensor)) {
           this.camSensor = camSensor;
-          this.camera.updateCamera(camSensor);
           this.cameraFrustum.updateCamera(camSensor);
           this.image2D.updateCamera(camSensor);
+          this.camera.updateCamera(camSensor);
         }
       }
     });
@@ -90,8 +90,8 @@ export class World {
       // Update scene
       const perspective = store.getState().perspective.type;
       this.egoVehicle.update(perspective);
-      this.image2D.update(perspective);
       this.camera.update(perspective);
+      this.image2D.update(perspective);
 
       this.scene.render();
     });

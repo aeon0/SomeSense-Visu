@@ -1,8 +1,7 @@
-import { StandardMaterial, Texture, Color3, Scene, Mesh, MeshBuilder, Vector3, DynamicTexture } from 'babylonjs'
+import { StandardMaterial, Color3, Scene, Mesh, MeshBuilder, Vector3, DynamicTexture } from 'babylonjs'
 import * as GUI from 'babylonjs-gui'
 import { EPerspectiveTypes } from '../redux/perspective/reducer'
 import { CameraSensor } from './sensors/camera_sensor'
-import { timingSafeEqual } from 'crypto';
 
 
 export class Image2D {

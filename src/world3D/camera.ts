@@ -29,9 +29,10 @@ export class Camera {
 
   public updateCamera(camSensor: CameraSensor) {
     this.camSensor = camSensor;
+    this.updatePerspective();
   }
 
-  public updatePerspective(): void {
+  private updatePerspective(): void {
     switch(this.perspective) {
       case EPerspectiveTypes.IMAGE_2D:
         const pos = this.camSensor.getPosition();
@@ -64,7 +65,7 @@ export class Camera {
   }
 
   public update(perspective: EPerspectiveTypes): void {
-    if(perspective !== this.perspective) {
+    if (perspective !== this.perspective) {
       this.perspective = perspective;
       this.updatePerspective();
     }
