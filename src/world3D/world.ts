@@ -23,7 +23,7 @@ export class World {
   constructor(private canvas: HTMLCanvasElement) {
     // default camera
     const camSensor = new CameraSensor(
-      new Vector3(0, 30, -0.5),
+      new Vector3(0, 1, -0.5),
       new Vector3(0, 0, 0), // pitch, yaw, roll
       (1/2)*Math.PI, // 90 degree
       (1/4)*Math.PI, // 45 degree
@@ -50,7 +50,6 @@ export class World {
       const worldData = store.getState().world;
       if (worldData && this.timestamp !== worldData.timestamp) {
         console.log("WORLD UPDATE");
-        console.log(worldData);
         this.timestamp = worldData.timestamp;
 
         // Update stuff of the world
@@ -64,6 +63,8 @@ export class World {
         this.cameraFrustum.updateCamera(camSensor);
         this.image2D.updateCamera(camSensor);
         this.camera.updateCamera(camSensor);
+
+        this.image2D.updateImage(sensorData.imagePath);
       }
     });
   }

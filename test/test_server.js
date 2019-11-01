@@ -61,7 +61,7 @@ setInterval(async () => {
     frameData.objects[1].position[3] += 0.1;
     if(frameData.objects[0].position[3] > 60) frameData.objects[0].position[3] = 10;
     const imgPath = frame % 2 ? '../assets/example_img2.jpg' : '../assets/example_img.jpg';
-    const binaryImg = await readFile(imgPath);
+    const binaryImg = fs.readFileSync(imgPath);
     const base64Img = new Buffer(binaryImg).toString('base64');
     frameData.sensor.image = base64Img;
     for (const key of Object.keys(sockets)) {

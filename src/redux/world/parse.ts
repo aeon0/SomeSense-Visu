@@ -1,3 +1,4 @@
+import * as fs from 'fs'
 import { Vector3 } from 'babylonjs'
 import { IReduxWorld } from './types'
 
@@ -8,7 +9,16 @@ export function parseWorldObj(worldObj: any) : IReduxWorld {
   // Convert Sensor Data
   worldObj.sensor.position = toVec3(worldObj.sensor.position);
   worldObj.sensor.rotation = toVec3(worldObj.sensor.rotation);
-  worldObj.sensor.image = new Buffer(worldObj.sensor.image, 'base64');
+
+  // Save Image to a tmp folder
+  const dir = process.cwd() + "/tmp";
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir);
+  }
+  worldObj.sensor.imgPath = dir + "/front_cam_img.jpg";
+  const imgBuffer = new Buffer(worldObj.sensor.image, 'base64');
+  fs.writeFileSync(worldObj.sensor.imgPath, imgBuffer);
+  delete worldObj.sensor.image;
 
   // Convert Objects
   for(let i = 0; i < worldObj.objects.length; ++i) {

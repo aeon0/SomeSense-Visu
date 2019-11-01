@@ -26,7 +26,7 @@ export interface ISensor {
   rotation: Vector3; // pitch, yaw, roll in [rad]
   fovHorizontal: number, // [rad]
   fovVertical: number, // [rad]
-  image: any,
+  imagePath: string,
 }
 
 export interface IReduxWorld {
