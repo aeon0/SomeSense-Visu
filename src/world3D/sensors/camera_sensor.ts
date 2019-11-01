@@ -22,4 +22,11 @@ export class CameraSensor {
     getRoll() { return this.rotation.z; }
     getDirection() { return this.direction; }
     getQuaternion() { return this.quaternion; }
+
+    public equals(obj: CameraSensor) : boolean {
+      return this.position.equals(obj.position) &&
+             this.rotation.equals(obj.rotation) &&
+             this.fovHorizontal == obj.fovHorizontal &&
+             this.fovVertical == obj.fovVertical;
+    }
 }

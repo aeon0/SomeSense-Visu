@@ -19,11 +19,13 @@ export class World {
   private image2D: Image2D;
   private cameraFrustum: CameraFrustum;
   private timestamp: number;
+  private camSensor: CameraSensor;
+
 
   constructor(private canvas: HTMLCanvasElement) {
     // default camera
-    const camSensor = new CameraSensor(
-      new Vector3(0, 1, -0.5),
+    this.camSensor = new CameraSensor(
+      new Vector3(0, 6, -0.5),
       new Vector3(0, 0, 0), // pitch, yaw, roll
       (1/2)*Math.PI, // 90 degree
       (1/4)*Math.PI, // 45 degree
@@ -32,12 +34,12 @@ export class World {
     this.engine = new Engine(this.canvas, true);
     this.scene = new Scene(this.engine);
 
-    this.camera = new Camera(this.scene, camSensor);
+    this.camera = new Camera(this.scene, this.camSensor);
     this.lights = new Lights(this.scene);
     this.egoVehicle = new EgoVehicle(this.scene);
 
-    this.cameraFrustum = new CameraFrustum(this.scene, camSensor);
-    this.image2D = new Image2D(this.scene, camSensor);
+    this.cameraFrustum = new CameraFrustum(this.scene, this.camSensor);
+    this.image2D = new Image2D(this.scene, this.camSensor);
 
     window.addEventListener("resize", () => {
       this.engine.resize();
@@ -52,19 +54,20 @@ export class World {
         this.timestamp = worldData.timestamp;
         const sensorData: ISensor = worldData.sensor;
         this.image2D.updateImage(sensorData.imagePath);
-
-        // TODO: only update if sensor meta data actually changed...
+  
+        // In case current cam sensor differs from received one, update
         const camSensor = new CameraSensor(
           sensorData.position,
           sensorData.rotation,
           sensorData.fovHorizontal,
           sensorData.fovVertical,
         );
-        this.cameraFrustum.updateCamera(camSensor);
-        this.image2D.updateCamera(camSensor);
-        this.camera.updateCamera(camSensor);
-
-        
+        if (!camSensor.equals(this.camSensor)) {
+          this.camSensor = camSensor;
+          this.camera.updateCamera(camSensor);
+          this.cameraFrustum.updateCamera(camSensor);
+          this.image2D.updateCamera(camSensor);
+        }
       }
     });
   }

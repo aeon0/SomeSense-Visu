@@ -34,12 +34,12 @@ export class Image2D {
     this.textureMaterial = new StandardMaterial("image2D_texture", this.scene);
     this.textureMaterial.ambientColor = new Color3(10, 10, 10);
     this.textureMaterial.backFaceCulling = false;
+    this.dynamicTexture = new DynamicTexture("image3DTexture", 1, this.scene, false);
     this.textureMaterial.ambientTexture = this.dynamicTexture;
     const width = 4 * Math.tan(this.camSensor.getFovHorizontal() * 0.5);
     const height = 4 * Math.tan(this.camSensor.getFovVertical() * 0.5);
-    this.ratio = width / height; // 4 / 1.6568
+    this.ratio = width / height;
     this.image3DMesh = MeshBuilder.CreatePlane("image2D", {width: width, height: height}, this.scene);
-    this.dynamicTexture = new DynamicTexture("image3DTexture", 1, this.scene, false);
     this.image3DMesh.material = this.textureMaterial;
     this.image3DMesh.renderingGroupId = 1;
     this.image3DMesh.position = this.camSensor.getPosition();
@@ -52,8 +52,11 @@ export class Image2D {
   public updateCamera(camSensor: CameraSensor) {
     this.camSensor = camSensor;
     const isEnabled = this.image3DMesh.isEnabled();
+    // Remove 3D Mesh
     this.image3DMesh.dispose();
     this.textureMaterial.dispose();
+    this.dynamicTexture.dispose();
+    // Recreate 3D Mesh
     this.init();
     this.image3DMesh.setEnabled(isEnabled);
   }
@@ -79,7 +82,6 @@ export class Image2D {
     // Update Texture
     if (this.image3DMesh.isEnabled()) {
       if (this.imagePath && this.dynamicTexture) {
-        const currentSize = this.dynamicTexture.getSize();
         var img = new Image();
         img.src = this.imagePath;
         img.onload = () => {
