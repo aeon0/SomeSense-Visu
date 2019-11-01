@@ -1,7 +1,15 @@
 import { app, BrowserWindow } from "electron";
+import { emptyDirSync, existsSync } from 'fs-extra'
 import * as path from "path";
 import installExtension, { REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } from 'electron-devtools-installer'
 
+
+// Clean tmp folder
+const tmpDir = process.cwd() + "/tmp";
+console.log(tmpDir);
+if (existsSync(tmpDir)) {
+  emptyDirSync(tmpDir);
+}
 
 let mainWindow: Electron.BrowserWindow;
 
