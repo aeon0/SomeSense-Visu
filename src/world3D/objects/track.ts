@@ -2,6 +2,7 @@ import { Scene, Mesh, MeshBuilder, StandardMaterial, Vector3, Color4, FloatArray
 import { ITrack } from '../../redux/world/types'
 
 
+// Tracks are displayed either with rectangluar 2D-Planes (no depth information) or with 3D-boxes
 export class Track {
   private data: ITrack;
   private mesh: Mesh = null;
@@ -20,44 +21,6 @@ export class Track {
       this.material.dispose();
       this.mesh.setEnabled(false);
     }
-  }
-
-  private calcBottomLeft() : Vector3 {
-    return new Vector3(
-      this.data.position.x - (this.data.width * 0.5),
-      this.data.position.y,
-      this.data.position.z
-    );
-  }
-  private calcTopLeft() : Vector3 {
-    return new Vector3(
-      this.data.position.x - (this.data.width * 0.5),
-      this.data.position.y + this.data.height,
-      this.data.position.z
-    );
-  }
-  private calcTopRight() : Vector3 {
-    return new Vector3(
-      this.data.position.x + (this.data.width * 0.5),
-      this.data.position.y + this.data.height,
-      this.data.position.z
-    );
-  }
-  private calcBottomRight() : Vector3 {
-    return new Vector3(
-      this.data.position.x + (this.data.width * 0.5),
-      this.data.position.y,
-      this.data.position.z
-    );
-  }
-
-  private getVertexPosition() : FloatArray {
-    return [
-      ...this.calcBottomLeft().asArray(),
-      ...this.calcBottomRight().asArray(),
-      ...this.calcTopRight().asArray(),
-      ...this.calcTopLeft().asArray(),
-    ]
   }
 
   private didShapeChange() {
@@ -96,8 +59,8 @@ export class Track {
     }
     else {
       // Update Mesh
-      // this.mesh.updateVerticesData(BABYLON.VertexBuffer.PositionKind, this.getVertexPosition());
       this.mesh.position = this.data.position;
+      this.mesh.rotation = this.data.rotation;
     }
   }
 }

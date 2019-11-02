@@ -15,6 +15,7 @@ export interface ITrack {
   trackId: string;
   class: ECLass;
   position: Vector3; // [m] center bottom point
+  rotation: Vector3; // [rad]
   height: number; // [m]
   width: number; // [m]
   depth: number; // [m] can be 0, then it is just a 2D plane in a 3D world
