@@ -85,18 +85,18 @@ export class World {
           this.camera.updateCamera(camSensor);
         }
 
-        // Update image
-        const imagePath = worldData.sensor.imagePath;
-        this.image2D.updateImage(imagePath);
+        this.image2D.updateImage(worldData.sensor.imageBase64);
 
-        // Update tracks
-        this.trackManager.update(worldData.tracks);
+        // this.trackManager.update(worldData.tracks);
+        console.log("Update");
       }
 
       // Update scene
       const perspective = store.getState().perspective.type;
       this.egoVehicle.update(perspective);
       this.camera.update(perspective);
+      // TODO looks like the 3D render thingy makes trouble...
+      // And do it with buffers!
       this.image2D.update(perspective);
 
       this.scene.render();

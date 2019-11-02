@@ -26,7 +26,7 @@ let frameData = {
   sensor: {
     position: [0, 1.2, -0.5],
     rotation: [0, 0, 0],
-    image: null,
+    imageBase64: null,
     fovHorizontal: (1/2)*Math.PI,
     fovVertical: (1/4)*Math.PI,
   },
@@ -71,9 +71,9 @@ const runServer = async _ => {
       imgPath = "../assets/sample_video_frames/" + imgPath.substring(imgPath.length - 6) + ".jpg";
 
       const binaryImg = fs.readFileSync(imgPath);
-      const base64Img = new Buffer.from(binaryImg).toString('base64');
+      const base64Img = "data:image/jpeg;base64," + new Buffer.from(binaryImg).toString('base64');
 
-      frameData.sensor.image = base64Img;
+      frameData.sensor.imageBase64 = base64Img;
       for (const key of Object.keys(sockets)) {
         console.log("Sending to: " + key);
         ipc.server.emit(sockets[key], 'server.frame', {
@@ -81,7 +81,7 @@ const runServer = async _ => {
         });
       }
     }
-    await Sleep(33);
+    await Sleep(1000);
   }
 };
 

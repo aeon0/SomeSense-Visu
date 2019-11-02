@@ -10,19 +10,10 @@ export function parseWorldObj(worldObj: any) : IReduxWorld {
   worldObj.sensor.position = toVec3(worldObj.sensor.position);
   worldObj.sensor.rotation = toVec3(worldObj.sensor.rotation);
 
-  // Save Image to a tmp folder
-  const tmpDir = process.cwd() + "/tmp";
-  if (!fs.existsSync(tmpDir)) {
-    fs.mkdirSync(tmpDir);
-  }
-  const imgDir = tmpDir + "/front_cam_data";
-  if (!fs.existsSync(imgDir)) {
-    fs.mkdirSync(imgDir);
-  }
-  worldObj.sensor.imagePath = imgDir + "/img_" + worldObj.timestamp + ".jpg";
-  const imgBuffer = new Buffer(worldObj.sensor.image, 'base64');
-  fs.writeFileSync(worldObj.sensor.imagePath, imgBuffer);
-  delete worldObj.sensor.image;
+  // imageBase64 expects to have something like "data:image/jpeg;base64," in the beginning
+  // otherwise babylon js whines, but with that prefix this ArrayBuffer conversion does not work
+  // figure something out in case ArrayBuffers are needed
+  // const someArrayBuffer = Uint8Array.from(atob(worldObj.sensor.imageBase64), c => c.charCodeAt(0));
 
   // Convert tracks
   for(let i = 0; i < worldObj.tracks.length; ++i) {

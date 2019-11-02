@@ -1,20 +1,6 @@
 import { app, BrowserWindow } from "electron";
-import { emptyDirSync, existsSync } from 'fs-extra'
 import * as path from "path";
-import * as findRemoveSync from 'find-remove'
 import installExtension, { REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } from 'electron-devtools-installer'
-
-
-// Clean tmp folder and keep it clean deleting all files older than 1000 ms
-const tmpDir = process.cwd() + "/tmp";
-if (existsSync(tmpDir)) {
-  emptyDirSync(tmpDir);
-}
-setInterval(() => {
-  // Clean up the front_cam_data folder
-  const imageDir = tmpDir + "/front_cam_data";
-  findRemoveSync(imageDir, {age: {seconds: 0.5}, extensions: '.jpg'});
-}, 1000);
 
 
 let mainWindow: Electron.BrowserWindow;

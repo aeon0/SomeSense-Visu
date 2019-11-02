@@ -12,7 +12,7 @@ export class Image2D {
   private dynamicTexture: DynamicTexture = null;
   private ratio: number = 1;
   private textureMaterial: StandardMaterial = null;
-  private imagePath: string = null;
+  private imageBase64: string = null;
 
 
   constructor(private scene: Scene, private camSensor: CameraSensor) {
@@ -60,8 +60,8 @@ export class Image2D {
     this.image3DMesh.setEnabled(isEnabled);
   }
 
-  public updateImage(imagePath: string) {
-    this.imagePath = imagePath;
+  public updateImage(imageBase64: string) {
+    this.imageBase64 = imageBase64;
   }
 
   public update(perspective: EPerspectiveTypes): void {
@@ -80,9 +80,9 @@ export class Image2D {
 
     // Update Texture
     if (this.image3DMesh.isEnabled()) {
-      if (this.imagePath && this.dynamicTexture) {
+      if (this.imageBase64 && this.dynamicTexture) {
         var img = new Image();
-        img.src = this.imagePath;
+        img.src = this.imageBase64;
         img.onload = () => {
           this.dynamicTexture.scaleTo(img.width, img.height);
           this.dynamicTexture.getContext().drawImage(img, 0, 0);
@@ -91,8 +91,8 @@ export class Image2D {
       }
     }
     else {
+      this.image2DGUI = new GUI.Image("gui_cam_view", this.imageBase64);
       // Place image in bottom right corner
-      this.image2DGUI = new GUI.Image("gui_cam_view", this.imagePath);
       const canvasWidth = this.scene.getEngine().getRenderingCanvas().width;
       const canvasHeight = this.scene.getEngine().getRenderingCanvas().height;
       const imgOffset = canvasHeight * 0.02;
