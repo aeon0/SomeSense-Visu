@@ -67,7 +67,9 @@ export class World {
   public run(): void {
     this.engine.runRenderLoop(() => {
       const worldData: IReduxWorld = store.getState().world;
+      let imageBase64 = null;
       if (worldData) {
+        imageBase64 = (' ' + worldData.sensor.imageBase64).slice(1); // force copy of image
         this.timestamp = worldData.timestamp;
         
         // In case current cam sensor differs from received one, update
@@ -85,18 +87,14 @@ export class World {
           this.camera.updateCamera(camSensor);
         }
 
-        this.image2D.updateImage(worldData.sensor.imageBase64);
-
-        // this.trackManager.update(worldData.tracks);
+        this.trackManager.update(worldData.tracks);
       }
 
       // Update scene
       const perspective = store.getState().perspective.type;
       this.egoVehicle.update(perspective);
       this.camera.update(perspective);
-      // TODO looks like the 3D render thingy makes trouble...
-      // And do it with buffers!
-      this.image2D.update(perspective);
+      this.image2D.update(perspective, imageBase64);
 
       this.scene.render();
     });
