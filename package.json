@@ -36,24 +36,24 @@
     "babylonjs": "^4.0.3",
     "babylonjs-gui": "^4.0.3",
     "node-ipc": "^9.1.1",
-    "react": "^16.10.2",
-    "react-dom": "^16.10.2",
+    "react": "^16.11.0",
+    "react-dom": "^16.11.0",
     "react-redux": "^7.1.1",
     "redux": "^4.0.4",
     "rmwc": "^5.7.1",
-    "styled-components": "^4.4.0"
+    "styled-components": "^4.4.1"
   },
   "devDependencies": {
     "@types/electron-devtools-installer": "^2.2.0",
     "@types/node-ipc": "^9.1.1",
-    "@types/react": "^16.9.9",
-    "@types/react-dom": "^16.9.2",
+    "@types/react": "^16.9.11",
+    "@types/react-dom": "^16.9.3",
     "@types/react-redux": "^7.1.5",
     "@types/styled-components": "4.1.8",
     "electron": "^7.0.1",
-    "electron-builder": "^21.2.0",
+    "electron-builder": "^22.1.0",
     "electron-devtools-installer": "^2.2.4",
-    "node-sass": "^4.12.0",
+    "node-sass": "^4.13.0",
     "typescript": "^3.6.4"
   }
 }
