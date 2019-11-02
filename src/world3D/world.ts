@@ -88,7 +88,6 @@ export class World {
         this.image2D.updateImage(worldData.sensor.imageBase64);
 
         // this.trackManager.update(worldData.tracks);
-        console.log("Update");
       }
 
       // Update scene

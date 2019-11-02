@@ -64,9 +64,7 @@ export class Track {
     // Update object according to data
     if (!this.mesh) {
       // Init Mesh
-      console.log("INIT");
       this.mesh = new Mesh("custom", this.scene);
-      console.log(this.data.depth);
       this.mesh = MeshBuilder.CreateBox(
         "box",
         {height: this.data.height, width: this.data.width, depth: Math.max(0.1, this.data.depth)},
@@ -83,7 +81,6 @@ export class Track {
     else {
       // Update Mesh
       // this.mesh.updateVerticesData(BABYLON.VertexBuffer.PositionKind, this.getVertexPosition());
-      console.log("update");
       this.mesh.position = this.data.position;
     }
   }
