@@ -80,7 +80,7 @@ const runServer = async _ => {
         });
       }
     }
-    await Sleep(20);
+    await Sleep(50);
   }
 };
 
