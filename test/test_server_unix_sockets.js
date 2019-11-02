@@ -62,7 +62,7 @@ const runServer = async _ => {
       if(frame >= 30) frame = 1; // There are only 30 frames for the video data
       frameData.timestamp++;
       frameData.tracks[0].position[0] += 0.1;
-      if(frameData.tracks[0].position[0] > 5) frameData.tracks[0].position[0] = -5;
+      if(frameData.tracks[0].position[0] > 15) frameData.tracks[0].position[0] = -10;
       frameData.tracks[1].position[3] += 0.1;
       if(frameData.tracks[1].position[3] > 60) frameData.tracks[0].position[3] = 10;
 

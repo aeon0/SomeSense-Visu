@@ -36,7 +36,7 @@ export class World {
     this.engine = new Engine(this.canvas, true);
     this.scene = new Scene(this.engine);
 
-    this.camera = new Camera(this.scene, this.camSensor);
+    this.camera = new Camera(this.scene, this.engine, this.camSensor);
     this.lights = new Lights(this.scene);
     this.egoVehicle = new EgoVehicle(this.scene);
 

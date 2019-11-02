@@ -70,13 +70,11 @@ export class Track {
         {height: this.data.height, width: this.data.width, depth: Math.max(0.1, this.data.depth)},
         this.scene);
       this.mesh.position = this.data.position;
-      /*
       this.mesh.edgesWidth = 4.0;
       this.mesh.edgesColor = new Color4(1, 1, 1, 1);
       this.mesh.enableEdgesRendering(.9999);
       this.mesh.material = this.material;
       this.mesh.renderingGroupId = 2;
-      */
     }
     else {
       // Update Mesh

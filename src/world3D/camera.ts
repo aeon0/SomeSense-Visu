@@ -1,16 +1,16 @@
 import { EPerspectiveTypes } from '../redux/perspective/reducer'
-import { Scene, ArcRotateCamera, Viewport, Vector3, FlyCamera } from 'babylonjs'
+import { Scene, ArcRotateCamera, Viewport, Vector3, FlyCamera, Engine } from 'babylonjs'
 import { CameraSensor } from './sensors/camera_sensor'
 
 
 export class Camera {
   private camera: ArcRotateCamera | FlyCamera;
   private canvas: any;
-  private perspective: EPerspectiveTypes;
+  private perspective: EPerspectiveTypes = null;
+  private ratioDiffFactor: number = 1;
 
-  constructor(private scene: Scene, private camSensor: CameraSensor) {
+  constructor(private scene: Scene, private engine: Engine, private camSensor: CameraSensor) {
     this.canvas = scene.getEngine().getRenderingCanvas();
-    this.perspective = null;
   }
 
   public init() {
@@ -18,11 +18,15 @@ export class Camera {
 
     window.addEventListener("wheel", e => {
       if(this.perspective == EPerspectiveTypes.IMAGE_2D) {
-        const zoomFactor = Math.max(Math.min(this.camera.viewport.width + (e.deltaY / 550), 3), 0.1);
+        const zoomFactor = Math.max(Math.min(this.camera.viewport.width + (-e.deltaY / 550), 3), 0.1);
         // console.log(e.pageX + ", " + e.pageY);
-        // TODO: when zooming larger it does not show objects outside of camera frustum. Think about how to handle this
-        //       e.g. increase field of view?
-        this.camera.viewport = new Viewport((1 - zoomFactor) / 2, (1 - zoomFactor) / 2, zoomFactor, zoomFactor);
+        const ratioDiffOffset = zoomFactor * (1 - 1 / this.ratioDiffFactor);
+        this.camera.viewport = new Viewport(
+          (1 - zoomFactor) / 2, 
+          ((1 - zoomFactor) + ratioDiffOffset) / 2,
+          zoomFactor,
+          zoomFactor * (1 / this.ratioDiffFactor)
+        );
       }
     });
   }
@@ -35,6 +39,11 @@ export class Camera {
   private updatePerspective(): void {
     switch(this.perspective) {
       case EPerspectiveTypes.IMAGE_2D:
+        // Viewport should be relative to ratio of image not to screen, thats what this.ratioDiffFactor is for
+        // the + 1 is a bit of a hack to have some more viewport the the left and right side
+        this.ratioDiffFactor = this.camSensor.getRatio() / this.engine.getAspectRatio(this.camera) + 1;
+        this.camera.viewport = new Viewport(0, 0, 1, 1 * (1 / this.ratioDiffFactor));
+
         const pos = this.camSensor.getPosition();
         const target = this.camSensor.getPosition().add(this.camSensor.getDirection().normalize());
         this.camera = new FlyCamera("2D_cam", pos, this.scene);

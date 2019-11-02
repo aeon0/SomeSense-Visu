@@ -10,7 +10,6 @@ export class Image2D {
   private image2DGUI: GUI.Image = null;
   private uiScreen: GUI.AdvancedDynamicTexture = null;
   private dynamicTexture: DynamicTexture = null;
-  private ratio: number = 1;
   private textureMaterial: StandardMaterial = null;
 
 
@@ -36,7 +35,6 @@ export class Image2D {
     this.textureMaterial.ambientTexture = this.dynamicTexture;
     const width = 4 * Math.tan(this.camSensor.getFovHorizontal() * 0.5);
     const height = 4 * Math.tan(this.camSensor.getFovVertical() * 0.5);
-    this.ratio = width / height;
     this.image3DMesh = MeshBuilder.CreatePlane("image2D", {width: width, height: height}, this.scene);
     this.image3DMesh.material = this.textureMaterial;
     this.image3DMesh.renderingGroupId = 1;
@@ -92,7 +90,7 @@ export class Image2D {
       const canvasHeight = this.scene.getEngine().getRenderingCanvas().height;
       const imgOffset = canvasHeight * 0.02;
       this.image2DGUI.heightInPixels = canvasWidth * 0.11;
-      this.image2DGUI.widthInPixels = this.image2DGUI.heightInPixels * this.ratio;
+      this.image2DGUI.widthInPixels = this.image2DGUI.heightInPixels * this.camSensor.getRatio();
       this.image2DGUI.left = canvasWidth * 0.5 - this.image2DGUI.widthInPixels * 0.5 - imgOffset;
       this.image2DGUI.top = canvasHeight * 0.5 - this.image2DGUI.heightInPixels * 0.5 - imgOffset;
 
