@@ -18,17 +18,21 @@ export class Camera {
 
     window.addEventListener("wheel", e => {
       if(this.perspective == EPerspectiveTypes.IMAGE_2D) {
-        const zoomFactor = Math.max(Math.min(this.camera.viewport.width + (-e.deltaY / 550), 3), 0.1);
         // console.log(e.pageX + ", " + e.pageY);
-        const ratioDiffOffset = zoomFactor * (1 - 1 / this.ratioDiffFactor);
-        this.camera.viewport = new Viewport(
-          (1 - zoomFactor) / 2, 
-          ((1 - zoomFactor) + ratioDiffOffset) / 2,
-          zoomFactor,
-          zoomFactor * (1 / this.ratioDiffFactor)
-        );
+        const zoomFactor = Math.max(Math.min(this.camera.viewport.width + (-e.deltaY / 550), 3), 0.1);
+        this.adjustZoomFactor(zoomFactor);
       }
     });
+  }
+
+  private adjustZoomFactor(zoomFactor: number): void {
+    const ratioDiffOffset = zoomFactor * (1 - 1 / this.ratioDiffFactor);
+    this.camera.viewport = new Viewport(
+      (1 - zoomFactor) / 2,
+      ((1 - zoomFactor) + ratioDiffOffset) / 2,
+      zoomFactor,
+      zoomFactor * (1 / this.ratioDiffFactor)
+    );
   }
 
   public updateCamera(camSensor: CameraSensor) {
@@ -39,19 +43,17 @@ export class Camera {
   private updatePerspective(): void {
     switch(this.perspective) {
       case EPerspectiveTypes.IMAGE_2D:
-        // Viewport should be relative to ratio of image not to screen, thats what this.ratioDiffFactor is for
-        // the + 1 is a bit of a hack to have some more viewport the the left and right side
-        this.ratioDiffFactor = this.camSensor.getRatio() / this.engine.getAspectRatio(this.camera) + 1;
-        this.camera.viewport = new Viewport(0, 0, 1, 1 * (1 / this.ratioDiffFactor));
-
         const pos = this.camSensor.getPosition();
         const target = this.camSensor.getPosition().add(this.camSensor.getDirection().normalize());
         this.camera = new FlyCamera("2D_cam", pos, this.scene);
         this.camera.setTarget(target);
         this.camera.applyGravity = false;
-        this.camera.bankedTurn = false
-        this.camera.bankedTurnMultiplier = 0
-        this.camera.rotationQuaternion = this.camSensor.getQuaternion()
+        this.camera.bankedTurn = false;
+        this.camera.bankedTurnMultiplier = 0;
+        this.camera.rotationQuaternion = this.camSensor.getQuaternion();
+        this.ratioDiffFactor = this.camSensor.getRatio() / this.engine.getAspectRatio(this.camera);
+        this.adjustZoomFactor(1.05);
+        console.log(this.camera.viewport);
         break;
       default: // EPerspectiveTypes.FREE_3D
         this.camera = new ArcRotateCamera("3D_cam", 1, 1, 50, new Vector3(0.0, 0.0, 0.0), this.scene);
