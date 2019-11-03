@@ -59,7 +59,7 @@ export class Camera {
         this.camera.viewport = new Viewport(0, 0, 1, 1);
         this.camera.upperAlphaLimit = null;
         this.camera.lowerAlphaLimit = null;
-        this.camera.upperBetaLimit = Math.PI/2;
+        this.camera.upperBetaLimit = Math.PI * 0.5;
         this.camera.lowerBetaLimit = 0;
         this.camera.wheelPrecision = 4;
         this.camera.lowerRadiusLimit = 1;

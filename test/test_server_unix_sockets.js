@@ -7,8 +7,8 @@ let frameData = {
     {
       trackId: "0",
       class: 0,
-      position: [5, 1, 10],
-      rotation: [0, 0, 0],
+      position: [5, 0, 10],
+      rotation: [-0.05, 0.4, -0.1],
       height: 1.5,
       width: 0.5,
       depth: 0,
@@ -66,10 +66,12 @@ const runServer = async _ => {
       
       // Change 2D Object
       frameData.tracks[0].position[0] += 0.1;
-      //frameData.tracks[0].height += 0.03;
+      frameData.tracks[0].height += 0.03;
+      frameData.tracks[0].width += 0.02;
       if(frameData.tracks[0].position[0] > 8) {
         frameData.tracks[0].position[0] = -3;
         frameData.tracks[0].height = 1.5;
+        frameData.tracks[0].width = 0.5;
       }
 
       // Change 3D Object

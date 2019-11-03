@@ -77,9 +77,9 @@ export class Track {
       const scaleHeight = data.height / currentSize.y;
       // This is a bit tricky. We dont want to scale depth in case it is a 2D Plane and in case the shape has changed
       const scaleDepth = (this.is2DPlane() || shapeChanged) ? 1 : data.depth / currentSize.z;
-      this.mesh.setPivotPoint(this.data.position);
       this.mesh.scaling = new Vector3(scaleWidth, scaleHeight, scaleDepth);
-      
+
+
       // Reaply new rotation
       this.mesh.rotation = this.data.rotation;
     }
