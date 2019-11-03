@@ -18,10 +18,10 @@ let frameData = {
       trackId: "1",
       class: 4,
       position: [-2, 0, 15],
-      rotation: [0, 0, 0],
+      rotation: [-0.05, 0.4, -0.1],
       height: 1.5,
       width: 2,
-      depth: 0,
+      depth: 4,
       ttc: 0.4,
     }
   ],
@@ -64,23 +64,27 @@ const runServer = async _ => {
       if(frame >= 30) frame = 1; // There are only 30 frames for the video data
       frameData.timestamp++;
       
-      // Move object from left to right
+      // Change 2D Object
       frameData.tracks[0].position[0] += 0.1;
-      if(frameData.tracks[0].position[0] > 15) frameData.tracks[0].position[0] = -10;
-      
-      // Move object from front to back
-      frameData.tracks[1].position[2] += 0.1;
-      if(frameData.tracks[1].position[2] > 60) {
-        frameData.tracks[1].position[2] = 15;
-        frameData.tracks[1].depth = 2;
+      //frameData.tracks[0].height += 0.03;
+      if(frameData.tracks[0].position[0] > 8) {
+        frameData.tracks[0].position[0] = -3;
+        frameData.tracks[0].height = 1.5;
       }
 
-      // Increase width
-      frameData.tracks[0].width += 0.01;
-      if(frameData.tracks[0].width > 2) frameData.tracks[0].width = 0.5;
-
-      // frameData.tracks[0].height += 0.01;
-      // if(frameData.tracks[0].height > 3) frameData.tracks[0].height = 1.5;
+      // Change 3D Object
+      /*
+      frameData.tracks[1].position[2] += 0.1;
+      if(frameData.tracks[1].position[2] > 30) {
+        frameData.tracks[1].position[2] = 15;
+      }
+      frameData.tracks[1].width += 0.03;
+      if(frameData.tracks[1].width > 4) frameData.tracks[1].width = 2;
+      frameData.tracks[1].height += 0.01;
+      if(frameData.tracks[1].height > 4) frameData.tracks[1].height = 1.5;
+      frameData.tracks[1].depth += 0.05;
+      if(frameData.tracks[1].depth > 7) frameData.tracks[1].depth = 4;
+      */
 
       // Read from video frames on file system
       let imgPath = "00000" + frame.toString();
@@ -96,7 +100,7 @@ const runServer = async _ => {
         });
       }
     }
-    await Sleep(20);
+    await Sleep(100);
   }
 };
 

@@ -1,10 +1,9 @@
 import { Engine, Scene, Vector3 }from 'babylonjs'
-import * as fs from 'fs'
 import { store } from '../redux/store'
 import { Lights } from './lights'
 import { Camera } from './camera'
 import { EgoVehicle } from './ego_vehicle'
-import { showAxis } from './axis'
+import { showAxis, showGrid } from './debug_mesh'
 import { Image2D } from './image2d'
 import { CameraFrustum } from './sensors/camera_frustum'
 import { CameraSensor } from './sensors/camera_sensor'
@@ -62,6 +61,7 @@ export class World {
     this.image2D.init();
 
     showAxis(4, this.scene);
+    showGrid(this.scene);
   }
 
   public run(): void {

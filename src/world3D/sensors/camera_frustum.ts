@@ -14,10 +14,10 @@ export class CameraFrustum {
 
   public init() {
     let transparentMaterial = new StandardMaterial("transparent_object", this.scene);
-    transparentMaterial.alpha = 0.1;
+    transparentMaterial.alpha = 0.03;
     transparentMaterial.backFaceCulling = false;
 
-    const d: number = 60;
+    const d: number = 140;
     const delta_x = Math.tan(this.camSensor.getFovHorizontal() / 2) * d;
     const delta_y = Math.tan(this.camSensor.getFovVertical() / 2) * d;
 
