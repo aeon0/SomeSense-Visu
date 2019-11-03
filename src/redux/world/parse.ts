@@ -20,6 +20,7 @@ export function parseWorldObj(worldObj: any) : IReduxWorld {
     let track = worldObj.tracks[i];
     track.class = Math.floor(track.class);
     track.position = toVec3(track.position);
+    track.rotation = toVec3(track.rotation);
   }
 
   return worldObj as IReduxWorld;

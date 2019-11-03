@@ -23,11 +23,10 @@ export class Track {
     }
   }
 
-  private didShapeChange() {
-    // Check if we have a ground plane now and should have a box or vice versa
-    return this.mesh.name == Track.MESH_NAME_BOX && this.data.depth <= 0.1 ||
-           this.mesh.name == Track.MESH_NAME_PLANE && this.data.depth > 0.1;
-  }
+  private is2DPlane = () : boolean => this.mesh.name == Track.MESH_NAME_PLANE;
+  private is3DBox = () : boolean => this.mesh.name == Track.MESH_NAME_BOX;
+  private didShapeChange = () : boolean => ((this.is3DBox() && this.data.depth <= 0.1) || 
+                                            (this.is2DPlane() && this.data.depth > 0.1));
 
   private init() {
     if (this.mesh) {

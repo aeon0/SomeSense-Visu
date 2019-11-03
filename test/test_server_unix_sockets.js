@@ -79,8 +79,8 @@ const runServer = async _ => {
       frameData.tracks[0].width += 0.01;
       if(frameData.tracks[0].width > 2) frameData.tracks[0].width = 0.5;
 
-      frameData.tracks[0].height += 0.01;
-      if(frameData.tracks[0].height > 3) frameData.tracks[0].height = 1.5;
+      // frameData.tracks[0].height += 0.01;
+      // if(frameData.tracks[0].height > 3) frameData.tracks[0].height = 1.5;
 
       // Read from video frames on file system
       let imgPath = "00000" + frame.toString();
