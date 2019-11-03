@@ -28,9 +28,9 @@ export const showAxis = function(size: number, scene: Scene) {
 export const showGrid = function(scene: Scene) {
   const length = 140;
   const width = 100;
-  let gridGround = Mesh.CreateGround("grid_ground", width, length, 0, this.scene, false);
+  let gridGround = Mesh.CreateGround("grid_ground", width, length, 0, scene, false);
   gridGround.position.z += length * 0.5;
-  const material = new GridMaterial("grid_material", this.scene);
+  const material = new GridMaterial("grid_material", scene);
   material.majorUnitFrequency = 10;
   material.minorUnitVisibility = 0.5;
   material.mainColor = new Color3(0, 0, 0);
@@ -39,10 +39,10 @@ export const showGrid = function(scene: Scene) {
   material.backFaceCulling = false;
   gridGround.material = material;
 
-  const xRuler = MeshBuilder.CreatePlane("x_ruler", {width: width, height: 0.5}, this.scene);
+  const xRuler = MeshBuilder.CreatePlane("x_ruler", {width: width, height: 0.5}, scene);
   xRuler.material = material;
 
-  const zRuler = MeshBuilder.CreatePlane("z_ruler", {width: length, height: 0.5}, this.scene);
+  const zRuler = MeshBuilder.CreatePlane("z_ruler", {width: length, height: 0.5}, scene);
   zRuler.rotation.y = Math.PI * 0.5;
   zRuler.position.z += length * 0.5;
   zRuler.material = material;
