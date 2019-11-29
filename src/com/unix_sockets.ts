@@ -4,7 +4,6 @@ import { IReduxWorld } from '../redux/world/types'
 import { parseWorldObj } from '../redux/world/parse'
 import { setConnecting, setConnected } from '../redux/connection/actions'
 import { updateWorld, resetWorld } from '../redux/world/actions'
-import { Vector3 } from 'babylonjs'
 
 
 // Listen to the change in variable for connection
@@ -27,7 +26,7 @@ export function StartIPC() {
 
   store.dispatch(setConnecting());
 
-  ipc.connectTo('server', () => {
+  ipc.connectTo('server', '/tmp/unix-socket', () => {
       ipc.of.server.on('connect', () => {
           ipc.log("## connected to server ##");
           store.dispatch(setConnected());
