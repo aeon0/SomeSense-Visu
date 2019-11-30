@@ -28,7 +28,7 @@ export function StartIPC() {
             "id": ipc.config.id
           }
         });
-        ipc.of.server.emit(registerMsg);
+        ipc.of.server.emit(registerMsg + "\n");
     });
 
     ipc.of.server.on('disconnect', () => {
@@ -45,7 +45,6 @@ export function StartIPC() {
       if(msg["type"] == "server.frame") {
         // TODO: the parsing could have all sorts of missing fields or additional fields
         //       Ideally this would be checked somehow, but for now... whatever
-        console.log("HERE");
         const frameData: IReduxWorld = parseWorldObj(msg["data"]["frame"]);
         store.dispatch(updateWorld(frameData));
       }

@@ -108,8 +108,9 @@ const runServer = async _ => {
           "frame": frameData
         }
       });
+
       for (const key of Object.keys(sockets)) {
-        ipc.server.emit(sockets[key], msg);
+        ipc.server.emit(sockets[key], msg + "\n");
       }
     }
     await Sleep(3000);
