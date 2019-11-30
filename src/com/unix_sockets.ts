@@ -5,6 +5,19 @@ import { parseWorldObj } from '../redux/world/parse'
 import { setConnecting, setConnected } from '../redux/connection/actions'
 import { updateWorld, resetWorld } from '../redux/world/actions'
 
+let streamStr: string = "";
+
+function updateFrame(msg: any) {
+  if(msg["type"] == "server.frame") {
+    // TODO: the parsing could have all sorts of missing fields or additional fields
+    //       Ideally this would be checked somehow, but for now... whatever
+    const frameData: IReduxWorld = parseWorldObj(msg["data"]["frame"]);
+    store.dispatch(updateWorld(frameData));
+  }
+  else {
+    console.log("Unkown server message: " + msg["type"]);
+  }
+}
 
 export function StartIPC() {
   const ipc = new IPC();
@@ -39,17 +52,12 @@ export function StartIPC() {
     });
 
     ipc.of.server.on('data', (data: any) => {
-      console.log(data.toString());
-      const msg = JSON.parse(data.toString());
+      streamStr += data.toString();
 
-      if(msg["type"] == "server.frame") {
-        // TODO: the parsing could have all sorts of missing fields or additional fields
-        //       Ideally this would be checked somehow, but for now... whatever
-        const frameData: IReduxWorld = parseWorldObj(msg["data"]["frame"]);
-        store.dispatch(updateWorld(frameData));
-      }
-      else {
-        console.log("Unkown server message: " + msg["type"]);
+      if(streamStr.endsWith("\n")) {
+        const msg = JSON.parse(streamStr);
+        streamStr = "";
+        updateFrame(msg);
       }
     });
   });
