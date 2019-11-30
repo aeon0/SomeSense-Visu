@@ -39,16 +39,22 @@ var sockets = {};
 var frame = 0;
 
 ipc.config.id = 'server';
+ipc.config.rawBuffer=true;
 ipc.config.silent=true;
 
 function Sleep(milliseconds) {
   return new Promise(resolve => setTimeout(resolve, milliseconds));
 }
 
-ipc.serve(() => {
-  ipc.server.on('client.register', (data, socket) => {
-    // Register Client
-    sockets[data.id] = socket;
+ipc.serve("/tmp/unix-socket", () => {
+  ipc.server.on('data', (data, socket) => {
+    jsonObj = JSON.parse(data.toString());
+    if(jsonObj["type"] == "client.register") {
+      sockets[jsonObj["data"]["id"]] = socket;
+    }
+    else {
+      console.log("Unkown request from client: " + jsonObj["type"]);
+    }
   });
   ipc.server.on("socket.disconnected", socket => {
     delete sockets[socket.id];
@@ -96,13 +102,17 @@ const runServer = async _ => {
       const base64Img = "data:image/jpeg;base64," + new Buffer.from(binaryImg).toString('base64');
 
       frameData.sensor.imageBase64 = base64Img;
+      const msg = JSON.stringify({
+        "type": "server.frame",
+        "data": {
+          "frame": frameData
+        }
+      });
       for (const key of Object.keys(sockets)) {
-        ipc.server.emit(sockets[key], 'server.frame', {
-          frame: JSON.stringify(frameData),
-        });
+        ipc.server.emit(sockets[key], msg);
       }
     }
-    await Sleep(100);
+    await Sleep(3000);
   }
 };
 

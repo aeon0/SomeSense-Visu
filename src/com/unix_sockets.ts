@@ -6,46 +6,52 @@ import { setConnecting, setConnected } from '../redux/connection/actions'
 import { updateWorld, resetWorld } from '../redux/world/actions'
 
 
-// Listen to the change in variable for connection
-let startConnecting = false;
-store.subscribe(() => {
-  if (startConnecting !== store.getState().connection.connecting) {
-    startConnecting = store.getState().connection.connecting;
-    if (startConnecting) {
-      StartIPC();
-    }
-  }
-});
-
-
 export function StartIPC() {
   const ipc = new IPC();
   ipc.config.id = 'visu_client';
   ipc.config.silent = true;
   ipc.config.retry = 2000; // time between reconnects in ms#
+  ipc.config.rawBuffer = true;
 
   store.dispatch(setConnecting());
 
-  ipc.connectTo('server', '/tmp/unix-socket', () => {
-      ipc.of.server.on('connect', () => {
-          ipc.log("## connected to server ##");
-          store.dispatch(setConnected());
-          ipc.of.server.emit('client.register', {
-            id: ipc.config.id,
-          });
-      });
-      ipc.of.server.on('disconnect', () => {
-        // Retry connecting
-        store.dispatch(setConnecting());
-        store.dispatch(resetWorld());
-        ipc.log('disconnected from server');
-      });
+  console.log("Start Connection to server...");
 
-      ipc.of.server.on('server.frame', (data: any) => {
+  ipc.connectTo('server', '/tmp/unix-socket', () => {
+    ipc.of.server.on('connect', () => {
+        console.log("## connected to server ##");
+        store.dispatch(setConnected());
+
+        const registerMsg: string = JSON.stringify({
+          "type": "client.register",
+          "data": {
+            "id": ipc.config.id
+          }
+        });
+        ipc.of.server.emit(registerMsg);
+    });
+
+    ipc.of.server.on('disconnect', () => {
+      // Retry connecting
+      store.dispatch(setConnecting());
+      store.dispatch(resetWorld());
+      ipc.log('## disconnected from server ##');
+    });
+
+    ipc.of.server.on('data', (data: any) => {
+      console.log(data.toString());
+      const msg = JSON.parse(data.toString());
+
+      if(msg["type"] == "server.frame") {
         // TODO: the parsing could have all sorts of missing fields or additional fields
         //       Ideally this would be checked somehow, but for now... whatever
-        const frameData: IReduxWorld = parseWorldObj(JSON.parse(data.frame));
+        console.log("HERE");
+        const frameData: IReduxWorld = parseWorldObj(msg["data"]["frame"]);
         store.dispatch(updateWorld(frameData));
-      });
+      }
+      else {
+        console.log("Unkown server message: " + msg["type"]);
+      }
+    });
   });
 }
