@@ -7,15 +7,22 @@ import { updateWorld, resetWorld } from '../redux/world/actions'
 
 let streamStr: string = "";
 
-function updateFrame(msg: any) {
-  if(msg["type"] == "server.frame") {
-    // TODO: the parsing could have all sorts of missing fields or additional fields
-    //       Ideally this would be checked somehow, but for now... whatever
-    const frameData: IReduxWorld = parseWorldObj(msg["data"]["frame"]);
-    store.dispatch(updateWorld(frameData));
+function updateFrame(msgStr: string) {
+  try {
+    const msg: any = JSON.parse(msgStr);
+    if(msg["type"] == "server.frame") {
+      // TODO: the parsing could have all sorts of missing fields or additional fields
+      //       Ideally this would be checked somehow, but for now... whatever
+      const frameData: IReduxWorld = parseWorldObj(msg["data"]["frame"]);
+      store.dispatch(updateWorld(frameData));
+    }
+    else {
+      console.log("Unkown server message: " + msg["type"]);
+    }
   }
-  else {
-    console.log("Unkown server message: " + msg["type"]);
+  catch (e) {
+    console.log(e);
+    console.log(msgStr);
   }
 }
 
@@ -55,9 +62,13 @@ export function StartIPC() {
       streamStr += data.toString();
 
       if(streamStr.endsWith("\n")) {
-        const msg = JSON.parse(streamStr);
+        // streamStr could have multiple messages, thus try to split on line endings and loop
+        const strMessages: string[] = streamStr.split("\n");
+        strMessages.pop();
+        for(let msg of strMessages) {
+          updateFrame(msg.slice(0));
+        }
         streamStr = "";
-        updateFrame(msg);
       }
     });
   });
