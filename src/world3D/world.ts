@@ -81,6 +81,7 @@ export class World {
           sensorData.fovVertical,
         );
         if (!camSensor.equals(this.camSensor)) {
+          console.log("Update Cam Sensor...");
           this.camSensor = camSensor;
           this.cameraFrustum.updateCamera(camSensor);
           this.image2D.updateCamera(camSensor);

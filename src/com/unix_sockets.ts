@@ -13,7 +13,7 @@ function updateFrame(msgStr: string) {
     if(msg["type"] == "server.frame") {
       // TODO: the parsing could have all sorts of missing fields or additional fields
       //       Ideally this would be checked somehow, but for now... whatever
-      const frameData: IReduxWorld = parseWorldObj(msg["data"]["frame"]);
+      const frameData: IReduxWorld = parseWorldObj(msg["data"]);
       store.dispatch(updateWorld(frameData));
     }
     else {

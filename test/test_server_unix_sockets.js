@@ -104,16 +104,14 @@ const runServer = async _ => {
       frameData.sensor.imageBase64 = base64Img;
       const msg = JSON.stringify({
         "type": "server.frame",
-        "data": {
-          "frame": frameData
-        }
+        "data": frameData
       });
 
       for (const key of Object.keys(sockets)) {
         ipc.server.emit(sockets[key], msg + "\n");
       }
     }
-    await Sleep(3000);
+    await Sleep(100);
   }
 };
 
