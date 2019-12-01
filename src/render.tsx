@@ -20,6 +20,9 @@ const CanvasS = styled.canvas`
   all: inherit;
   touch-action: none;
 `
+const FixedCanvas = styled.canvas`
+  position: fixed;
+`
 
 function App() {
   // Only runs on mount
@@ -32,6 +35,8 @@ function App() {
   return <MainWrapper>
     <Overlay />
     <CanvasS id="world" />
+
+    <FixedCanvas id="front_cam_img" />
 
     <SnackbarQueue
       messages={snackbarQueue.messages}

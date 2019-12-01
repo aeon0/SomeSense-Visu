@@ -7,23 +7,12 @@ import { CameraSensor } from './sensors/camera_sensor'
 export class Image2D {
   private perspective: EPerspectiveTypes = null;
   private image3DMesh: Mesh = null;
-  private image2DGUI: GUI.Image = null;
-  private uiScreen: GUI.AdvancedDynamicTexture = null;
   private dynamicTexture: DynamicTexture = null;
   private textureMaterial: StandardMaterial = null;
-
+  private canvas2D: any = null;
 
   constructor(private scene: Scene, private camSensor: CameraSensor) {
-    // Setup the 2D GUI texture for the 3D View
-    this.uiScreen =  GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
-    this.image2DGUI = new GUI.Image();
-
-    window.addEventListener("resize", () => {
-      if(this.uiScreen !== null) {
-        this.uiScreen.dispose();
-        this.uiScreen =  GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
-      }
-    });
+    this.canvas2D = document.getElementById("front_cam_img");
   }
 
   public init(): void {
@@ -62,39 +51,39 @@ export class Image2D {
       this.perspective = perspective;
       if (this.perspective !== EPerspectiveTypes.IMAGE_2D) {
         this.image3DMesh.setEnabled(false);
-        this.uiScreen = GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+        this.canvas2D.style.display = "block";
       }
       else {
-        this.uiScreen.dispose();
-        this.image2DGUI.dispose();
+
         this.image3DMesh.setEnabled(true);
+        this.canvas2D.style.display = "none";
       }
     }
 
     // Update Texture
-    if (this.image3DMesh.isEnabled()) {
-      if (imageBase64 && this.dynamicTexture) {
-        var img = new Image();
-        img.src = imageBase64;
-        img.onload = () => {
+    if (imageBase64 && this.dynamicTexture) {
+      var img = new Image();
+      img.src = imageBase64;
+      img.onload = () => {
+        if (this.image3DMesh.isEnabled()) {
           this.dynamicTexture.scaleTo(img.width, img.height);
           this.dynamicTexture.getContext().drawImage(img, 0, 0);
           this.dynamicTexture.update();
         }
-      }
-    }
-    else {
-      this.image2DGUI = new GUI.Image("gui_cam_view", imageBase64);
-      // Place image in bottom right corner
-      const canvasWidth = this.scene.getEngine().getRenderingCanvas().width;
-      const canvasHeight = this.scene.getEngine().getRenderingCanvas().height;
-      const imgOffset = canvasHeight * 0.02;
-      this.image2DGUI.heightInPixels = canvasWidth * 0.11;
-      this.image2DGUI.widthInPixels = this.image2DGUI.heightInPixels * this.camSensor.getRatio();
-      this.image2DGUI.left = canvasWidth * 0.5 - this.image2DGUI.widthInPixels * 0.5 - imgOffset;
-      this.image2DGUI.top = canvasHeight * 0.5 - this.image2DGUI.heightInPixels * 0.5 - imgOffset;
+        else {
+          const screenWidth = this.scene.getEngine().getRenderingCanvas().width;
+          const screenHeight = this.scene.getEngine().getRenderingCanvas().height;
+          const imgOffset = screenHeight * 0.02;
 
-      this.uiScreen.addControl(this.image2DGUI);
+          this.canvas2D.height = screenWidth * 0.135;
+          this.canvas2D.width = this.canvas2D.height * this.camSensor.getRatio();
+          this.canvas2D.style.left = (screenWidth - this.canvas2D.width - imgOffset) + "px";
+          this.canvas2D.style.top = (screenHeight - this.canvas2D.height - imgOffset) + "px";
+
+          const ctx: any = this.canvas2D.getContext("2d");
+          ctx.drawImage(img, 0, 0, this.canvas2D.width, this.canvas2D.height);
+        }
+      }
     }
   }
 }
