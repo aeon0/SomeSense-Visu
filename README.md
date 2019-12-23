@@ -1,5 +1,10 @@
 # VISU
 
+## Setup
+### Install Node.js on Jetson Nano
+## Install Node.js
+https://www.instructables.com/id/Install-Nodejs-and-Npm-on-Raspberry-Pi/
+
 ### feature list - ready
 - panning
 - draw distance numbers on grid (1 unit = 1 m)
