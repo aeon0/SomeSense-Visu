@@ -3,7 +3,9 @@ import styled from 'styled-components'
 import { SettingsMenu } from './settings_menu'
 import { SelectPerspective } from './select_perspective'
 import { ConnectionSetting } from './connection_setting'
+import { RecordingControls } from './recording_controls'
 import { useSelector } from 'react-redux'
+import { IReduxWorld } from '../redux/world/types';
 
 
 const OverlayWrapper = styled.div`
@@ -15,14 +17,14 @@ const OverlayWrapper = styled.div`
 `
 
 export function Overlay() {
-  const world: any = useSelector((store: any) => store.world);
+  const world: IReduxWorld = useSelector((store: any) => store.world);
 
   return <OverlayWrapper>
     <SettingsMenu />
     <SelectPerspective />
     <ConnectionSetting />
     {world && world.isRecording &&
-      <div>IS A RECORDING</div>
+      <RecordingControls world={world} />
     }
   </OverlayWrapper>
 }

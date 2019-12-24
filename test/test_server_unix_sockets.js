@@ -74,7 +74,8 @@ const runServer = async _ => {
     if(Object.keys(sockets).length > 0) {
       frame++;
       if(frame >= 30) frame = 1; // There are only 30 frames for the video data
-      frameData.timestamp = Math.floor(FRAME_LENGTH * (frame - 1) * 1000);
+      frameData.timestamp = Math.floor((frame - 1) * 1000);
+      console.log(frameData.timestamp);
       
       // Change 2D Object
       frameData.tracks[0].position[0] += 0.1;
