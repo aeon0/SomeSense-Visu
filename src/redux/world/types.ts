@@ -28,10 +28,13 @@ export interface ISensor {
   fovHorizontal: number, // [rad]
   fovVertical: number, // [rad]
   imageBase64: string,
+  timestamp: number, // timestamp of the image [us]
 }
 
 export interface IReduxWorld {
   tracks: ITrack[];
   sensors: ISensor[];
-  timestamp: number;
+  timestamp: number; // timestamp of the algo [us]
+  isRecording: boolean; // true if provided data is based on a recording
+  recLength: number; // [us], only filled if isRecording is true
 }

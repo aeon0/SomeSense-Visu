@@ -1,8 +1,9 @@
-import * as React from 'react';
-import styled from 'styled-components';
-import { SettingsMenu } from './settings_menu';
-import { SelectPerspective } from './select_perspective';
-import { ConnectionSetting } from './connection_setting';
+import * as React from 'react'
+import styled from 'styled-components'
+import { SettingsMenu } from './settings_menu'
+import { SelectPerspective } from './select_perspective'
+import { ConnectionSetting } from './connection_setting'
+import { useSelector } from 'react-redux'
 
 
 const OverlayWrapper = styled.div`
@@ -14,9 +15,14 @@ const OverlayWrapper = styled.div`
 `
 
 export function Overlay() {
+  const world: any = useSelector((store: any) => store.world);
+
   return <OverlayWrapper>
     <SettingsMenu />
     <SelectPerspective />
     <ConnectionSetting />
+    {world && world.isRecording &&
+      <div>IS A RECORDING</div>
+    }
   </OverlayWrapper>
 }

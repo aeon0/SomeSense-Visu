@@ -1,6 +1,7 @@
 const ipc = require('../node_modules/node-ipc');
 const fs = require('fs');
 
+const FRAME_LENGTH = 50; // in [ms]
 
 let frameData = {
   tracks: [
@@ -32,9 +33,12 @@ let frameData = {
       imageBase64: null,
       fovHorizontal: (1/2)*Math.PI,
       fovVertical: (1/4)*Math.PI,
+      timestamp: null,
     }
   ],
-  timestamp: 0
+  timestamp: null,
+  isRecording: true,
+  recLength: Math.floor(30*FRAME_LENGTH*1000), // test video has 30 frames * FRAME_LENGTH * 1000 to get us
 };
 
 var sockets = {};
@@ -70,7 +74,7 @@ const runServer = async _ => {
     if(Object.keys(sockets).length > 0) {
       frame++;
       if(frame >= 30) frame = 1; // There are only 30 frames for the video data
-      frameData.timestamp++;
+      frameData.timestamp = Math.floor(FRAME_LENGTH * (frame - 1) * 1000);
       
       // Change 2D Object
       frameData.tracks[0].position[0] += 0.1;
@@ -114,7 +118,7 @@ const runServer = async _ => {
         ipc.server.emit(sockets[key], msg + "\n");
       }
     }
-    await Sleep(100);
+    await Sleep(FRAME_LENGTH); // Test with 20 fps (50ms per frame)
   }
 };
 
