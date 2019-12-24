@@ -25,13 +25,15 @@ let frameData = {
       ttc: 0.4,
     }
   ],
-  sensor: {
-    position: [0, 1.2, -0.5],
-    rotation: [0, 0, 0],
-    imageBase64: null,
-    fovHorizontal: (1/2)*Math.PI,
-    fovVertical: (1/4)*Math.PI,
-  },
+  sensors: [
+    {
+      position: [0, 1.2, -0.5],
+      rotation: [0, 0, 0],
+      imageBase64: null,
+      fovHorizontal: (1/2)*Math.PI,
+      fovVertical: (1/4)*Math.PI,
+    }
+  ],
   timestamp: 0
 };
 
@@ -101,7 +103,8 @@ const runServer = async _ => {
       const binaryImg = fs.readFileSync(imgPath);
       const base64Img = "data:image/jpeg;base64," + new Buffer.from(binaryImg).toString('base64');
 
-      frameData.sensor.imageBase64 = base64Img;
+      // Currently expect only one sensor
+      frameData.sensors[0].imageBase64 = base64Img;
       const msg = JSON.stringify({
         "type": "server.frame",
         "data": frameData

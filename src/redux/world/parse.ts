@@ -7,14 +7,12 @@ const toVec3 = (data: any) : Vector3 => new Vector3(data[0], data[1], data[2]);
 
 export function parseWorldObj(worldObj: any) : IReduxWorld {
   // Convert Sensor Data
-  worldObj.sensor.position = toVec3(worldObj.sensor.position);
-  worldObj.sensor.rotation = toVec3(worldObj.sensor.rotation);
-
-  // imageBase64 expects to have something like "data:image/jpeg;base64," in the beginning
-  // otherwise babylon js whines, but with that prefix this ArrayBuffer conversion does not work
-  // figure something out in case ArrayBuffers are needed
-  // const someArrayBuffer = Uint8Array.from(atob(worldObj.sensor.imageBase64), c => c.charCodeAt(0));
-
+  for (let i = 0; i < worldObj.sensors.length; ++i) {
+    let sensor = worldObj.sensors[i];
+    sensor.position = toVec3(sensor.position);
+    sensor.rotation = toVec3(sensor.rotation);
+  }
+  
   // Convert tracks
   for(let i = 0; i < worldObj.tracks.length; ++i) {
     let track = worldObj.tracks[i];

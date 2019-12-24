@@ -32,6 +32,6 @@ export interface ISensor {
 
 export interface IReduxWorld {
   tracks: ITrack[];
-  sensor: ISensor;
+  sensors: ISensor[];
   timestamp: number;
 }

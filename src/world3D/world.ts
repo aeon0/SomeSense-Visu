@@ -68,12 +68,13 @@ export class World {
     this.engine.runRenderLoop(() => {
       const worldData: IReduxWorld = store.getState().world;
       let imageBase64 = null;
+      // Currently just expect to only have one cam sensor and access directly with [0]
       if (worldData) {
-        imageBase64 = (' ' + worldData.sensor.imageBase64).slice(1); // force copy of image
+        imageBase64 = (' ' + worldData.sensors[0].imageBase64).slice(1); // force copy of image
         this.timestamp = worldData.timestamp;
         
         // In case current cam sensor differs from received one, update
-        const sensorData: ISensor = worldData.sensor;
+        const sensorData: ISensor = worldData.sensors[0];
         const camSensor = new CameraSensor(
           sensorData.position,
           sensorData.rotation,
