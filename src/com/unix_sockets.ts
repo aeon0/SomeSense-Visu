@@ -5,34 +5,13 @@ import { parseWorldObj } from '../redux/world/parse'
 import { setConnecting, setConnected } from '../redux/connection/actions'
 import { updateWorld, resetWorld } from '../redux/world/actions'
 
-let streamStr: string = "";
 
-function handleData(msgStr: string) {
-  try {
-    const msg: any = JSON.parse(msgStr);
-    if(msg["type"] == "server.frame") {
-      // TODO: the parsing could have all sorts of missing fields or additional fields
-      //       Ideally this would be checked somehow, but for now... whatever
-      const frameData: IReduxWorld = parseWorldObj(msg["data"]);
-      store.dispatch(updateWorld(frameData));
-    }
-    else if(msg["type"] == "server.callback") {
-      // Callback for some request, search for callback in the callback list and execute
-    }
-    else {
-      console.log("Unkown server message: " + msg["type"]);
-    }
-  }
-  catch (e) {
-    console.log(e);
-    console.log(msgStr);
-  }
-}
-
+// Inter Process Communication via Unix Sockets, currently only supports only one data source (one server)
 export class IPCServer {
   private ipc = new IPC();
   private cbCounter: number = 0;
   private callbacks: { [cbIndex: number]: Function } = {}; // dict with key = cbIndex and callback function
+  private streamStr: string = "";
 
   constructor() {
     this.ipc.config.id = 'visu_client';
@@ -72,19 +51,45 @@ export class IPCServer {
       });
 
       this.ipc.of.server.on('data', (data: any) => {
-        streamStr += data.toString();
+        this.streamStr += data.toString();
 
-        if(streamStr.endsWith("\n")) {
+        if(this.streamStr.endsWith("\n")) {
           // streamStr could have multiple messages, thus try to split on line endings and loop
-          const strMessages: string[] = streamStr.split("\n");
+          const strMessages: string[] = this.streamStr.split("\n");
           strMessages.pop();
           for(let msg of strMessages) {
-            handleData(msg.slice(0));
+            this.handleResponse(msg.slice(0));
           }
-          streamStr = "";
+          this.streamStr = "";
         }
       });
     });
+  }
+
+  private handleResponse(msgStr: string) {
+    try {
+      const msg: any = JSON.parse(msgStr);
+      if(msg["type"] == "server.frame") {
+        // TODO: the parsing could have all sorts of missing fields or additional fields
+        //       Ideally this would be checked somehow, but for now... whatever
+        const frameData: IReduxWorld = parseWorldObj(msg["data"]);
+        store.dispatch(updateWorld(frameData));
+      }
+      else if(msg["type"] == "server.callback") {
+        // Callback for some request, search for callback in the callback list and execute
+        const cbIndex: number = msg["cbIndex"];
+        if (cbIndex in this.callbacks) {
+          this.callbacks[cbIndex](msg["data"]);
+        }
+      }
+      else {
+        console.log("Unkown server message: " + msg["type"]);
+      }
+    }
+    catch (e) {
+      console.log(e);
+      console.log(msgStr);
+    }
   }
 
   public sendMessage(type: string, msg: any = "", cb: Function = null) {
