@@ -7,7 +7,7 @@ import { updateWorld, resetWorld } from '../redux/world/actions'
 
 let streamStr: string = "";
 
-function updateFrame(msgStr: string) {
+function handleData(msgStr: string) {
   try {
     const msg: any = JSON.parse(msgStr);
     if(msg["type"] == "server.frame") {
@@ -15,6 +15,9 @@ function updateFrame(msgStr: string) {
       //       Ideally this would be checked somehow, but for now... whatever
       const frameData: IReduxWorld = parseWorldObj(msg["data"]);
       store.dispatch(updateWorld(frameData));
+    }
+    else if(msg["type"] == "server.callback") {
+      // Callback for some request, search for callback in the callback list and execute
     }
     else {
       console.log("Unkown server message: " + msg["type"]);
@@ -28,12 +31,16 @@ function updateFrame(msgStr: string) {
 
 export class IPCServer {
   private ipc = new IPC();
+  private cbCounter: number = 0;
+  private callbacks: { [cbIndex: number]: Function } = {}; // dict with key = cbIndex and callback function
 
   constructor() {
     this.ipc.config.id = 'visu_client';
     this.ipc.config.silent = true;
     this.ipc.config.retry = 2000; // time between reconnects in [ms]
     this.ipc.config.rawBuffer = true;
+
+    this.callbacks = {};
 
     this.start();
   }
@@ -72,7 +79,7 @@ export class IPCServer {
           const strMessages: string[] = streamStr.split("\n");
           strMessages.pop();
           for(let msg of strMessages) {
-            updateFrame(msg.slice(0));
+            handleData(msg.slice(0));
           }
           streamStr = "";
         }
@@ -80,16 +87,25 @@ export class IPCServer {
     });
   }
 
-  public sendMessage(type: string, msg: any = "") {
+  public sendMessage(type: string, msg: any = "", cb: Function = null) {
+    this.cbCounter++;
     if (store.getState().connection.connected) {
       const jsonMsg: string = JSON.stringify({
         "type": "client." + type,
-        "data": msg
+        "data": msg,
+        "cbIndex": this.cbCounter,
       });
       this.ipc.of.server.emit(jsonMsg + "\n");
+      if (cb !== null) {
+        this.callbacks[this.cbCounter] = cb;
+      }
     }
     else {
       console.log("WARNING: trying to send message but there is no server connection!");
+    }
+
+    if (this.cbCounter > 500000) {
+      this.cbCounter = 0;
     }
   }
 }

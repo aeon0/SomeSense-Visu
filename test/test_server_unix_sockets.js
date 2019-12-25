@@ -6,6 +6,8 @@ const FRAME_LENGTH = 50; // in [ms] -> 20fps
 let sentFirstFrame = false;
 let sockets = {};
 let frame = 0;
+let stepForward = false;
+let stepBackward = false;
 
 let frameData = {
   tracks: [
@@ -72,11 +74,11 @@ ipc.serve("/tmp/unix-socket", () => {
     }
     else if(jsonObj["type"] == "client.step_forward") {
       console.log("Client: Step forward");
-      
+      stepForward = true;
     }
     else if(jsonObj["type"] == "client.step_backward") {
       console.log("Client: Step backward");
-
+      stepBackward = true;
     }
     else if(jsonObj["type"] == "client.jump_to_ts") {
       const ts = jsonObj["data"];
@@ -97,10 +99,13 @@ ipc.server.start()
 const runServer = async _ => {
   while (true) {
     // Send data to each socket (stop in case there is no client to serve)
-    if((Object.keys(sockets).length > 0 && frameData.isPlaying) || !sentFirstFrame) {
+    if((Object.keys(sockets).length > 0 && frameData.isPlaying) || !sentFirstFrame || stepForward || stepBackward) {
       sentFirstFrame = true;
-      frame++;
-      if(frame >= 30) frame = 1; // There are only 30 frames for the video data
+      stepForward = false;
+      if (stepBackward) frame--;
+      else frame++;
+      stepBackward = false;
+      if(frame >= 30 || frame <= 0) frame = 1; // There are only 30 frames for the video data
       frameData.timestamp = Math.floor((frame - 1) * 50 * 1000);
       
       // Change 2D Object
