@@ -7,11 +7,12 @@ import { store } from './redux/store'
 import { Overlay } from './overlay'
 import { World } from './world3D/world'
 import { snackbarQueue } from './snackbar_queue'
-import { StartIPC } from './com/unix_sockets'
+import { IPCServer } from './com/unix_sockets'
 
 
 // Connect to server
-StartIPC();
+const ipcServer = new IPCServer();
+ipcServer.start();
 
 const MainWrapper = styled.div`
   all: inherit;

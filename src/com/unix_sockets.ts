@@ -26,50 +26,55 @@ function updateFrame(msgStr: string) {
   }
 }
 
-export function StartIPC() {
-  const ipc = new IPC();
-  ipc.config.id = 'visu_client';
-  ipc.config.silent = true;
-  ipc.config.retry = 2000; // time between reconnects in ms#
-  ipc.config.rawBuffer = true;
+export class IPCServer {
+  private ipc = new IPC();
 
-  store.dispatch(setConnecting());
+  constructor() {
+    this.ipc.config.id = 'visu_client';
+    this.ipc.config.silent = true;
+    this.ipc.config.retry = 2000; // time between reconnects in [ms]
+    this.ipc.config.rawBuffer = true;
+  }
 
-  console.log("Start Connection to server...");
+  public start() {
+    store.dispatch(setConnecting());
 
-  ipc.connectTo('server', '/tmp/unix-socket', () => {
-    ipc.of.server.on('connect', () => {
+    console.log("Start Connection to server...");
+
+    this.ipc.connectTo('server', '/tmp/unix-socket', () => {
+      this.ipc.of.server.on('connect', () => {
         console.log("## connected to server ##");
         store.dispatch(setConnected());
 
         const registerMsg: string = JSON.stringify({
           "type": "client.register",
           "data": {
-            "id": ipc.config.id
+            "id": this.ipc.config.id
           }
         });
-        ipc.of.server.emit(registerMsg + "\n");
-    });
+        this.ipc.of.server.emit(registerMsg + "\n");
+      });
 
-    ipc.of.server.on('disconnect', () => {
-      // Retry connecting
-      store.dispatch(setConnecting());
-      store.dispatch(resetWorld());
-      ipc.log('## disconnected from server ##');
-    });
+      this.ipc.of.server.on('disconnect', () => {
+        // Retry connecting
+        store.dispatch(setConnecting());
+        store.dispatch(resetWorld());
+        this.ipc.log('## disconnected from server ##');
+      });
 
-    ipc.of.server.on('data', (data: any) => {
-      streamStr += data.toString();
+      this.ipc.of.server.on('data', (data: any) => {
+        streamStr += data.toString();
 
-      if(streamStr.endsWith("\n")) {
-        // streamStr could have multiple messages, thus try to split on line endings and loop
-        const strMessages: string[] = streamStr.split("\n");
-        strMessages.pop();
-        for(let msg of strMessages) {
-          updateFrame(msg.slice(0));
+        if(streamStr.endsWith("\n")) {
+          // streamStr could have multiple messages, thus try to split on line endings and loop
+          const strMessages: string[] = streamStr.split("\n");
+          strMessages.pop();
+          for(let msg of strMessages) {
+            updateFrame(msg.slice(0));
+          }
+          streamStr = "";
         }
-        streamStr = "";
-      }
+      });
     });
-  });
+  }
 }
