@@ -80,6 +80,7 @@ export class IPCServer {
         const cbIndex: number = msg["cbIndex"];
         if (cbIndex in this.callbacks) {
           this.callbacks[cbIndex](msg["data"]);
+          delete this.callbacks[cbIndex];
         }
       }
       else {
@@ -93,17 +94,18 @@ export class IPCServer {
   }
 
   public sendMessage(type: string, msg: any = "", cb: Function = null) {
-    this.cbCounter++;
     if (store.getState().connection.connected) {
+      let cbIndex = -1;
+      if (cb !== null) {
+        cbIndex = this.cbCounter++;
+        this.callbacks[cbIndex] = cb;
+      }
       const jsonMsg: string = JSON.stringify({
         "type": "client." + type,
         "data": msg,
-        "cbIndex": this.cbCounter,
+        "cbIndex": cbIndex
       });
       this.ipc.of.server.emit(jsonMsg + "\n");
-      if (cb !== null) {
-        this.callbacks[this.cbCounter] = cb;
-      }
     }
     else {
       console.log("WARNING: trying to send message but there is no server connection!");
