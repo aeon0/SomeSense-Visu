@@ -36,5 +36,6 @@ export interface IReduxWorld {
   sensors: ISensor[];
   timestamp: number; // timestamp of the algo [us]
   isRecording: boolean; // true if provided data is based on a recording
-  recLength: number; // [us], only filled if isRecording is true
+  // only filled if isRecording is true
+  recLength: number; // [us]
 }

@@ -5,6 +5,7 @@ import { IReduxWorld } from '../redux/world/types'
 import { Slider } from '@rmwc/slider'
 import { IconButton } from '@rmwc/icon-button'
 import { ThemeProvider } from '@rmwc/theme'
+import { IPCServer } from '../com/unix_sockets';
 
 
 const Container = styled.div`
@@ -55,28 +56,39 @@ function usToTime(durationUs: number) {
 }
 
 export function RecordingControls(props: any) {
-  const dispatch = useDispatch();
   const world: IReduxWorld = props.world;
+  const ipcServer: IPCServer = props.ipcServer;
 
-  const [value, setValue] = React.useState(0);
+  const dispatch = useDispatch();
+
+  const [playerTs, setPlayerTs] = React.useState(world.timestamp);
   const [play, setPlay] = React.useState(false);
+
+  // Update timestamp from props
+  React.useEffect(() => { setPlayerTs(world.timestamp); }, [world.timestamp]);
 
   return <Container>
     <ButtonContainer>
       <IconButtonS icon="keyboard_arrow_left" label="Step Back" disabled={play}
-        onClick={() => {console.log("Step Back")}}
+        onClick={() => ipcServer.sendMessage("step_backward")}
       />
       {play?
         <IconButtonS icon="pause" label="Pause"
-          onClick={() => setPlay(false)}
+          onClick={() => {
+            ipcServer.sendMessage("pause_rec");
+            setPlay(false);
+          }}
         />
       :
         <IconButtonS icon="play_arrow" label="Play"
-          onClick={() => setPlay(true)}
+          onClick={() => {
+            ipcServer.sendMessage("play_rec");
+            setPlay(true);
+          }}
         />
       }
       <IconButtonS icon="keyboard_arrow_right" label="Step Forward" disabled={play}
-        onClick={() => {console.log("Step Forward")}}
+        onClick={() => ipcServer.sendMessage("step_forward")}
       />
     </ButtonContainer>
 
@@ -88,15 +100,23 @@ export function RecordingControls(props: any) {
     >
       <SliderContainer>
         <SliderS
-          value={value}
-          onChange={evt => setValue(evt.detail.value)}
-          onInput={evt => setValue(evt.detail.value)}
+          value={playerTs}
+          onChange={evt => {
+            ipcServer.sendMessage("jump_to_ts", Math.floor(evt.detail.value));
+          }}
+          onInput={evt => {
+            if (play) {
+              ipcServer.sendMessage("pause_rec");
+              setPlay(false);
+            }
+            setPlayerTs(Math.floor(evt.detail.value));
+          }}
           min={0}
           max={world.recLength}
         />
       </SliderContainer>
     </ThemeProvider>
 
-    <InfoBox>{usToTime(world.timestamp)} [{world.timestamp} us]</InfoBox>
+    <InfoBox>{usToTime(playerTs)} [{playerTs} us]</InfoBox>
   </Container>
 }

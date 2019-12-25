@@ -6,6 +6,7 @@ import { ConnectionSetting } from './connection_setting'
 import { RecordingControls } from './recording_controls'
 import { useSelector } from 'react-redux'
 import { IReduxWorld } from '../redux/world/types';
+import { IPCServer } from '../com/unix_sockets';
 
 
 const OverlayWrapper = styled.div`
@@ -16,7 +17,9 @@ const OverlayWrapper = styled.div`
   pointer-events: none;
 `
 
-export function Overlay() {
+export function Overlay(props: any) {
+  const ipcServer: IPCServer = props.ipcServer;
+
   const world: IReduxWorld = useSelector((store: any) => store.world);
 
   return <OverlayWrapper>
@@ -24,7 +27,7 @@ export function Overlay() {
     <SelectPerspective />
     <ConnectionSetting />
     {world && world.isRecording &&
-      <RecordingControls world={world} />
+      <RecordingControls world={world} ipcServer={ipcServer}/>
     }
   </OverlayWrapper>
 }

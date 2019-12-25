@@ -1,7 +1,11 @@
 const ipc = require('../node_modules/node-ipc');
 const fs = require('fs');
 
-const FRAME_LENGTH = 50; // in [ms]
+const FRAME_LENGTH = 50; // in [ms] -> 20fps
+
+let sentFirstFrame = false;
+let sockets = {};
+let frame = 0;
 
 let frameData = {
   tracks: [
@@ -39,10 +43,8 @@ let frameData = {
   timestamp: null,
   isRecording: true,
   recLength: Math.floor(30*FRAME_LENGTH*1000), // test video has 30 frames * FRAME_LENGTH * 1000 to get us
+  isPlaying: false,
 };
-
-var sockets = {};
-var frame = 0;
 
 ipc.config.id = 'server';
 ipc.config.rawBuffer=true;
@@ -57,6 +59,30 @@ ipc.serve("/tmp/unix-socket", () => {
     jsonObj = JSON.parse(data.toString());
     if(jsonObj["type"] == "client.register") {
       sockets[jsonObj["data"]["id"]] = socket;
+      console.log("Client Registred");
+      sentFirstFrame = false;
+    }
+    else if(jsonObj["type"] == "client.play_rec") {
+      console.log("Client: Play recording");
+      frameData.isPlaying = true;
+    }
+    else if(jsonObj["type"] == "client.pause_rec") {
+      console.log("Client: Pause recording");
+      frameData.isPlaying = false;
+    }
+    else if(jsonObj["type"] == "client.step_forward") {
+      console.log("Client: Step forward");
+      
+    }
+    else if(jsonObj["type"] == "client.step_backward") {
+      console.log("Client: Step backward");
+
+    }
+    else if(jsonObj["type"] == "client.jump_to_ts") {
+      const ts = jsonObj["data"];
+      console.log("Client: Jump to ts: " + ts);
+      frame = Math.floor(ts / (50 * 1000)) - 1;
+      console.log("new frame: " + frame);
     }
     else {
       console.log("Unkown request from client: " + jsonObj["type"]);
@@ -71,10 +97,11 @@ ipc.server.start()
 const runServer = async _ => {
   while (true) {
     // Send data to each socket (stop in case there is no client to serve)
-    if(Object.keys(sockets).length > 0) {
+    if((Object.keys(sockets).length > 0 && frameData.isPlaying) || !sentFirstFrame) {
+      sentFirstFrame = true;
       frame++;
       if(frame >= 30) frame = 1; // There are only 30 frames for the video data
-      frameData.timestamp = Math.floor((frame - 1) * 1000);
+      frameData.timestamp = Math.floor((frame - 1) * 50 * 1000);
       
       // Change 2D Object
       frameData.tracks[0].position[0] += 0.1;
@@ -104,19 +131,24 @@ const runServer = async _ => {
       let imgPath = "00000" + frame.toString();
       imgPath = "../assets/sample_video_frames/" + imgPath.substring(imgPath.length - 6) + ".jpg";
 
-      const binaryImg = fs.readFileSync(imgPath);
-      const base64Img = "data:image/jpeg;base64," + new Buffer.from(binaryImg).toString('base64');
-
-      // Currently expect only one sensor
-      frameData.sensors[0].imageBase64 = base64Img;
-      const msg = JSON.stringify({
-        "type": "server.frame",
-        "data": frameData
-      });
-
-      for (const key of Object.keys(sockets)) {
-        ipc.server.emit(sockets[key], msg + "\n");
+      try {
+        const binaryImg = fs.readFileSync(imgPath);
+        const base64Img = "data:image/jpeg;base64," + new Buffer.from(binaryImg).toString('base64');
+  
+        // Currently expect only one sensor
+        frameData.sensors[0].imageBase64 = base64Img;
+        const msg = JSON.stringify({
+          "type": "server.frame",
+          "data": frameData
+        });
+  
+        for (const key of Object.keys(sockets)) {
+          ipc.server.emit(sockets[key], msg + "\n");
+        }
+      } catch (err) {
+        console.log(err);
       }
+
     }
     await Sleep(FRAME_LENGTH); // Test with 20 fps (50ms per frame)
   }

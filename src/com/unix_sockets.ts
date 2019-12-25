@@ -34,9 +34,11 @@ export class IPCServer {
     this.ipc.config.silent = true;
     this.ipc.config.retry = 2000; // time between reconnects in [ms]
     this.ipc.config.rawBuffer = true;
+
+    this.start();
   }
 
-  public start() {
+  private start() {
     store.dispatch(setConnecting());
 
     console.log("Start Connection to server...");
@@ -76,5 +78,18 @@ export class IPCServer {
         }
       });
     });
+  }
+
+  public sendMessage(type: string, msg: any = "") {
+    if (store.getState().connection.connected) {
+      const jsonMsg: string = JSON.stringify({
+        "type": "client." + type,
+        "data": msg
+      });
+      this.ipc.of.server.emit(jsonMsg + "\n");
+    }
+    else {
+      console.log("WARNING: trying to send message but there is no server connection!");
+    }
   }
 }

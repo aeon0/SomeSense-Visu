@@ -12,7 +12,6 @@ import { IPCServer } from './com/unix_sockets'
 
 // Connect to server
 const ipcServer = new IPCServer();
-ipcServer.start();
 
 const MainWrapper = styled.div`
   all: inherit;
@@ -34,7 +33,7 @@ function App() {
   }, []);
 
   return <MainWrapper>
-    <Overlay />
+    <Overlay ipcServer={ipcServer}/>
     <CanvasS id="world" />
 
     <FixedCanvas id="front_cam_img" />
