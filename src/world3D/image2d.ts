@@ -1,5 +1,4 @@
 import { StandardMaterial, Color3, Scene, Mesh, MeshBuilder, Vector3, DynamicTexture } from 'babylonjs'
-import * as GUI from 'babylonjs-gui'
 import { EPerspectiveTypes } from '../redux/perspective/reducer'
 import { CameraSensor } from './sensors/camera_sensor'
 
@@ -46,7 +45,7 @@ export class Image2D {
     this.image3DMesh.setEnabled(isEnabled);
   }
 
-  public update(perspective: EPerspectiveTypes, imageBase64: string = null): void {
+  public update(perspective: EPerspectiveTypes, imageBase64: string = null, isRecording: boolean = false): void {
     if (perspective !== this.perspective) {
       this.perspective = perspective;
       if (this.perspective !== EPerspectiveTypes.IMAGE_2D) {
@@ -75,10 +74,16 @@ export class Image2D {
           const screenHeight = this.scene.getEngine().getRenderingCanvas().height;
           const imgOffset = screenHeight * 0.02;
 
-          this.canvas2D.height = screenWidth * 0.135;
+          this.canvas2D.height = screenWidth * 0.125;
           this.canvas2D.width = this.canvas2D.height * this.camSensor.getRatio();
           this.canvas2D.style.left = (screenWidth - this.canvas2D.width - imgOffset) + "px";
-          this.canvas2D.style.top = (screenHeight - this.canvas2D.height - imgOffset) + "px";
+          if (isRecording) {
+            // If its a recording we dont want it to overlap with the recording controls
+            this.canvas2D.style.top = (screenHeight - this.canvas2D.height - imgOffset - 135) + "px";
+          }
+          else {
+            this.canvas2D.style.top = (screenHeight - this.canvas2D.height - imgOffset) + "px";
+          }
 
           const ctx: any = this.canvas2D.getContext("2d");
           ctx.drawImage(img, 0, 0, this.canvas2D.width, this.canvas2D.height);

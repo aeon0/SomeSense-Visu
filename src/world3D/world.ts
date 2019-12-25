@@ -66,13 +66,18 @@ export class World {
 
   public run(): void {
     this.engine.runRenderLoop(() => {
+      const perspective = store.getState().perspective.type;
+      this.egoVehicle.update(perspective);
+      this.camera.update(perspective);
+
       const worldData: IReduxWorld = store.getState().world;
-      let imageBase64 = null;
       // Currently just expect to only have one cam sensor and access directly with [0]
       if (worldData) {
-        imageBase64 = (' ' + worldData.sensors[0].imageBase64).slice(1); // force copy of image
+        let imageBase64 = (' ' + worldData.sensors[0].imageBase64).slice(1); // force copy of image
+        this.image2D.update(perspective, imageBase64, worldData.isRecording);
+    
         this.timestamp = worldData.timestamp;
-        
+
         // In case current cam sensor differs from received one, update
         const sensorData: ISensor = worldData.sensors[0];
         const camSensor = new CameraSensor(
@@ -91,12 +96,6 @@ export class World {
 
         this.trackManager.update(worldData.tracks);
       }
-
-      // Update scene
-      const perspective = store.getState().perspective.type;
-      this.egoVehicle.update(perspective);
-      this.camera.update(perspective);
-      this.image2D.update(perspective, imageBase64);
 
       this.scene.render();
     });
