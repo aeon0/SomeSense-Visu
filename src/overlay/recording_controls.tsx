@@ -62,10 +62,11 @@ export function RecordingControls(props: any) {
   const dispatch = useDispatch();
 
   const [playerTs, setPlayerTs] = React.useState(world.timestamp);
-  const [play, setPlay] = React.useState(false);
+  const [play, setPlay] = React.useState(world.isPlaying);
 
   // Update timestamp from props
   React.useEffect(() => { setPlayerTs(world.timestamp); }, [world.timestamp]);
+  React.useEffect(() => { setPlay(world.isPlaying); console.log(world.isPlaying); }, [world.isPlaying]);
 
   return <Container>
     <ButtonContainer>

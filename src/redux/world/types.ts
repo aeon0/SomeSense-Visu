@@ -38,4 +38,5 @@ export interface IReduxWorld {
   isRecording: boolean; // true if provided data is based on a recording
   // only filled if isRecording is true
   recLength: number; // [us]
+  isPlaying: boolean;
 }
