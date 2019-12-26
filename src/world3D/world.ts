@@ -72,7 +72,7 @@ export class World {
 
       const worldData: IReduxWorld = store.getState().world;
       // Currently just expect to only have one cam sensor and access directly with [0]
-      if (worldData) {
+      if (worldData && worldData.sensors.length > 0) {
         let imageBase64 = (' ' + worldData.sensors[0].imageBase64).slice(1); // force copy of image
         this.image2D.update(perspective, imageBase64, worldData.isRecording);
     
