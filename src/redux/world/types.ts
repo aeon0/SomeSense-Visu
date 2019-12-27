@@ -38,5 +38,6 @@ export interface IReduxWorld {
   isRecording: boolean; // true if provided data is based on a recording
   // only filled if isRecording is true
   recLength: number; // [us]
-  isPlaying: boolean;
+  isPlaying: boolean; // indicates if currently a recording is playing (false if pausing)
+  isStoring: boolean; // indicates if currently the frames a stored
 }

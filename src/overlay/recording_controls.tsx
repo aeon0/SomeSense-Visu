@@ -1,11 +1,10 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import { useDispatch } from 'react-redux'
 import { IReduxWorld } from '../redux/world/types'
 import { Slider } from '@rmwc/slider'
 import { IconButton } from '@rmwc/icon-button'
 import { ThemeProvider } from '@rmwc/theme'
-import { IPCServer } from '../com/unix_sockets';
+import { IPCServer } from '../com/unix_sockets'
 
 
 const Container = styled.div`
@@ -59,14 +58,12 @@ export function RecordingControls(props: any) {
   const world: IReduxWorld = props.world;
   const ipcServer: IPCServer = props.ipcServer;
 
-  const dispatch = useDispatch();
-
   const [playerTs, setPlayerTs] = React.useState(world.timestamp);
   const [play, setPlay] = React.useState(world.isPlaying);
 
   // Update timestamp from props
   React.useEffect(() => { setPlayerTs(world.timestamp); }, [world.timestamp]);
-  React.useEffect(() => { setPlay(world.isPlaying); console.log(world.isPlaying); }, [world.isPlaying]);
+  React.useEffect(() => { setPlay(world.isPlaying); }, [world.isPlaying]);
 
   return <Container>
     <ButtonContainer>

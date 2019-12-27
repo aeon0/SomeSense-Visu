@@ -82,7 +82,7 @@ export class Image2D {
             this.canvas2D.style.top = (screenHeight - this.canvas2D.height - imgOffset - 135) + "px";
           }
           else {
-            this.canvas2D.style.top = (screenHeight - this.canvas2D.height - imgOffset) + "px";
+            this.canvas2D.style.top = (screenHeight - this.canvas2D.height - imgOffset - 70) + "px";
           }
 
           const ctx: any = this.canvas2D.getContext("2d");

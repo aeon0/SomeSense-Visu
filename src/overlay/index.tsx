@@ -4,9 +4,10 @@ import { SettingsMenu } from './settings_menu'
 import { SelectPerspective } from './select_perspective'
 import { ConnectionSetting } from './connection_setting'
 import { RecordingControls } from './recording_controls'
+import { LiveControls } from './live_controls'
 import { useSelector } from 'react-redux'
-import { IReduxWorld } from '../redux/world/types';
-import { IPCServer } from '../com/unix_sockets';
+import { IReduxWorld } from '../redux/world/types'
+import { IPCServer } from '../com/unix_sockets'
 
 
 const OverlayWrapper = styled.div`
@@ -27,7 +28,10 @@ export function Overlay(props: any) {
     <SelectPerspective />
     <ConnectionSetting />
     {world && world.isRecording &&
-      <RecordingControls world={world} ipcServer={ipcServer}/>
+      <RecordingControls world={world} ipcServer={ipcServer} />
+    }
+    {world && !world.isRecording &&
+      <LiveControls world={world} ipcServer={ipcServer} />
     }
   </OverlayWrapper>
 }
