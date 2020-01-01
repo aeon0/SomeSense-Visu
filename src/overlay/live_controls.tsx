@@ -2,7 +2,7 @@ import * as React from 'react'
 import styled, { keyframes } from 'styled-components'
 import { IReduxWorld } from '../redux/world/types'
 import { IconButton } from '@rmwc/icon-button'
-import { IPCServer } from '../com/unix_sockets'
+import { IPCServer } from '../com/tcp_sockets'
 
 
 const Container = styled.div`

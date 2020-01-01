@@ -18,7 +18,8 @@ export class IPCServer {
     this.ipc.config.silent = true;
     this.ipc.config.retry = 2000; // time between reconnects in [ms]
     this.ipc.config.rawBuffer = true;
-
+    this.ipc.config.networkHost = "127.0.0.1";
+    this.ipc.config.networkPort = 8999;
     this.callbacks = {};
 
     this.start();
@@ -29,7 +30,10 @@ export class IPCServer {
 
     console.log("Start Connection to server...");
 
-    this.ipc.connectTo('server', '/tmp/unix-socket', () => {
+    console.log(this.ipc.config.networkHost);
+    console.log(this.ipc.config.networkPort);
+
+    this.ipc.connectToNet('server', () => {
       this.ipc.of.server.on('connect', () => {
         console.log("## connected to server ##");
         store.dispatch(setConnected());

@@ -51,12 +51,13 @@ let frameData = {
 ipc.config.id = 'server';
 ipc.config.rawBuffer=true;
 ipc.config.silent=true;
+ipc.config.networkPort=8999;
 
 function Sleep(milliseconds) {
   return new Promise(resolve => setTimeout(resolve, milliseconds));
 }
 
-ipc.serve("/tmp/unix-socket", () => {
+ipc.serveNet(() => {
   ipc.server.on('data', (data, socket) => {
     jsonObj = JSON.parse(data.toString());
     if(jsonObj["type"] == "client.register") {

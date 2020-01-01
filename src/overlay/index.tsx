@@ -7,7 +7,7 @@ import { RecordingControls } from './recording_controls'
 import { LiveControls } from './live_controls'
 import { useSelector } from 'react-redux'
 import { IReduxWorld } from '../redux/world/types'
-import { IPCServer } from '../com/unix_sockets'
+import { IPCServer } from '../com/tcp_sockets'
 
 
 const OverlayWrapper = styled.div`

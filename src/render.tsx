@@ -7,7 +7,7 @@ import { store } from './redux/store'
 import { Overlay } from './overlay'
 import { World } from './world3D/world'
 import { snackbarQueue } from './snackbar_queue'
-import { IPCServer } from './com/unix_sockets'
+import { IPCServer } from './com/tcp_sockets'
 
 
 // Connect to server

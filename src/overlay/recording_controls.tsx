@@ -4,7 +4,7 @@ import { IReduxWorld } from '../redux/world/types'
 import { Slider } from '@rmwc/slider'
 import { IconButton } from '@rmwc/icon-button'
 import { ThemeProvider } from '@rmwc/theme'
-import { IPCServer } from '../com/unix_sockets'
+import { IPCServer } from '../com/tcp_sockets'
 
 
 const Container = styled.div`
