@@ -57,9 +57,9 @@ function Sleep(milliseconds) {
   return new Promise(resolve => setTimeout(resolve, milliseconds));
 }
 
-console.log(os.networkInterfaces());
+// console.log(os.networkInterfaces());
 
-ipc.serveNet("10.42.0.1", 8999, () => {
+ipc.serveNet("10.42.0.18", 8999, () => {
   ipc.server.on('data', (data, socket) => {
     jsonObj = JSON.parse(data.toString());
     if(jsonObj["type"] == "client.register") {
