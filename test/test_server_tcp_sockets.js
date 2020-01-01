@@ -1,5 +1,6 @@
 const ipc = require('../node_modules/node-ipc');
 const fs = require('fs');
+const os = require('os');
 
 const FRAME_LENGTH = 50; // in [ms] -> 20fps
 
@@ -51,13 +52,14 @@ let frameData = {
 ipc.config.id = 'server';
 ipc.config.rawBuffer=true;
 ipc.config.silent=true;
-ipc.config.networkPort=8999;
 
 function Sleep(milliseconds) {
   return new Promise(resolve => setTimeout(resolve, milliseconds));
 }
 
-ipc.serveNet(() => {
+console.log(os.networkInterfaces());
+
+ipc.serveNet("10.42.0.1", 8999, () => {
   ipc.server.on('data', (data, socket) => {
     jsonObj = JSON.parse(data.toString());
     if(jsonObj["type"] == "client.register") {
