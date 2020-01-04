@@ -15,7 +15,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
-    "postinstall": "electron-builder install-app-deps"
+    "postinstall": "rm -rf node_modules/@types/react-native && electron-builder install-app-deps"
   },
   "build": {
     "appId": "visu.id",
@@ -51,10 +51,10 @@
     "@types/react-dom": "^16.9.3",
     "@types/react-redux": "^7.1.5",
     "@types/styled-components": "4.1.8",
-    "electron": "^7.0.1",
+    "electron": "^7.1.7",
     "electron-builder": "^22.1.0",
     "electron-devtools-installer": "^2.2.4",
     "node-sass": "^4.13.0",
-    "typescript": "^3.6.4"
+    "typescript": "3.6.4"
   }
 }
