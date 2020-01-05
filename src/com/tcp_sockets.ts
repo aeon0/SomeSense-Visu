@@ -6,7 +6,7 @@ import { setConnecting, setConnected } from '../redux/connection/actions'
 import { updateWorld, resetWorld } from '../redux/world/actions'
 
 
-// Inter Process Communication via Unix Sockets, currently only supports only one data source (one server)
+// Inter Process Communication via TCP Sockets
 export class IPCServer {
   private ipc = new IPC();
   private cbCounter: number = 0;
@@ -18,7 +18,11 @@ export class IPCServer {
     this.ipc.config.silent = true;
     this.ipc.config.retry = 2000; // time between reconnects in [ms]
     this.ipc.config.rawBuffer = true;
-    this.ipc.config.networkHost = "10.42.0.18";
+
+    // Use localhost in case server is on same machine, ip in case algo is running on another machine
+    this.ipc.config.networkHost = "localhost";
+    // this.ipc.config.networkHost = "10.42.0.18";
+
     this.ipc.config.networkPort = 8999;
     this.callbacks = {};
 
@@ -34,14 +38,7 @@ export class IPCServer {
       this.ipc.of.server.on('connect', () => {
         console.log("## connected to server ##");
         store.dispatch(setConnected());
-
-        const registerMsg: string = JSON.stringify({
-          "type": "client.register",
-          "data": {
-            "id": this.ipc.config.id
-          }
-        });
-        this.ipc.of.server.emit(registerMsg + "\n");
+        this.sendMessage("register", { "id": this.ipc.config.id });
       });
 
       this.ipc.of.server.on('disconnect', () => {
@@ -85,12 +82,13 @@ export class IPCServer {
         }
       }
       else {
-        console.log("Unkown server message: " + msg["type"]);
+        console.log("WARNING: Unkown server message: " + msg["type"]);
       }
     }
     catch (e) {
-      console.log(e);
+      console.log("WARNING: Error with server msg:");
       console.log(msgStr);
+      // console.log(e);
     }
   }
 
