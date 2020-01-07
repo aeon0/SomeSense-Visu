@@ -1,11 +1,13 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
+import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 import { SnackbarQueue } from '@rmwc/snackbar'
 import { Provider } from 'react-redux'
 import { store } from './redux/store'
 import { Overlay } from './overlay'
 import { World } from './world3D/world'
+import { RuntimeMeas } from './runtime_meas'
 import { snackbarQueue } from './snackbar_queue'
 import { IPCServer } from './com/tcp_sockets'
 
@@ -32,11 +34,20 @@ function App() {
     world.run();
   }, []);
 
+  const showRuntimeMeas: boolean = useSelector((store: any) => store.runtimeMeas.show);
+
+  console.log(showRuntimeMeas);
+
   return <MainWrapper>
     <Overlay ipcServer={ipcServer}/>
-    <CanvasS id="world" />
 
-    <FixedCanvas id="front_cam_img" />
+    {showRuntimeMeas &&
+      <RuntimeMeas />
+    }
+    <React.Fragment>
+      <CanvasS id="world" />
+      <FixedCanvas id="front_cam_img" />
+    </React.Fragment>
 
     <SnackbarQueue
       messages={snackbarQueue.messages}

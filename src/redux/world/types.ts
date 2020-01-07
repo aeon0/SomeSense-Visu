@@ -31,9 +31,16 @@ export interface ISensor {
   timestamp: number, // timestamp of the image [us]
 }
 
+export interface IRuntimeMeas {
+  name: string;
+  start: number; // start timestamp in [us]
+  duration: number; // duration in [ms]
+}
+
 export interface IReduxWorld {
   tracks: ITrack[];
   sensors: ISensor[];
+  runtimeMeas: IRuntimeMeas[];
   timestamp: number; // timestamp of the algo [us]
   isRecording: boolean; // true if provided data is based on a recording
   // only filled if isRecording is true

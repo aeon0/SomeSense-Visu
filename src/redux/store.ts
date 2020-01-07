@@ -3,6 +3,7 @@ import { combineReducers } from 'redux'
 import perspective from './perspective/reducer'
 import connection from './connection/reducer'
 import world from './world/reducer'
+import runtimeMeas from './runtime_meas/reducer'
 
 
 declare global { interface Window { __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: typeof compose; } }
@@ -13,6 +14,7 @@ export const store = createStore(
     perspective,
     connection,
     world,
+    runtimeMeas,
   }),
   composeEnhancers(),
 );
