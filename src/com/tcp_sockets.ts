@@ -9,6 +9,10 @@ import { updateSensorStorage, resetSensorStorage } from '../redux/sensor_storage
 import { ISensorData } from '../redux/sensor_storage/types'
 
 
+enum Reading {
+  HEADER = 0,
+  PAYLOAD
+}
 const HEADERSIZE: number = 20;
 
 // Inter Process Communication via TCP Sockets
@@ -19,8 +23,8 @@ export class IPCServer {
 
   private currPayload: Uint8Array;
   private currHeader = new Uint8Array(HEADERSIZE);
-  private payloadBytesToRead: number = 0;
-  private headerBytesToRead: number = HEADERSIZE;
+  private bytesToRead: number = HEADERSIZE;
+  private reading = Reading.HEADER;
 
   constructor() {
     this.ipc.config.id = 'visu_client';
@@ -56,8 +60,8 @@ export class IPCServer {
         store.dispatch(setConnecting());
         store.dispatch(resetWorld());
         store.dispatch(resetSensorStorage());
-        this.headerBytesToRead = HEADERSIZE;
-        this.payloadBytesToRead = 0;
+        this.bytesToRead = HEADERSIZE;
+        this.reading = Reading.HEADER;
         console.log('## disconnected from server ##');
       });
 
@@ -65,54 +69,45 @@ export class IPCServer {
         let readIdx: number = 0; // Idx in data which we currently want to read (including the readIdx)
         while (readIdx < (data.length - 1)) {
           const bytesLeft: number = data.length - readIdx;
-          if (this.headerBytesToRead > 0) {
-            // Check if we can read everything and adjust headerByteToRead
-            const readNextFrame = Math.max(0, this.headerBytesToRead - bytesLeft);
-            const readDataNow = this.headerBytesToRead - readNextFrame;
+
+          if (this.bytesToRead > 0) {
+            // Check if we can read everything and adjust this.bytesToRead if needed
+            const readNextFrame = Math.max(0, this.bytesToRead - bytesLeft);
+            const readDataNow = this.bytesToRead - readNextFrame;
 
             // Read header from data
             const dataStart = readIdx;
             const dataEnd = readIdx + readDataNow;
-            const headerOffset = HEADERSIZE - this.headerBytesToRead;
-            this.currHeader.set(data.slice(dataStart, dataEnd), headerOffset);
+            if (this.reading == Reading.HEADER) {
+              const offset = HEADERSIZE - this.bytesToRead;
+              this.currHeader.set(data.slice(dataStart, dataEnd), offset);
+            }
+            else if (this.reading == Reading.PAYLOAD) {
+              const offset = this.currPayload.length - this.bytesToRead;
+              this.currPayload.set(data.slice(dataStart, dataEnd), offset);
+            }
             readIdx = dataEnd;
 
-            // In case we need to read some frames from the next frame
-            this.headerBytesToRead = readNextFrame;
+            // In case we need to read some bytes from the next frame
+            this.bytesToRead = readNextFrame;
 
-            // In case header is read completely -> read size of payload
-            if (this.headerBytesToRead == 0) {
-              if (this.currHeader[0] != 0x0F) {
-                console.log("WARNING: Wrong msg start byte, msg properly corrupted");
+            // In case header is read completely
+            if (this.bytesToRead == 0) {
+              if (this.reading == Reading.HEADER) {
+                if (this.currHeader[0] != 0x0F) {
+                  console.log("WARNING: Wrong msg start byte, msg properly corrupted");
+                }
+                this.bytesToRead = (this.currHeader[1] << 24) + (this.currHeader[2] << 16) + (this.currHeader[3] << 8) + this.currHeader[4];
+                this.currPayload = new Uint8Array(this.bytesToRead);
+                this.reading = Reading.PAYLOAD;
+                // console.log("Payload Size [Byte]: " + this.currPayload.length);
               }
-              this.payloadBytesToRead = (this.currHeader[1] << 24) + (this.currHeader[2] << 16) + (this.currHeader[3] << 8) + this.currHeader[4];
-              this.currPayload = new Uint8Array(this.payloadBytesToRead);
-              // console.log("Payload Size [Byte]: " + this.currPayload.length);
+              else if (this.reading == Reading.PAYLOAD) {
+                this.bytesToRead = HEADERSIZE;
+                this.reading = Reading.HEADER;
+                this.handleMsg();
+              }
             }
-          }
-          else if (this.payloadBytesToRead > 0) {
-            // Check if we can read everything and adjust payloadByteToRead
-            const readNextFrame = Math.max(0, this.payloadBytesToRead - bytesLeft);
-            const readDataNow = this.payloadBytesToRead - readNextFrame;
-
-            // Read payload from data
-            const dataStart = readIdx;
-            const dataEnd = readIdx + readDataNow;
-            const payloadOffset = this.currPayload.length - this.payloadBytesToRead;
-            this.currPayload.set(data.slice(dataStart, dataEnd), payloadOffset);
-            readIdx = dataEnd;
-
-            // In case we need to read some frames from the next frame
-            this.payloadBytesToRead = readNextFrame;
-
-            if (this.payloadBytesToRead == 0) {
-              this.headerBytesToRead = HEADERSIZE;
-              this.handleMsg();
-            }
-          }
-          else {
-            console.log("WARINING: readIdx is not at end, but no more bytes are to read...");
-            break;
           }
         }
       });
@@ -188,7 +183,6 @@ export class IPCServer {
       }
       const rawBuf: RawImageData<Buffer> = { width, height, data: frameData };
       const jpgImg = encode(rawBuf, 50);
-      console.log(jpgImg.data);
       const imageBase64: string = 'data:image/jpeg;base64,' + jpgImg.data.toString('base64');
 
       let sensorData: ISensorData = { idx, ts, width, height, channels, imageBase64 };
