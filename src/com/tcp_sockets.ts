@@ -5,15 +5,18 @@ import { parseWorldObj } from '../redux/world/parse'
 import { setConnecting, setConnected } from '../redux/connection/actions'
 import { updateWorld, resetWorld } from '../redux/world/actions'
 
+const HEADERSIZE: number = 20;
 
 // Inter Process Communication via TCP Sockets
 export class IPCServer {
   private ipc = new IPC();
   private cbCounter: number = 0;
   private callbacks: { [cbIndex: number]: Function } = {}; // dict with key = cbIndex and callback function
-  private streamStr: string = "";
-  private streamData: Buffer;
-  private bytesToRead: number = 0;
+
+  private currPayload: Uint8Array;
+  private currHeader = new Uint8Array(HEADERSIZE);
+  private payloadBytesToRead: number = 0;
+  private headerBytesToRead: number = HEADERSIZE;
 
   constructor() {
     this.ipc.config.id = 'visu_client';
@@ -52,41 +55,85 @@ export class IPCServer {
       });
 
       this.ipc.of.server.on('data', (data: any) => {
-        console.log(data);
+        let readIdx: number = 0; // Idx in data which we currently want to read (including the readIdx)
+        while (readIdx < (data.length - 1)) {
+          const bytesLeft: number = data.length - readIdx;
+          if (this.headerBytesToRead > 0) {
+            console.log("Reading Header...");
+            
+            // Check if we can read everything and adjust headerByteToRead
+            const readNextFrame = Math.max(0, this.headerBytesToRead - bytesLeft);
+            const readDataNow = this.headerBytesToRead - readNextFrame;
+            this.headerBytesToRead = readNextFrame;
 
-        // if (this.bytesToRead == 0) {
-        //   // New message
-        //   if (data[0] == 0x0F) {
-        //     console.log("Read new msg...");
-        //     const type: number = data[5];
-        //     console.log(data[4] + ", " + data[3] + ", " + data[2] + ", " + data[1]);
-        //     var test = new Int32Array([data[1], data[2], data[3], data[4]]);
-        //     console.log(test[0]);
-        //   }
-        //   else {
-        //     console.log("WARNING: Wrong msg start byte, not reading msg");
-        //   }
-        // }
-        // else {
-        //   // There are some bytes left to read from a previous message
-        // }
+            // Read header from data
+            const dataStart = readIdx;
+            const dataEnd = readIdx + readDataNow;
+            const headerOffset = HEADERSIZE - readDataNow;
+            this.currHeader.set(data.slice(dataStart, dataEnd), headerOffset);
+            readIdx = dataEnd;
 
-        // this.streamStr += data.toString();
+            // In case we need to read some frames from the next frame
+            this.headerBytesToRead = readNextFrame;
 
-        // if(this.streamStr.endsWith("\n")) {
-        //   // streamStr could have multiple messages, thus try to split on line endings and loop
-        //   const strMessages: string[] = this.streamStr.split("\n");
-        //   strMessages.pop();
-        //   for(let msg of strMessages) {
-        //     this.handleResponse(msg.slice(0));
-        //   }
-        //   this.streamStr = "";
-        // }
+            // In case header is read completely -> read size of payload
+            if (this.headerBytesToRead == 0) {
+              console.log("Finished reading header");
+              if (this.currHeader[0] != 0x0F) {
+                console.log("WARNING: Wrong msg start byte, msg properly corrupted");
+              }
+              this.payloadBytesToRead = (data[1] << 24) + (data[2] << 16) + (data[3] << 8) + data[4];
+              this.currPayload = new Uint8Array(this.payloadBytesToRead);
+            }
+          }
+          else if (this.payloadBytesToRead > 0) {
+            console.log("Reading Payload...");
+
+            // Check if we can read everything and adjust payloadByteToRead
+            const readNextFrame = Math.max(0, this.payloadBytesToRead - bytesLeft);
+            const readDataNow = this.payloadBytesToRead - readNextFrame;
+            this.payloadBytesToRead = readNextFrame;
+
+            // Read payload from data
+            const dataStart = readIdx;
+            const dataEnd = readIdx + readDataNow;
+            const payloadOffset = this.currPayload.length - readDataNow;
+            this.currPayload.set(data.slice(dataStart, dataEnd), payloadOffset);
+            readIdx = dataEnd;
+
+            if (this.payloadBytesToRead == 0) {
+              console.log("Finished reading payload");
+              this.headerBytesToRead = HEADERSIZE;
+              this.handleMsg();
+            }
+          }
+          else {
+            console.log("WARINING: readIdx is not at end, but no more bytes are to read...");
+            break;
+          }
+        }
+        console.log("--- Frame End ---");
       });
     });
   }
 
-  private handleResponse(msgStr: string) {
+  private handleMsg() {
+    // First lets copy header and payload
+    const header = this.currHeader.slice(0);
+    const payload = this.currPayload.slice(0);
+
+    const type: number = header[5];
+    if (type == 1) {
+      // Json message
+      const msgStr: string = new TextDecoder("utf-8").decode(payload);
+      this.handleJsonMsg(msgStr);
+    }
+    else {
+      console.log("WARNING: Unkown message type " + type);
+    }
+  }
+
+  private handleJsonMsg(msgStr: string) {
     try {
       const msg: any = JSON.parse(msgStr);
       if(msg["type"] == "server.frame") {
