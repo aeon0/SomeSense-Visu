@@ -23,6 +23,8 @@ export interface ITrack {
 }
 
 export interface ISensor {
+  idx: number;
+  key: string;
   position: Vector3; // [m]
   rotation: Vector3; // pitch, yaw, roll in [rad]
   fovHorizontal: number, // [rad]

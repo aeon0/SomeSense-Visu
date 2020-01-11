@@ -37,7 +37,6 @@ let frameData = {
     {
       position: [0, 1.2, -0.5],
       rotation: [0, 0, 0],
-      imageBase64: null,
       fovHorizontal: (1/2)*Math.PI,
       fovVertical: (1/4)*Math.PI,
       timestamp: null,
@@ -141,10 +140,9 @@ const runServer = async _ => {
 
       try {
         const binaryImg = fs.readFileSync(imgPath);
-        const base64Img = "data:image/jpeg;base64," + new Buffer.from(binaryImg).toString('base64');
+        // TODO: get img in raw format and send it over the wire
   
         // Currently expect only one sensor
-        frameData.sensors[0].imageBase64 = base64Img;
         const msg = JSON.stringify({
           "type": "server.frame",
           "data": frameData

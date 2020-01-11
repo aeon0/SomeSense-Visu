@@ -11,8 +11,9 @@ export function parseWorldObj(worldObj: any) : IReduxWorld {
     let sensor = worldObj.sensors[i];
     sensor.position = toVec3(sensor.position);
     sensor.rotation = toVec3(sensor.rotation);
+    sensor.imageBase64 = ""; // will be filled from the sensor storage seperatly
   }
-  
+
   // Convert tracks
   for(let i = 0; i < worldObj.tracks.length; ++i) {
     let track = worldObj.tracks[i];

@@ -43,4 +43,3 @@ ssh jodo@10.42.0.18
 - How to add this "debug" data the best way?
 - Performance monitoring: Adding to Visu? Or seperate programm? For now better to add cause then only one data communication. C++ measure system + how to store the measurements + how to visualize?
 - Make CSI Cam work again...
-- How to send images quickly to the client? Resize + Encoding + Base64 takes quite some time :/

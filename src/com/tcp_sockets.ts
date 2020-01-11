@@ -4,6 +4,9 @@ import { IReduxWorld } from '../redux/world/types'
 import { parseWorldObj } from '../redux/world/parse'
 import { setConnecting, setConnected } from '../redux/connection/actions'
 import { updateWorld, resetWorld } from '../redux/world/actions'
+import { updateSensorStorage, resetSensorStorage } from '../redux/sensor_storage/actions'
+import { ISensorData } from '../redux/sensor_storage/types'
+
 
 const HEADERSIZE: number = 20;
 
@@ -51,6 +54,7 @@ export class IPCServer {
         // Retry connecting
         store.dispatch(setConnecting());
         store.dispatch(resetWorld());
+        store.dispatch(resetSensorStorage());
         this.headerBytesToRead = HEADERSIZE;
         this.payloadBytesToRead = 0;
         console.log('## disconnected from server ##');
@@ -64,12 +68,11 @@ export class IPCServer {
             // Check if we can read everything and adjust headerByteToRead
             const readNextFrame = Math.max(0, this.headerBytesToRead - bytesLeft);
             const readDataNow = this.headerBytesToRead - readNextFrame;
-            this.headerBytesToRead = readNextFrame;
 
             // Read header from data
             const dataStart = readIdx;
             const dataEnd = readIdx + readDataNow;
-            const headerOffset = HEADERSIZE - readDataNow;
+            const headerOffset = HEADERSIZE - this.headerBytesToRead;
             this.currHeader.set(data.slice(dataStart, dataEnd), headerOffset);
             readIdx = dataEnd;
 
@@ -90,14 +93,16 @@ export class IPCServer {
             // Check if we can read everything and adjust payloadByteToRead
             const readNextFrame = Math.max(0, this.payloadBytesToRead - bytesLeft);
             const readDataNow = this.payloadBytesToRead - readNextFrame;
-            this.payloadBytesToRead = readNextFrame;
 
             // Read payload from data
             const dataStart = readIdx;
             const dataEnd = readIdx + readDataNow;
-            const payloadOffset = this.currPayload.length - readDataNow;
+            const payloadOffset = this.currPayload.length - this.payloadBytesToRead;
             this.currPayload.set(data.slice(dataStart, dataEnd), payloadOffset);
             readIdx = dataEnd;
+
+            // In case we need to read some frames from the next frame
+            this.payloadBytesToRead = readNextFrame;
 
             if (this.payloadBytesToRead == 0) {
               this.headerBytesToRead = HEADERSIZE;
@@ -119,41 +124,51 @@ export class IPCServer {
     const payload = this.currPayload.slice(0);
 
     const type: number = header[5];
-    if (type == 1) {
-      // Json message
+    if (type == 1) { // Json message
       const msgStr: string = new TextDecoder("utf-8").decode(payload);
-      this.handleJsonMsg(msgStr);
+      try {
+        const msg: any = JSON.parse(msgStr);
+        if(msg["type"] == "server.frame") {
+          // TODO: the parsing could have all sorts of missing fields or additional fields
+          //       Ideally this would be checked somehow, but for now... whatever
+          const frameData: IReduxWorld = parseWorldObj(msg["data"]);
+          store.dispatch(updateWorld(frameData));
+        }
+        else if(msg["type"] == "server.callback") {
+          // Callback for some request, search for callback in the callback list and execute
+          const cbIndex: number = msg["cbIndex"];
+          if (cbIndex in this.callbacks) {
+            this.callbacks[cbIndex](msg["data"]);
+            delete this.callbacks[cbIndex];
+          }
+        }
+        else {
+          console.log("WARNING: Unkown server message: " + msg["type"]);
+        }
+      }
+      catch (e) {
+        console.log("WARNING: Error with json server msg:");
+        console.log(msgStr);
+        // console.log(e);
+      }
+    }
+    else if (type == 16) { // Raw image
+      // width [6-7], height [8-9], channels [10]
+      const width: number = (header[6] << 8) + header[7];
+      const height: number = (header[8] << 8) + header[9];
+      const channels: number = header[10];
+      // timestamp [11-18], could be used to show delta time to data which is visualized
+      const ts: number = (header[11] << 54) + (header[12] << 46) + (header[13] << 38) + (header[14] << 32) +
+                         (header[15] << 24) + (header[16] << 16) + (header[17] << 8) + header[18];
+      
+      // sensor idx [19]
+      const idx: number = header[19];
+
+      let sensorData: ISensorData = { idx, ts, width, height, channels, rawImg: payload, imageBase64: ""};
+      store.dispatch(updateSensorStorage(sensorData));
     }
     else {
       console.log("WARNING: Unkown message type " + type);
-    }
-  }
-
-  private handleJsonMsg(msgStr: string) {
-    try {
-      const msg: any = JSON.parse(msgStr);
-      if(msg["type"] == "server.frame") {
-        // TODO: the parsing could have all sorts of missing fields or additional fields
-        //       Ideally this would be checked somehow, but for now... whatever
-        const frameData: IReduxWorld = parseWorldObj(msg["data"]);
-        store.dispatch(updateWorld(frameData));
-      }
-      else if(msg["type"] == "server.callback") {
-        // Callback for some request, search for callback in the callback list and execute
-        const cbIndex: number = msg["cbIndex"];
-        if (cbIndex in this.callbacks) {
-          this.callbacks[cbIndex](msg["data"]);
-          delete this.callbacks[cbIndex];
-        }
-      }
-      else {
-        console.log("WARNING: Unkown server message: " + msg["type"]);
-      }
-    }
-    catch (e) {
-      console.log("WARNING: Error with server msg:");
-      console.log(msgStr);
-      // console.log(e);
     }
   }
 

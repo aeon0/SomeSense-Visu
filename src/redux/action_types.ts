@@ -14,4 +14,8 @@ export enum EReduxActionTypes {
   // runtime meas
   SHOW_RUNTIME_MEAS = "SHOW_RUNTIME_MEAS",
   HIDE_RUNTIME_MEAS = "HIDE_RUNTIME_MEAS",
+
+  // sensor_storage
+  UPDATE_SENSOR_DATA = "UPDATE_SENSOR_DATA",
+  RESET_SENSOR_STORAGE = "RESET_SENSOR_STORAGE",
 }
