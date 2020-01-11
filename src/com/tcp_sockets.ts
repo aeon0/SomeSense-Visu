@@ -51,7 +51,9 @@ export class IPCServer {
         // Retry connecting
         store.dispatch(setConnecting());
         store.dispatch(resetWorld());
-        this.ipc.log('## disconnected from server ##');
+        this.headerBytesToRead = HEADERSIZE;
+        this.payloadBytesToRead = 0;
+        console.log('## disconnected from server ##');
       });
 
       this.ipc.of.server.on('data', (data: any) => {
@@ -59,8 +61,6 @@ export class IPCServer {
         while (readIdx < (data.length - 1)) {
           const bytesLeft: number = data.length - readIdx;
           if (this.headerBytesToRead > 0) {
-            console.log("Reading Header...");
-            
             // Check if we can read everything and adjust headerByteToRead
             const readNextFrame = Math.max(0, this.headerBytesToRead - bytesLeft);
             const readDataNow = this.headerBytesToRead - readNextFrame;
@@ -78,17 +78,15 @@ export class IPCServer {
 
             // In case header is read completely -> read size of payload
             if (this.headerBytesToRead == 0) {
-              console.log("Finished reading header");
               if (this.currHeader[0] != 0x0F) {
                 console.log("WARNING: Wrong msg start byte, msg properly corrupted");
               }
-              this.payloadBytesToRead = (data[1] << 24) + (data[2] << 16) + (data[3] << 8) + data[4];
+              this.payloadBytesToRead = (this.currHeader[1] << 24) + (this.currHeader[2] << 16) + (this.currHeader[3] << 8) + this.currHeader[4];
               this.currPayload = new Uint8Array(this.payloadBytesToRead);
+              // console.log("Payload Size [Byte]: " + this.currPayload.length);
             }
           }
           else if (this.payloadBytesToRead > 0) {
-            console.log("Reading Payload...");
-
             // Check if we can read everything and adjust payloadByteToRead
             const readNextFrame = Math.max(0, this.payloadBytesToRead - bytesLeft);
             const readDataNow = this.payloadBytesToRead - readNextFrame;
@@ -102,7 +100,6 @@ export class IPCServer {
             readIdx = dataEnd;
 
             if (this.payloadBytesToRead == 0) {
-              console.log("Finished reading payload");
               this.headerBytesToRead = HEADERSIZE;
               this.handleMsg();
             }
@@ -112,7 +109,6 @@ export class IPCServer {
             break;
           }
         }
-        console.log("--- Frame End ---");
       });
     });
   }
