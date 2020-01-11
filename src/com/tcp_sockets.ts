@@ -12,16 +12,19 @@ export class IPCServer {
   private cbCounter: number = 0;
   private callbacks: { [cbIndex: number]: Function } = {}; // dict with key = cbIndex and callback function
   private streamStr: string = "";
+  private streamData: Buffer;
+  private bytesToRead: number = 0;
 
   constructor() {
     this.ipc.config.id = 'visu_client';
     this.ipc.config.silent = true;
     this.ipc.config.retry = 2000; // time between reconnects in [ms]
     this.ipc.config.rawBuffer = true;
+    this.ipc.config.encoding = "hex";
 
     // Use localhost in case server is on same machine, ip in case algo is running on another machine
     this.ipc.config.networkHost = "localhost";
-    // this.ipc.config.networkHost = "10.42.0.18";
+    // this.ipc.config.networkHost = "10.42.0.81";
 
     this.ipc.config.networkPort = 8999;
     this.callbacks = {};
@@ -49,17 +52,36 @@ export class IPCServer {
       });
 
       this.ipc.of.server.on('data', (data: any) => {
-        this.streamStr += data.toString();
+        console.log(data);
 
-        if(this.streamStr.endsWith("\n")) {
-          // streamStr could have multiple messages, thus try to split on line endings and loop
-          const strMessages: string[] = this.streamStr.split("\n");
-          strMessages.pop();
-          for(let msg of strMessages) {
-            this.handleResponse(msg.slice(0));
-          }
-          this.streamStr = "";
-        }
+        // if (this.bytesToRead == 0) {
+        //   // New message
+        //   if (data[0] == 0x0F) {
+        //     console.log("Read new msg...");
+        //     const type: number = data[5];
+        //     console.log(data[4] + ", " + data[3] + ", " + data[2] + ", " + data[1]);
+        //     var test = new Int32Array([data[1], data[2], data[3], data[4]]);
+        //     console.log(test[0]);
+        //   }
+        //   else {
+        //     console.log("WARNING: Wrong msg start byte, not reading msg");
+        //   }
+        // }
+        // else {
+        //   // There are some bytes left to read from a previous message
+        // }
+
+        // this.streamStr += data.toString();
+
+        // if(this.streamStr.endsWith("\n")) {
+        //   // streamStr could have multiple messages, thus try to split on line endings and loop
+        //   const strMessages: string[] = this.streamStr.split("\n");
+        //   strMessages.pop();
+        //   for(let msg of strMessages) {
+        //     this.handleResponse(msg.slice(0));
+        //   }
+        //   this.streamStr = "";
+        // }
       });
     });
   }
