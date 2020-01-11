@@ -133,7 +133,14 @@ export class IPCServer {
           // TODO: the parsing could have all sorts of missing fields or additional fields
           //       Ideally this would be checked somehow, but for now... whatever
           const frameData: IReduxWorld = parseWorldObj(msg["data"]);
-          // TODO: match images from the sensor storage to the sensor meta data of the frameData
+          // Match images from the sensor storage to the sensor meta data of the frameData
+          for (let sensor of frameData.sensors) {
+            for (let data of store.getState().sensorStorage) {
+              if (sensor.idx == data.idx) {
+                sensor.imageBase64 = data.imageBase64;
+              }
+            }
+          }
           store.dispatch(updateWorld(frameData));
         }
         else if(msg["type"] == "server.callback") {
@@ -162,14 +169,27 @@ export class IPCServer {
       // timestamp [11-18], could be used to show delta time to data which is visualized
       const ts: number = (header[11] << 54) + (header[12] << 46) + (header[13] << 38) + (header[14] << 32) +
                          (header[15] << 24) + (header[16] << 16) + (header[17] << 8) + header[18];
-      
+
       // sensor idx [19]
       const idx: number = header[19];
 
       // Convert raw buffer to base64 string
-      const rawBuf: RawImageData<Uint8Array> = { width, height, data: payload };
+      var frameData = new Buffer(width * height * 4);
+      var i = 0;
+      var x = 0;
+      while (i < frameData.length) {
+        const b = payload[x++];
+        const g = payload[x++];
+        const r = payload[x++];
+        frameData[i++] = r; // red
+        frameData[i++] = g; // green
+        frameData[i++] = b; // blue
+        frameData[i++] = 0xFF; // alpha - ignored in JPEGs
+      }
+      const rawBuf: RawImageData<Buffer> = { width, height, data: frameData };
       const jpgImg = encode(rawBuf, 50);
-      const imageBase64: string = 'data:image/jpeg;base64,' + jpgImg.data.toString();
+      console.log(jpgImg.data);
+      const imageBase64: string = 'data:image/jpeg;base64,' + jpgImg.data.toString('base64');
 
       let sensorData: ISensorData = { idx, ts, width, height, channels, imageBase64 };
       store.dispatch(updateSensorStorage(sensorData));
