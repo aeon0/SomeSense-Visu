@@ -6,7 +6,6 @@ export default function(state: ISensorData[] = [], action: any) {
     case EReduxActionTypes.UPDATE_SENSOR_DATA:
       // action.data: ISensorData
       let found = false;
-      console.log(action.data);
       for (let i = 0; i < state.length; ++i) {
         if (action.data.idx == state[i].idx) {
           state[i] = action.data;
@@ -17,7 +16,6 @@ export default function(state: ISensorData[] = [], action: any) {
       if (!found) {
         state.push(action.data);
       }
-      console.log(state[0].rawImg);
       return state;
     case EReduxActionTypes.RESET_SENSOR_STORAGE:
       return [];

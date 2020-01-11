@@ -4,6 +4,5 @@ export interface ISensorData {
   width: number;
   height: number;
   channels: number;
-  rawImg: Uint8Array;
   imageBase64: string;
 }

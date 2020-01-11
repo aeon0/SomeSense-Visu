@@ -1,4 +1,5 @@
 import { IPC } from 'node-ipc'
+import { encode, RawImageData } from 'jpeg-js'
 import { store } from '../redux/store'
 import { IReduxWorld } from '../redux/world/types'
 import { parseWorldObj } from '../redux/world/parse'
@@ -132,6 +133,7 @@ export class IPCServer {
           // TODO: the parsing could have all sorts of missing fields or additional fields
           //       Ideally this would be checked somehow, but for now... whatever
           const frameData: IReduxWorld = parseWorldObj(msg["data"]);
+          // TODO: match images from the sensor storage to the sensor meta data of the frameData
           store.dispatch(updateWorld(frameData));
         }
         else if(msg["type"] == "server.callback") {
@@ -164,7 +166,12 @@ export class IPCServer {
       // sensor idx [19]
       const idx: number = header[19];
 
-      let sensorData: ISensorData = { idx, ts, width, height, channels, rawImg: payload, imageBase64: ""};
+      // Convert raw buffer to base64 string
+      const rawBuf: RawImageData<Uint8Array> = { width, height, data: payload };
+      const jpgImg = encode(rawBuf, 50);
+      const imageBase64: string = 'data:image/jpeg;base64,' + jpgImg.data.toString();
+
+      let sensorData: ISensorData = { idx, ts, width, height, channels, imageBase64 };
       store.dispatch(updateSensorStorage(sensorData));
     }
     else {
