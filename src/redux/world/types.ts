@@ -22,7 +22,7 @@ export interface ITrack {
   ttc: number; // [s]
 }
 
-export interface ISensor {
+export interface ICamSensor {
   idx: number;
   key: string;
   position: Vector3; // [m]
@@ -41,9 +41,12 @@ export interface IRuntimeMeas {
 
 export interface IReduxWorld {
   tracks: ITrack[];
-  sensors: ISensor[];
+  camSensors: ICamSensor[];
   runtimeMeas: IRuntimeMeas[];
   timestamp: number; // timestamp of the algo [us]
+  frameCount: number;
+
+
   isRecording: boolean; // true if provided data is based on a recording
   // only filled if isRecording is true
   recLength: number; // [us]

@@ -129,7 +129,7 @@ export class IPCServer {
           //       Ideally this would be checked somehow, but for now... whatever
           const frameData: IReduxWorld = parseWorldObj(msg["data"]);
           // Match images from the sensor storage to the sensor meta data of the frameData
-          for (let sensor of frameData.sensors) {
+          for (let sensor of frameData.camSensors) {
             for (let data of store.getState().sensorStorage) {
               if (sensor.idx == data.idx) {
                 sensor.imageBase64 = data.imageBase64;

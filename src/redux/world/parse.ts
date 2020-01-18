@@ -7,8 +7,8 @@ const toVec3 = (data: any) : Vector3 => new Vector3(data[0], data[1], data[2]);
 
 export function parseWorldObj(worldObj: any) : IReduxWorld {
   // Convert Sensor Data
-  for (let i = 0; i < worldObj.sensors.length; ++i) {
-    let sensor = worldObj.sensors[i];
+  for (let i = 0; i < worldObj.camSensors.length; ++i) {
+    let sensor = worldObj.camSensors[i];
     sensor.position = toVec3(sensor.position);
     sensor.rotation = toVec3(sensor.rotation);
     sensor.imageBase64 = ""; // will be filled from the sensor storage seperatly
