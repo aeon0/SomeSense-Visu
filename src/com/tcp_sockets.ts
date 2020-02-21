@@ -172,9 +172,6 @@ export class IPCServer {
               }
             }
           }
-          
-          console.log("Got ctrlDatA: ");
-          console.log(ctrlData);
 
           store.dispatch(updateWorld(frameData));
           store.dispatch(updateCtrlData(ctrlData));
