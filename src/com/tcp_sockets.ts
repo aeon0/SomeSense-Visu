@@ -127,7 +127,7 @@ export class IPCServer {
             if (this.bytesToRead == 0) {
               if (this.reading == Reading.HEADER) {
                 if (this.currHeader[0] != 0x0F) {
-                  console.log("WARNING: Wrong msg start byte, msg properly corrupted");
+                  console.log("WARNING: Wrong msg start byte, msg properly corrupted. App / Connection probably needs a restart.");
                 }
                 this.bytesToRead = (this.currHeader[1] << 24) + (this.currHeader[2] << 16) + (this.currHeader[3] << 8) + this.currHeader[4];
                 this.currPayload = new Uint8Array(this.bytesToRead);
