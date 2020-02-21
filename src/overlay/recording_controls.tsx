@@ -1,6 +1,7 @@
 import * as React from 'react'
 import styled from 'styled-components'
 import { IReduxWorld } from '../redux/world/types'
+import { ICtrlData } from '../redux/ctrl_data/types'
 import { Slider } from '@rmwc/slider'
 import { IconButton } from '@rmwc/icon-button'
 import { ThemeProvider } from '@rmwc/theme'
@@ -56,14 +57,15 @@ function usToTime(durationUs: number) {
 
 export function RecordingControls(props: any) {
   const world: IReduxWorld = props.world;
+  const ctrlData: ICtrlData = props.ctrlData;
   const ipcServer: IPCServer = props.ipcServer;
 
   const [playerTs, setPlayerTs] = React.useState(world.timestamp);
-  const [play, setPlay] = React.useState(world.isPlaying);
+  const [play, setPlay] = React.useState(ctrlData.isPlaying);
 
   // Update timestamp from props
   React.useEffect(() => { setPlayerTs(world.timestamp); }, [world.timestamp]);
-  React.useEffect(() => { setPlay(world.isPlaying); }, [world.isPlaying]);
+  React.useEffect(() => { setPlay(ctrlData.isPlaying); }, [ctrlData.isPlaying]);
 
   return <Container>
     <ButtonContainer>
@@ -110,7 +112,7 @@ export function RecordingControls(props: any) {
             setPlayerTs(Math.floor(evt.detail.value));
           }}
           min={0}
-          max={world.recLength}
+          max={ctrlData.recLength}
         />
       </SliderContainer>
     </ThemeProvider>

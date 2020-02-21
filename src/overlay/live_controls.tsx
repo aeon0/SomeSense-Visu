@@ -1,6 +1,7 @@
 import * as React from 'react'
 import styled, { keyframes } from 'styled-components'
 import { IReduxWorld } from '../redux/world/types'
+import { ICtrlData } from '../redux/ctrl_data/types'
 import { IconButton } from '@rmwc/icon-button'
 import { IPCServer } from '../com/tcp_sockets'
 
@@ -63,14 +64,15 @@ function usToTime(durationUs: number) {
 
 export function LiveControls(props: any) {
   const world: IReduxWorld = props.world;
+  const ctrlData: ICtrlData = props.ctrlData;
   const ipcServer: IPCServer = props.ipcServer;
 
   const [playerTs, setPlayerTs] = React.useState(world.timestamp);
-  const [record, setRecord] = React.useState(world.isStoring);
+  const [record, setRecord] = React.useState(ctrlData.isStoring);
 
   // Update timestamp from props
   React.useEffect(() => { setPlayerTs(world.timestamp); }, [world.timestamp]);
-  React.useEffect(() => { setRecord(world.isStoring); }, [world.isStoring]);
+  React.useEffect(() => { setRecord(ctrlData.isStoring); }, [ctrlData.isStoring]);
 
   return <Container>
     <ButtonContainer>

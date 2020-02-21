@@ -11,6 +11,9 @@ export enum EReduxActionTypes {
   RESET_WORLD = "RESET_WORLD",
   UPDATE_WORLD = "UPDATE_WORLD",
 
+  // ctrl data
+  UPDATE_CTRL_DATA = "UPDATE_CTRL_DATA",
+
   // runtime meas
   SHOW_RUNTIME_MEAS = "SHOW_RUNTIME_MEAS",
   HIDE_RUNTIME_MEAS = "HIDE_RUNTIME_MEAS",
