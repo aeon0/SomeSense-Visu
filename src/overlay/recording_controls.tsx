@@ -102,6 +102,7 @@ export function RecordingControls(props: any) {
         <SliderS
           value={playerTs}
           onChange={evt => {
+            // TODO: somehow this is called twice
             ipcServer.sendMessage("jump_to_ts", Math.floor(evt.detail.value));
           }}
           onInput={evt => {
