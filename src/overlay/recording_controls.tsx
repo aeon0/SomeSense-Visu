@@ -66,11 +66,43 @@ export function RecordingControls(props: any) {
   // Update timestamp from props
   React.useEffect(() => {
     if (world.timestamp >= ctrlData.recLength) {
+      ipcServer.sendMessage("pause_rec");
       setPlay(false);
     }
     setPlayerTs(world.timestamp); 
   }, [world !== null ? world.timestamp : 0]);
   React.useEffect(() => { setPlay(ctrlData.isPlaying); }, [ctrlData.isPlaying]);
+
+  // Key handlers
+  React.useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      // TODO: When pressing backward or forward too fast, there is an error in the cpp code...
+      if (e.keyCode === 101) { // 5, numpad
+        if (play) {
+          ipcServer.sendMessage("pause_rec");
+          setPlay(false);
+        }
+        else {
+          ipcServer.sendMessage("play_rec");
+          setPlay(true);
+        }
+      }
+      else if (e.keyCode === 100) { // 4 (arrow left), numpad
+        if (!play) {
+          ipcServer.sendMessage("step_backward");
+        }
+      }
+      else if (e.keyCode === 102) { // 6 (arrow right), numpad
+        if (!play) {
+          ipcServer.sendMessage("step_forward");
+        }
+      }
+    }
+    document.addEventListener("keydown", handleKeyDown, false);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown, false);
+    }
+  })
 
   return <Container>
     <ButtonContainer>
