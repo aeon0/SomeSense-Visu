@@ -60,6 +60,7 @@ export class IPCServer {
   private currHeader = new Uint8Array(HEADERSIZE);
   private bytesToRead: number = HEADERSIZE;
   private reading = Reading.HEADER;
+  private isReadingPkg = false;
 
   constructor() {
     this.ipc.config.id = 'visu_client';
@@ -101,50 +102,64 @@ export class IPCServer {
       });
 
       this.ipc.of.server.on('data', (data: any) => {
-        let readIdx: number = 0; // Idx in data which we currently want to read (including the readIdx)
-        while (readIdx < (data.length - 1)) {
-          const bytesLeft: number = data.length - readIdx;
+        let currReadPos: number = 0; // current position of reading bytes of this package
+        if (this.isReadingPkg) {
+          console.log("WARNING: Still reading previous Message, dropping this package...");
+          return;
+        }
+        while (currReadPos != data.length) {
+          this.isReadingPkg = true;
+          if (currReadPos > data.length) {
+            console.log("WARNING: Well, this is akward. This should not happen. We have seen more bytes then the pkg length. Must be a bug.");
+            break;
+          }
 
-          if (this.bytesToRead > 0) {
-            // Check if we can read everything and adjust this.bytesToRead if needed
-            const readNextFrame = Math.max(0, this.bytesToRead - bytesLeft);
-            const readDataNow = this.bytesToRead - readNextFrame;
+          const pkgBytesLeft: number = data.length - currReadPos;
 
-            // Read header from data
-            const dataStart = readIdx;
-            const dataEnd = readIdx + readDataNow;
+          // In case the message did not fit in one package, we nee to read the remaining bytes from the next packages
+          const readNextFrame = Math.max(0, this.bytesToRead - pkgBytesLeft);
+          const readDataNow = this.bytesToRead - readNextFrame;
+
+          // Read header from data
+          const dataStart = currReadPos;
+          const dataEnd = currReadPos + readDataNow;
+          if (this.reading == Reading.HEADER) {
+            const offset = HEADERSIZE - this.bytesToRead;
+            this.currHeader.set(data.slice(dataStart, dataEnd), offset);
+          }
+          else if (this.reading == Reading.PAYLOAD) {
+            // In case a message was not finished with the previous package, we need to account for the offset
+            // Note: .slice() include the start idx, but not the end idx
+            const offset = this.currPayload.length - this.bytesToRead;
+            this.currPayload.set(data.slice(dataStart, dataEnd), offset);
+          }
+          currReadPos = dataEnd;
+
+          // In case we need to read some bytes from the next frame
+          this.bytesToRead = readNextFrame;
+
+          // In case either header or payload is done reading
+          if (this.bytesToRead == 0) {
             if (this.reading == Reading.HEADER) {
-              const offset = HEADERSIZE - this.bytesToRead;
-              this.currHeader.set(data.slice(dataStart, dataEnd), offset);
-            }
-            else if (this.reading == Reading.PAYLOAD) {
-              const offset = this.currPayload.length - this.bytesToRead;
-              this.currPayload.set(data.slice(dataStart, dataEnd), offset);
-            }
-            readIdx = dataEnd;
-
-            // In case we need to read some bytes from the next frame
-            this.bytesToRead = readNextFrame;
-
-            // In case header is read completely
-            if (this.bytesToRead == 0) {
-              if (this.reading == Reading.HEADER) {
-                if (this.currHeader[0] != 0x0F) {
-                  console.log("WARNING: Wrong msg start byte, msg properly corrupted. App / Connection probably needs a restart.");
-                }
-                this.bytesToRead = (this.currHeader[1] << 24) + (this.currHeader[2] << 16) + (this.currHeader[3] << 8) + this.currHeader[4];
-                this.currPayload = new Uint8Array(this.bytesToRead);
-                this.reading = Reading.PAYLOAD;
-                // console.log("Payload Size [Byte]: " + this.currPayload.length);
-              }
-              else if (this.reading == Reading.PAYLOAD) {
+              if (this.currHeader[0] != 0x0F) {
+                console.log("WARNING: Wrong msg start byte, msg properly corrupted. Drop Package and wait for new message start.");
                 this.bytesToRead = HEADERSIZE;
                 this.reading = Reading.HEADER;
-                this.handleMsg();
+                break;
               }
+              this.bytesToRead = (this.currHeader[1] << 24) + (this.currHeader[2] << 16) + (this.currHeader[3] << 8) + this.currHeader[4];
+              this.currPayload = new Uint8Array(this.bytesToRead);
+              this.reading = Reading.PAYLOAD;
+              // console.log("Payload Size [Byte]: " + this.currPayload.length);
+            }
+            else if (this.reading == Reading.PAYLOAD) {
+              this.bytesToRead = HEADERSIZE;
+              this.reading = Reading.HEADER;
+              this.handleMsg();
             }
           }
         }
+        this.isReadingPkg = false;
       });
     });
   }
