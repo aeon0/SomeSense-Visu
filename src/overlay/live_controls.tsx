@@ -63,8 +63,8 @@ function usToTime(durationUs: number) {
 }
 
 export function LiveControls(props: any) {
-  const world: IReduxWorld = props.world;
-  const ctrlData: ICtrlData = props.ctrlData;
+  const world: IReduxWorld = props.world;  // No null handling needed
+  const ctrlData: ICtrlData = props.ctrlData;  // No null handling needed
   const ipcServer: IPCServer = props.ipcServer;
 
   const [playerTs, setPlayerTs] = React.useState(world.timestamp);

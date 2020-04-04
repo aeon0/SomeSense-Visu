@@ -13,6 +13,7 @@ export enum EReduxActionTypes {
 
   // ctrl data
   UPDATE_CTRL_DATA = "UPDATE_CTRL_DATA",
+  RESET_CTRL_DATA = "RESET_CTRL_DATA",
 
   // runtime meas
   SHOW_RUNTIME_MEAS = "SHOW_RUNTIME_MEAS",

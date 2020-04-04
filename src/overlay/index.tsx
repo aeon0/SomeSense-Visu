@@ -24,15 +24,19 @@ export function Overlay(props: any) {
 
   const world: IReduxWorld = useSelector((store: any) => store.world);
   const ctrlData: ICtrlData = useSelector((store: any) => store.ctrlData);
+  const connected: string = useSelector((store: any) => store.connection.connected);
 
   return <OverlayWrapper>
     <SettingsMenu />
     <SelectPerspective />
     <ConnectionSetting />
-    {world && ctrlData.isARecording &&
+    
+    {/* world can be null in the recording case, has to be handled inside RecordingsControls */}
+    {connected && ctrlData && ctrlData.isARecording && 
       <RecordingControls world={world} ctrlData={ctrlData} ipcServer={ipcServer} />
     }
-    {world && !ctrlData.isARecording &&
+
+    {connected && world && ctrlData && !ctrlData.isARecording &&
       <LiveControls world={world} ctrlData={ctrlData} ipcServer={ipcServer} />
     }
   </OverlayWrapper>

@@ -7,7 +7,7 @@ import { ICtrlData } from '../redux/ctrl_data/types'
 import { parseCtrlData } from '../redux/ctrl_data/parse'
 import { setConnecting, setConnected } from '../redux/connection/actions'
 import { updateWorld, resetWorld } from '../redux/world/actions'
-import { updateCtrlData } from '../redux/ctrl_data/actions'
+import { updateCtrlData, resetCtrlData } from '../redux/ctrl_data/actions'
 import { updateSensorStorage, resetSensorStorage } from '../redux/sensor_storage/actions'
 import { ISensorData } from '../redux/sensor_storage/types'
 
@@ -95,6 +95,7 @@ export class IPCServer {
         // Retry connecting
         store.dispatch(setConnecting());
         store.dispatch(resetWorld());
+        store.dispatch(resetCtrlData());
         store.dispatch(resetSensorStorage());
         this.bytesToRead = HEADERSIZE;
         this.reading = Reading.HEADER;
@@ -177,19 +178,29 @@ export class IPCServer {
         if(msg["type"] == "server.frame") {
           // TODO: the parsing could have all sorts of missing fields or additional fields
           //       Ideally this would be checked somehow, but for now... whatever
-          const frameData: IReduxWorld = parseWorldObj(msg["data"]["frame"]);
-          const ctrlData: ICtrlData = parseCtrlData(msg["data"]["ctrlData"]);
-          // Match images from the sensor storage to the sensor meta data of the frameData
-          for (let sensor of frameData.camSensors) {
-            for (let data of store.getState().sensorStorage) {
-              if (sensor.idx == data.idx) {
-                sensor.imageBase64 = data.imageBase64;
+          if (msg["data"]["frame"] !== null) {
+            const frameData: IReduxWorld = parseWorldObj(msg["data"]["frame"]);
+            // Match images from the sensor storage to the sensor meta data of the frameData
+            for (let sensor of frameData.camSensors) {
+              for (let data of store.getState().sensorStorage) {
+                if (sensor.idx == data.idx) {
+                  sensor.imageBase64 = data.imageBase64;
+                }
               }
             }
+            store.dispatch(updateWorld(frameData));
+          }
+          else {
+            console.log("Warning: Frame is null");
           }
 
-          store.dispatch(updateWorld(frameData));
-          store.dispatch(updateCtrlData(ctrlData));
+          if (msg["data"]["ctrlData"] !== null) {
+            const ctrlData: ICtrlData = parseCtrlData(msg["data"]["ctrlData"]);
+            store.dispatch(updateCtrlData(ctrlData));
+          }
+          else {
+            console.log("Warning: CtrlData is null");
+          }
         }
         else if(msg["type"] == "server.callback") {
           // Callback for some request, search for callback in the callback list and execute

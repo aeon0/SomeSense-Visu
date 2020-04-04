@@ -8,3 +8,9 @@ export function updateCtrlData(ctrlData: ICtrlData) {
     ctrlData
   }
 }
+
+export function resetCtrlData() {
+  return {
+    type: EReduxActionTypes.RESET_CTRL_DATA,
+  }
+}
