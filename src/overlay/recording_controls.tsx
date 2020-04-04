@@ -64,9 +64,12 @@ export function RecordingControls(props: any) {
   const [play, setPlay] = React.useState(ctrlData.isPlaying);
 
   // Update timestamp from props
-  if (world !== null) {
-    React.useEffect(() => { setPlayerTs(world.timestamp); }, [world.timestamp]);
-  }
+  React.useEffect(() => {
+    if (world.timestamp >= ctrlData.recLength) {
+      setPlay(false);
+    }
+    setPlayerTs(world.timestamp); 
+  }, [world !== null ? world.timestamp : 0]);
   React.useEffect(() => { setPlay(ctrlData.isPlaying); }, [ctrlData.isPlaying]);
 
   return <Container>
@@ -74,15 +77,15 @@ export function RecordingControls(props: any) {
       <IconButtonS icon="keyboard_arrow_left" label="Step Back" disabled={play}
         onClick={() => ipcServer.sendMessage("step_backward")}
       />
-      {play?
-        <IconButtonS icon="pause" label="Pause"
+      {play ?
+        <IconButtonS icon="pause" label="Pause" disabled={playerTs >= ctrlData.recLength}
           onClick={() => {
             ipcServer.sendMessage("pause_rec");
             setPlay(false);
           }}
         />
       :
-        <IconButtonS icon="play_arrow" label="Play"
+        <IconButtonS icon="play_arrow" label="Play" disabled={playerTs >= ctrlData.recLength}
           onClick={() => {
             ipcServer.sendMessage("play_rec");
             setPlay(true);
@@ -106,13 +109,15 @@ export function RecordingControls(props: any) {
           onChange={evt => {
             // TODO: somehow this is called twice
             ipcServer.sendMessage("jump_to_ts", Math.floor(evt.detail.value));
+            const currTs = Math.floor(evt.detail.value);
           }}
           onInput={evt => {
             if (play) {
               ipcServer.sendMessage("pause_rec");
               setPlay(false);
             }
-            setPlayerTs(Math.floor(evt.detail.value));
+            const currTs = Math.floor(evt.detail.value);
+            setPlayerTs(currTs);
           }}
           min={0}
           max={ctrlData.recLength}
