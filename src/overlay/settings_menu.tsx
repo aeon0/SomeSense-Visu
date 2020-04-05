@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Fab } from '@rmwc/fab'
 import { MenuSurfaceAnchor, MenuSurface, MenuItem } from '@rmwc/menu'
 import { showRuntimeMeas, hideRuntimeMeas } from '../redux/runtime_meas/actions'
+import { ApplicationState } from '../redux/store'
+
 
 const MenuSurfaceAnchorS = styled(MenuSurfaceAnchor)`
   margin-top: 25px;
@@ -16,7 +18,7 @@ const MenuSurfaceAnchorS = styled(MenuSurfaceAnchor)`
 export function SettingsMenu() {
   const dispatch = useDispatch();
   const [openMenu, setOpenMenu] = React.useState(false);
-  const showRuntimeMeasFlag = useSelector((store: any) => store.runtimeMeas.show);
+  const showRuntimeMeasFlag = useSelector((store: ApplicationState) => store.runtimeMeas.show);
 
   return <React.Fragment>
     <MenuSurfaceAnchorS>

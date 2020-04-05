@@ -4,6 +4,7 @@ import { Select } from '@rmwc/select'
 import { useDispatch, useSelector } from 'react-redux'
 import { setPerspective } from '../redux/perspective/actions'
 import { EPerspectiveTypes } from "../redux/perspective/reducer"
+import { ApplicationState } from '../redux/store'
 
 
 const SelectS = styled(Select)`
@@ -16,7 +17,7 @@ const SelectS = styled(Select)`
 
 export function SelectPerspective() {
   const dispatch = useDispatch();
-  const perspective: string = useSelector((store: any) => store.perspective.type);
+  const perspective = useSelector((store: ApplicationState) => store.perspective.type);
   const perspectiveOptions: string[] = Object.entries(EPerspectiveTypes).map(entry => entry[1]);
 
   return <React.Fragment>

@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { useDispatch, useSelector } from 'react-redux'
 import { hideRuntimeMeas } from '../redux/runtime_meas/actions'
 import { IRuntimeMeas } from '../redux/world/types'
+import { ApplicationState } from '../redux/store'
 
 
 const WrapperDivS = styled.div`
@@ -22,9 +23,8 @@ const CloseBtnS = styled.span`
 export function RuntimeMeas(props: any) {
   const dispatch = useDispatch();
 
-  const frameTs: number = useSelector((store: any) => store.world.timestamp);
-  const runtimeMeas: IRuntimeMeas[] = useSelector((store: any) => store.world.runtimeMeas);
-  
+  const frameTs = useSelector((store: ApplicationState) => store.world.timestamp);
+  const runtimeMeas = useSelector((store: ApplicationState) => store.world.runtimeMeas);
 
   console.log(runtimeMeas);
 

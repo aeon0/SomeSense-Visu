@@ -5,6 +5,7 @@ import { Elevation } from '@rmwc/elevation'
 import { LinearProgress } from '@rmwc/linear-progress'
 import { useDispatch, useSelector } from 'react-redux'
 import { setConnecting } from '../redux/connection/actions'
+import { ApplicationState } from '../redux/store'
 
 
 const ButtonS = styled(Button)`
@@ -37,8 +38,8 @@ const LinearProgressS = styled(LinearProgress)`
 
 export function ConnectionSetting() {
   const dispatch = useDispatch();
-  const connected: string = useSelector((store: any) => store.connection.connected);
-  const connecting: string = useSelector((store: any) => store.connection.connecting);
+  const connected = useSelector((store: ApplicationState) => store.connection.connected);
+  const connecting = useSelector((store: ApplicationState) => store.connection.connecting);
 
   return <ContainerS>
     {!connected && !connecting &&

@@ -9,6 +9,7 @@ import { RuntimeMeas } from './runtime_meas'
 import { useSelector } from 'react-redux'
 import { IReduxWorld } from '../redux/world/types'
 import { ICtrlData } from '../redux/ctrl_data/reducer'
+import { ApplicationState } from '../redux/store'
 import { IPCServer } from '../com/tcp_sockets'
 
 
@@ -23,10 +24,10 @@ const OverlayWrapper = styled.div`
 export function Overlay(props: any) {
   const ipcServer: IPCServer = props.ipcServer;
 
-  const world: IReduxWorld = useSelector((store: any) => store.world);
-  const ctrlData: ICtrlData = useSelector((store: any) => store.ctrlData);
-  const connected: string = useSelector((store: any) => store.connection.connected);
-  const showRuntimeMeas: boolean = useSelector((store: any) => store.runtimeMeas.show);
+  const world = useSelector((store: ApplicationState) => store.world);
+  const ctrlData = useSelector((store: ApplicationState) => store.ctrlData);
+  const connected = useSelector((store: ApplicationState) => store.connection.connected);
+  const showRuntimeMeas = useSelector((store: ApplicationState) => store.runtimeMeas.show);
 
   return <OverlayWrapper>
     {showRuntimeMeas &&
