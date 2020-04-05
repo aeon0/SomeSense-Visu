@@ -5,7 +5,7 @@ import { CameraSensor } from './sensors/camera_sensor'
 
 export class Image2D {
   private perspective: EPerspectiveTypes = null;
-  private image3DMesh: Mesh = null;
+  private image3DMesh: Mesh = null;  // This is the 3D texture in the 2D View
   private dynamicTexture: DynamicTexture = null;
   private textureMaterial: StandardMaterial = null;
   private canvas2D: any = null;
@@ -65,6 +65,7 @@ export class Image2D {
       img.src = imageBase64;
       img.onload = () => {
         if (this.image3DMesh.isEnabled()) {
+          // Dont let the name confuse you, this the 2D view
           this.dynamicTexture.scaleTo(img.width, img.height);
           this.dynamicTexture.getContext().drawImage(img, 0, 0);
           this.dynamicTexture.update();

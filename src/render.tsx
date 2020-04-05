@@ -41,7 +41,6 @@ function App() {
   return <MainWrapper>
     <Overlay ipcServer={ipcServer}/>
 
-    {/* TODO: Show this a new window */}
     {showRuntimeMeas &&
       <RuntimeMeas />
     }
