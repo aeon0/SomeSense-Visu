@@ -7,11 +7,11 @@ import { EPerspectiveTypes } from "../redux/perspective/reducer"
 
 
 const SelectS = styled(Select)`
-  position: absolute;
-  right: 25px;
-  top: 25px;
+  position: relative;
+  float: right;
+  margin-right: 25px;
+  margin-top: 25px;
   pointer-events: auto;
-  /* background-color: #aaa !important; */
 `
 
 export function SelectPerspective() {

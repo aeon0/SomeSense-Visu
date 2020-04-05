@@ -9,6 +9,8 @@ const MenuSurfaceAnchorS = styled(MenuSurfaceAnchor)`
   margin-top: 25px;
   margin-left: 25px;
   pointer-events: auto;
+  float: left;
+  min-width: 300px;
 `
 
 export function SettingsMenu() {
@@ -20,9 +22,9 @@ export function SettingsMenu() {
     <MenuSurfaceAnchorS>
       <MenuSurface open={openMenu} onClose={evt => setOpenMenu(false)}>
         {showRuntimeMeasFlag ?
-        <MenuItem onClick={() => { dispatch(hideRuntimeMeas()); console.log("HERE");}}>Hide Runtime Meas</MenuItem>
+        <MenuItem onClick={() => { dispatch(hideRuntimeMeas()); setOpenMenu(false);}}>Hide Runtime Meas</MenuItem>
         :
-        <MenuItem onClick={() => { dispatch(showRuntimeMeas()); console.log("Show");}}>Show Runtime Meas</MenuItem>
+        <MenuItem onClick={() => { dispatch(showRuntimeMeas()); setOpenMenu(false);}}>Show Runtime Meas</MenuItem>
         }
       </MenuSurface>
       <Fab icon="menu" onClick={evt => setOpenMenu(!openMenu)} />

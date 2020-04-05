@@ -5,6 +5,7 @@ import { SelectPerspective } from './select_perspective'
 import { ConnectionSetting } from './connection_setting'
 import { RecordingControls } from './recording_controls'
 import { LiveControls } from './live_controls'
+import { RuntimeMeas } from './runtime_meas'
 import { useSelector } from 'react-redux'
 import { IReduxWorld } from '../redux/world/types'
 import { ICtrlData } from '../redux/ctrl_data/types'
@@ -25,10 +26,16 @@ export function Overlay(props: any) {
   const world: IReduxWorld = useSelector((store: any) => store.world);
   const ctrlData: ICtrlData = useSelector((store: any) => store.ctrlData);
   const connected: string = useSelector((store: any) => store.connection.connected);
+  const showRuntimeMeas: boolean = useSelector((store: any) => store.runtimeMeas.show);
 
   return <OverlayWrapper>
+    {showRuntimeMeas &&
+      <RuntimeMeas />
+    }
+
     <SettingsMenu />
     <SelectPerspective />
+
     <ConnectionSetting />
     
     {/* world can be null in the recording case, has to be handled inside RecordingsControls */}
