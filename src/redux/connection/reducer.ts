@@ -1,7 +1,7 @@
 import { EReduxActionTypes } from "../action_types"
 
 
-interface IReduxConnection {
+export interface IReduxConnection {
   connected: boolean;
   connecting: boolean;
 }

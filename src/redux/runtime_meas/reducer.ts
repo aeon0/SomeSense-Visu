@@ -1,7 +1,8 @@
 import { EReduxActionTypes } from "../action_types"
 
 
-interface IRuntimeMeas {
+// The actuall data is stored in the world store since each runtime meas belongs to a specific frame
+export interface IRuntimeMeas {
   show: boolean;
 }
 

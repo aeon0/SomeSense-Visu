@@ -1,5 +1,14 @@
 import { EReduxActionTypes } from "../action_types"
-import { ISensorData } from "./types"
+
+
+export interface ISensorData {
+  idx: number;
+  ts: number;
+  width: number;
+  height: number;
+  channels: number;
+  imageBase64: string;
+}
 
 export default function(state: ISensorData[] = [], action: any) {
   switch (action.type) {

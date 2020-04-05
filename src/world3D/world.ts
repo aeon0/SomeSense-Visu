@@ -8,7 +8,7 @@ import { Image2D } from './image2d'
 import { CameraFrustum } from './sensors/camera_frustum'
 import { CameraSensor } from './sensors/camera_sensor'
 import { ICamSensor, IReduxWorld } from '../redux/world/types'
-import { ICtrlData } from '../redux/ctrl_data/types'
+import { ICtrlData } from '../redux/ctrl_data/reducer'
 import { TrackManager } from './objects/track_manager'
 
 

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import styled from 'styled-components'
 import { IReduxWorld } from '../redux/world/types'
-import { ICtrlData } from '../redux/ctrl_data/types'
+import { ICtrlData } from '../redux/ctrl_data/reducer'
 import { Slider } from '@rmwc/slider'
 import { IconButton } from '@rmwc/icon-button'
 import { ThemeProvider } from '@rmwc/theme'

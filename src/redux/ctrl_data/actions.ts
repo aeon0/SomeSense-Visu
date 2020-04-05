@@ -1,5 +1,5 @@
 import { EReduxActionTypes } from "../action_types"
-import { ICtrlData } from "./types"
+import { ICtrlData } from "./reducer"
 
 
 export function updateCtrlData(ctrlData: ICtrlData) {

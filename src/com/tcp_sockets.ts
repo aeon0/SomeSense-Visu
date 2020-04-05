@@ -3,13 +3,13 @@ import { encode, RawImageData } from 'jpeg-js'
 import { store } from '../redux/store'
 import { IReduxWorld } from '../redux/world/types'
 import { parseWorldObj } from '../redux/world/parse'
-import { ICtrlData } from '../redux/ctrl_data/types'
+import { ICtrlData } from '../redux/ctrl_data/reducer'
 import { parseCtrlData } from '../redux/ctrl_data/parse'
 import { setConnecting, setConnected } from '../redux/connection/actions'
 import { updateWorld, resetWorld } from '../redux/world/actions'
 import { updateCtrlData, resetCtrlData } from '../redux/ctrl_data/actions'
 import { updateSensorStorage, resetSensorStorage } from '../redux/sensor_storage/actions'
-import { ISensorData } from '../redux/sensor_storage/types'
+import { ISensorData } from '../redux/sensor_storage/reducer'
 
 
 enum Reading {

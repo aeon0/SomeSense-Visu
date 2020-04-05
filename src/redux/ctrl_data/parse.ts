@@ -1,4 +1,4 @@
-import { ICtrlData } from './types'
+import { ICtrlData } from './reducer'
 
 
 export function parseCtrlData(ctrlData: any) : ICtrlData {

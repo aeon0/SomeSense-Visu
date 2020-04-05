@@ -1,5 +1,5 @@
 import { EReduxActionTypes } from "../action_types"
-import { ISensorData } from "./types"
+import { ISensorData } from "./reducer"
 
 
 export function updateSensorStorage(data: ISensorData) {

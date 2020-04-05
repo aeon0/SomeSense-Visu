@@ -5,7 +5,7 @@ export enum EPerspectiveTypes {
   FREE_3D = '3D Free',
 }
 
-interface IReduxPerspective {
+export interface IReduxPerspective {
   type: EPerspectiveTypes;
 }
 
