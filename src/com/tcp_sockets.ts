@@ -233,7 +233,7 @@ export class IPCServer {
       const idx: number = header[19];
 
       // Convert raw buffer to base64 string
-      var frameData = new Buffer(width * height * 4);
+      var frameData = Buffer.alloc(width * height * 4);
       var i = 0;
       var x = 0;
       while (i < frameData.length) {
