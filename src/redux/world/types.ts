@@ -45,4 +45,6 @@ export interface IReduxWorld {
   runtimeMeas: IRuntimeMeas[];
   timestamp: number; // timestamp of the algo [us]
   frameCount: number; // current number of the frame
+  frameStart: number; // timestamp of the start of the frame [us] (including pause time during recordings)
+  plannedFrameLength: number; // planned length of frame in [ms]
 }
