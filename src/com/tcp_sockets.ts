@@ -10,6 +10,8 @@ import { updateWorld, resetWorld } from '../redux/world/actions'
 import { updateCtrlData, resetCtrlData } from '../redux/ctrl_data/actions'
 import { updateSensorStorage, resetSensorStorage } from '../redux/sensor_storage/actions'
 import { ISensorData } from '../redux/sensor_storage/reducer'
+import { addRuntimeMeas } from "../redux/runtime_meas/actions"
+import { IRuntimeMeasFrame } from "../redux/runtime_meas/reducer"
 
 
 enum Reading {
@@ -196,6 +198,15 @@ export class IPCServer {
                 }
               }
             }
+            // Fill internal runtime meas store with latest runtime meas of the current frame
+            const runtimeMeasFrame: IRuntimeMeasFrame = {
+              meas: frameData.runtimeMeas,
+              frameStart: frameData.frameStart,
+              timestamp: frameData.timestamp,
+              plannedFrameLength: frameData.plannedFrameLength,
+            };
+            store.dispatch(addRuntimeMeas(runtimeMeasFrame));
+
             store.dispatch(updateWorld(frameData));
           }
           else {

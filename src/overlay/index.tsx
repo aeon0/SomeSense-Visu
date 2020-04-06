@@ -25,7 +25,7 @@ export function Overlay(props: any) {
   const world = useSelector((store: ApplicationState) => store.world);
   const ctrlData = useSelector((store: ApplicationState) => store.ctrlData);
   const connected = useSelector((store: ApplicationState) => store.connection.connected);
-  const showRuntimeMeas = useSelector((store: ApplicationState) => store.runtimeMeas.show);
+  const showRuntimeMeas = useSelector((store: ApplicationState) => store.runtimeMeasStore.show);
 
   return <OverlayWrapper>
     {showRuntimeMeas &&

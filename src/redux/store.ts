@@ -5,7 +5,7 @@ import connection, { IReduxConnection } from './connection/reducer'
 import world from './world/reducer'
 import { IReduxWorld } from './world/types'
 import ctrlData, { ICtrlData } from './ctrl_data/reducer'
-import runtimeMeas, { IRuntimeMeasCtrl } from './runtime_meas/reducer'
+import runtimeMeasStore, { IRuntimeMeasStore } from './runtime_meas/reducer'
 import sensorStorage, { ISensorData } from './sensor_storage/reducer'
 
 
@@ -17,7 +17,7 @@ export interface ApplicationState {
   connection: IReduxConnection,
   world: IReduxWorld,
   ctrlData: ICtrlData,
-  runtimeMeas: IRuntimeMeasCtrl,
+  runtimeMeasStore: IRuntimeMeasStore,
   sensorStorage: ISensorData[],
 }
 
@@ -27,7 +27,7 @@ export const store = createStore(
     connection,
     world,
     ctrlData,
-    runtimeMeas,
+    runtimeMeasStore,
     sensorStorage,
   }),
   composeEnhancers(),

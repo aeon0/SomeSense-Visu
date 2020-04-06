@@ -18,7 +18,7 @@ const MenuSurfaceAnchorS = styled(MenuSurfaceAnchor)`
 export function SettingsMenu() {
   const dispatch = useDispatch();
   const [openMenu, setOpenMenu] = React.useState(false);
-  const showRuntimeMeasFlag = useSelector((store: ApplicationState) => store.runtimeMeas.show);
+  const showRuntimeMeasFlag = useSelector((store: ApplicationState) => store.runtimeMeasStore.show);
 
   return <React.Fragment>
     <MenuSurfaceAnchorS>
