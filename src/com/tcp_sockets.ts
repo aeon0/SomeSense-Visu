@@ -5,7 +5,7 @@ import { IReduxWorld } from '../redux/world/types'
 import { parseWorldObj } from '../redux/world/parse'
 import { ICtrlData } from '../redux/ctrl_data/reducer'
 import { parseCtrlData } from '../redux/ctrl_data/parse'
-import { setConnecting, setConnected } from '../redux/connection/actions'
+import { setConnecting, setConnected, waitForData } from '../redux/connection/actions'
 import { updateWorld, resetWorld } from '../redux/world/actions'
 import { updateCtrlData, resetCtrlData } from '../redux/ctrl_data/actions'
 import { updateSensorStorage, resetSensorStorage } from '../redux/sensor_storage/actions'
@@ -61,6 +61,7 @@ export class IPCServer {
   private bytesToRead: number = HEADERSIZE;
   private reading = Reading.HEADER;
   private isReadingPkg = false;
+  private waitForData = false;
 
   constructor() {
     this.ipc.config.id = 'visu_client';
@@ -87,7 +88,8 @@ export class IPCServer {
     this.ipc.connectToNet('server', () => {
       this.ipc.of.server.on('connect', () => {
         console.log("## connected to server ##");
-        store.dispatch(setConnected());
+        store.dispatch(waitForData());
+        this.waitForData = true;
         this.sendMessage("register", { "id": this.ipc.config.id });
       });
 
@@ -103,6 +105,12 @@ export class IPCServer {
       });
 
       this.ipc.of.server.on('data', (data: any) => {
+        if (this.waitForData) {
+          console.log("## Recived first data from server ##");
+          this.waitForData = false;
+          store.dispatch(setConnected());
+        }
+
         let currReadPos: number = 0; // current position of reading bytes of this package
         if (this.isReadingPkg) {
           console.log("WARNING: Still reading previous Message, dropping this package...");

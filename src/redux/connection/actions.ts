@@ -18,3 +18,9 @@ export function setConnected() {
     type: EReduxActionTypes.CONNECTED,
   }
 }
+
+export function waitForData() {
+  return {
+    type: EReduxActionTypes.WAIT_FOR_DATA,
+  }
+}

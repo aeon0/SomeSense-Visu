@@ -40,6 +40,7 @@ export function ConnectionSetting() {
   const dispatch = useDispatch();
   const connected = useSelector((store: ApplicationState) => store.connection.connected);
   const connecting = useSelector((store: ApplicationState) => store.connection.connecting);
+  const waitForData = useSelector((store: ApplicationState) => store.connection.waitForData);
 
   return <ContainerS>
     {!connected && !connecting &&
@@ -49,10 +50,10 @@ export function ConnectionSetting() {
         onClick={() => dispatch(setConnecting())}
       />
     }
-    {connecting &&
+    {(connecting || waitForData)&&
       <ConnectingInfoS z={2}>
         <LinearProgressS />
-        Connecting...
+        {connecting ? "Connecting..." : "Waiting For Data..."}
       </ConnectingInfoS>
     }
   </ContainerS>
