@@ -7,8 +7,6 @@ import { RecordingControls } from './recording_controls'
 import { LiveControls } from './live_controls'
 import { RuntimeMeas } from './runtime_meas'
 import { useSelector } from 'react-redux'
-import { IReduxWorld } from '../redux/world/types'
-import { ICtrlData } from '../redux/ctrl_data/reducer'
 import { ApplicationState } from '../redux/store'
 import { IPCServer } from '../com/tcp_sockets'
 

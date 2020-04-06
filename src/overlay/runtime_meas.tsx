@@ -2,7 +2,6 @@ import * as React from 'react'
 import styled from 'styled-components'
 import { useDispatch, useSelector } from 'react-redux'
 import { hideRuntimeMeas } from '../redux/runtime_meas/actions'
-import { IRuntimeMeas } from '../redux/world/types'
 import { ApplicationState } from '../redux/store'
 
 
@@ -23,12 +22,17 @@ const CloseBtnS = styled.span`
 export function RuntimeMeas(props: any) {
   const dispatch = useDispatch();
 
-  const frameTs = useSelector((store: ApplicationState) => store.world.timestamp);
-  const runtimeMeas = useSelector((store: ApplicationState) => store.world.runtimeMeas);
-
+  const runtimeMeas = useSelector((store: ApplicationState) => store.world && store.world.runtimeMeas ? store.world.runtimeMeas : []);
   console.log(runtimeMeas);
+
+  // Sort by start timestamp
+  runtimeMeas.sort((a, b) => a.start - b.start);
 
   return <WrapperDivS>
     <CloseBtnS className="material-icons" onClick={() => dispatch(hideRuntimeMeas())}>close</CloseBtnS>
+
+    {runtimeMeas.map((value, idx) => {
+      return <div key={idx}>{value.name}: {value.start}, {value.duration}</div>
+    })}
   </WrapperDivS>
 }
