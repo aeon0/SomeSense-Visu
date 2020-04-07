@@ -35,6 +35,10 @@ export default function(state: IRuntimeMeasStore = initialState, action: any) {
         state.data = [];
       }
       state.data.push(action.runtimeMeasFrame);
+      if (state.data.length >= 50) {
+        state.data.shift();
+      }
+      console.log(state.data.length);
       return state;
     default:
       return state;
