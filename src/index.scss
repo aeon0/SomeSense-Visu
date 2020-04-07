@@ -11,3 +11,18 @@ $mdc-theme-on-surface: #fff;
 
 // MDC SCSS files
 @import 'material-components-web/material-components-web';
+
+// Change scrollbar for whole app
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-track {
+  box-shadow: inset 0px 0px 8px #3f3f3f;;
+}
+*::-webkit-scrollbar-thumb {
+  background-color: #515151;
+  &:hover {
+    background-color: #938c8c;
+  }
+}
