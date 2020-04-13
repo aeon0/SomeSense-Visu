@@ -9,7 +9,7 @@ export class EgoVehicle {
 
   public init(){
     var transparentMaterial = new StandardMaterial("transparent_object", this.scene);
-    transparentMaterial.alpha = 0.3; // value of 0.3 is applied fro transparency
+    transparentMaterial.alpha = 0.3; // value of 0.3 is applied for transparency
 
     const length: number = 3.5;
     const height: number = 1.5;

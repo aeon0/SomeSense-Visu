@@ -27,7 +27,7 @@ export class World {
   constructor(private canvas: HTMLCanvasElement) {
     // default camera
     this.camSensor = new CameraSensor(
-      new Vector3(0, 6, -0.5),
+      new Vector3(0, 1, -0.5),
       new Vector3(0, 0, 0), // pitch, yaw, roll
       (1/2)*Math.PI, // 90 degree
       (1/4)*Math.PI, // 45 degree
