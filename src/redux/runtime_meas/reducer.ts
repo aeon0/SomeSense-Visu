@@ -1,6 +1,11 @@
 import { EReduxActionTypes } from "../action_types"
-import { IRuntimeMeas } from "../world/types"
 
+
+export interface IRuntimeMeas {
+  name: string;
+  start: number; // start timestamp in [us]
+  duration: number; // duration in [ms]
+}
 
 export interface IRuntimeMeasFrame {
   meas: IRuntimeMeas[],

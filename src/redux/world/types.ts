@@ -33,16 +33,9 @@ export interface ICamSensor {
   timestamp: number, // timestamp of the image [us]
 }
 
-export interface IRuntimeMeas {
-  name: string;
-  start: number; // start timestamp in [us]
-  duration: number; // duration in [ms]
-}
-
 export interface IReduxWorld {
   tracks: ITrack[];
   camSensors: ICamSensor[];
-  runtimeMeas: IRuntimeMeas[];
   timestamp: number; // timestamp of the algo [us]
   frameCount: number; // current number of the frame
   frameStart: number; // timestamp of the start of the frame [us] (including pause time during recordings)

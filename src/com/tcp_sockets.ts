@@ -1,24 +1,30 @@
 import { IPC } from 'node-ipc'
-import { encode, RawImageData } from 'jpeg-js'
 import { store } from '../redux/store'
-import { IReduxWorld } from '../redux/world/types'
-import { parseWorldObj } from '../redux/world/parse'
-import { ICtrlData } from '../redux/ctrl_data/reducer'
-import { parseCtrlData } from '../redux/ctrl_data/parse'
+import * as capnp from 'capnp-ts';
+import { CapnpOutput_Frame } from './frame.capnp'
 import { setConnecting, setConnected, waitForData } from '../redux/connection/actions'
+// World store
+import { IReduxWorld } from '../redux/world/types'
 import { updateWorld, resetWorld } from '../redux/world/actions'
+import { parseWorldObj } from '../redux/world/parse'
+// CtrlData store
+import { ICtrlData } from '../redux/ctrl_data/reducer'
 import { updateCtrlData, resetCtrlData } from '../redux/ctrl_data/actions'
-import { updateSensorStorage, resetSensorStorage } from '../redux/sensor_storage/actions'
-import { ISensorData } from '../redux/sensor_storage/reducer'
-import { addRuntimeMeas } from "../redux/runtime_meas/actions"
+import { parseCtrlData } from '../redux/ctrl_data/parse'
+// RuntimeMeas store
 import { IRuntimeMeasFrame } from "../redux/runtime_meas/reducer"
+import { addRuntimeMeas } from "../redux/runtime_meas/actions"
+import { praseRuntimeMeasFrameData } from "../redux/runtime_meas/parse"
 
+function delay(ms: number) {
+  return new Promise( resolve => setTimeout(resolve, ms) );
+}
 
 enum Reading {
   HEADER = 0,
   PAYLOAD
 }
-const HEADERSIZE: number = 20;
+const HEADERSIZE: number = 16;
 
 // From: https://stackoverflow.com/questions/18729405/how-to-convert-utf8-string-to-byte-array/18729931
 function toUTF8Array(str: string) {
@@ -100,18 +106,16 @@ export class IPCServer {
         store.dispatch(setConnecting());
         store.dispatch(resetWorld());
         store.dispatch(resetCtrlData());
-        store.dispatch(resetSensorStorage());
         this.bytesToRead = HEADERSIZE;
         this.reading = Reading.HEADER;
         console.log('## disconnected from server ##');
       });
 
       this.ipc.of.server.on('data', (data: any) => {
-        if (this.waitForData) {
-          console.log("## Recived first data from server ##");
-          this.waitForData = false;
-          store.dispatch(setConnected());
-        }
+        // The header bytes are:
+        // [0-1]: Start bytes 0x0FF0
+        // [1-5]: Payload size in bytes (little-endian)
+        // [6]:   Message type, 0x01: Json, 0x02: Capnp
 
         let currReadPos: number = 0; // current position of reading bytes of this package
         if (this.isReadingPkg) {
@@ -152,21 +156,39 @@ export class IPCServer {
           // In case either header or payload is done reading
           if (this.bytesToRead == 0) {
             if (this.reading == Reading.HEADER) {
-              if (this.currHeader[0] != 0x0F) {
-                console.log("WARNING: Wrong msg start byte, msg properly corrupted. Drop Package and wait for new message start.");
+              if (this.currHeader[0] != 0x0F && this.currHeader[1] != 0xF0) {
+                console.log("WARNING: Wrong msg start byte. Drop Package and trying to read Header in next Package.");
                 this.bytesToRead = HEADERSIZE;
                 this.reading = Reading.HEADER;
                 break;
               }
-              this.bytesToRead = (this.currHeader[1] << 24) + (this.currHeader[2] << 16) + (this.currHeader[3] << 8) + this.currHeader[4];
-              this.currPayload = new Uint8Array(this.bytesToRead);
-              this.reading = Reading.PAYLOAD;
-              // console.log("Payload Size [Byte]: " + this.currPayload.length);
+              else {
+                this.bytesToRead = (this.currHeader[2] << 24) + (this.currHeader[3] << 16) + (this.currHeader[4] << 8) + this.currHeader[5];
+                if (this.bytesToRead < 0) {
+                  console.log("WARNING: Payload size negative. Trying to read header again. Bug...")
+                  this.bytesToRead = HEADERSIZE;
+                  this.reading = Reading.HEADER;
+                  break;
+                }
+                this.currPayload = new Uint8Array(this.bytesToRead);
+                this.reading = Reading.PAYLOAD;
+                // console.log("Payload Size [Byte]: " + this.currPayload.length);
+              }
             }
             else if (this.reading == Reading.PAYLOAD) {
+              if (this.waitForData) {
+                console.log("## Recived well formated data from server ##");
+                this.waitForData = false;
+                store.dispatch(setConnected());
+              }
+
               this.bytesToRead = HEADERSIZE;
               this.reading = Reading.HEADER;
-              this.handleMsg();
+              // this.currPayload and this.currHeader should be filled correctly. Lets read the message
+              const header = this.currHeader.slice(0);
+              const payload = this.currPayload.slice(0);
+              // copy is important since this is a async function in order to not block tpc package reading
+              this.handleMsg(header, payload);
             }
           }
         }
@@ -175,53 +197,14 @@ export class IPCServer {
     });
   }
 
-  private handleMsg() {
-    // First lets copy header and payload
-    const header = this.currHeader.slice(0);
-    const payload = this.currPayload.slice(0);
-
-    const type: number = header[5];
+  private async handleMsg(header: Uint8Array, payload: Uint8Array) {
+    const type: number = header[6];
     if (type == 1) { // Json message
       const msgStr: string = new TextDecoder("utf-8").decode(payload);
       try {
         const msg: any = JSON.parse(msgStr);
-        if(msg["type"] == "server.frame") {
-          // TODO: the parsing could have all sorts of missing fields or additional fields
-          //       Ideally this would be checked somehow, but for now... whatever
-          if (msg["data"]["frame"] !== null) {
-            const frameData: IReduxWorld = parseWorldObj(msg["data"]["frame"]);
-            // Match images from the sensor storage to the sensor meta data of the frameData
-            for (let sensor of frameData.camSensors) {
-              for (let data of store.getState().sensorStorage) {
-                if (sensor.idx == data.idx) {
-                  sensor.imageBase64 = data.imageBase64;
-                }
-              }
-            }
-            // Fill internal runtime meas store with latest runtime meas of the current frame
-            const runtimeMeasFrame: IRuntimeMeasFrame = {
-              meas: frameData.runtimeMeas,
-              frameStart: frameData.frameStart,
-              timestamp: frameData.timestamp,
-              plannedFrameLength: frameData.plannedFrameLength,
-            };
-            store.dispatch(addRuntimeMeas(runtimeMeasFrame));
-
-            store.dispatch(updateWorld(frameData));
-          }
-          else {
-            console.log("Warning: Frame is null");
-          }
-
-          if (msg["data"]["ctrlData"] !== null) {
-            const ctrlData: ICtrlData = parseCtrlData(msg["data"]["ctrlData"]);
-            store.dispatch(updateCtrlData(ctrlData));
-          }
-          else {
-            console.log("Warning: CtrlData is null");
-          }
-        }
-        else if(msg["type"] == "server.callback") {
+        if(msg["type"] == "server.callback") {
+          console.log("Got callback from server");
           // Callback for some request, search for callback in the callback list and execute
           const cbIndex: number = msg["cbIndex"];
           if (cbIndex in this.callbacks) {
@@ -234,42 +217,22 @@ export class IPCServer {
         }
       }
       catch (e) {
-        console.log("WARNING: Error with json server msg:");
+        console.log("WARNING: Error with json msg from Server:");
         console.log(msgStr);
         // console.log(e);
       }
     }
-    else if (type == 16) { // Raw image
-      // width [6-7], height [8-9], channels [10]
-      const width: number = (header[6] << 8) + header[7];
-      const height: number = (header[8] << 8) + header[9];
-      const channels: number = header[10];
-      // timestamp [11-18], could be used to show delta time to data which is visualized
-      const ts: number = (header[11] << 54) + (header[12] << 46) + (header[13] << 38) + (header[14] << 32) +
-                         (header[15] << 24) + (header[16] << 16) + (header[17] << 8) + header[18];
-
-      // sensor idx [19]
-      const idx: number = header[19];
-
-      // Convert raw buffer to base64 string
-      var frameData = Buffer.alloc(width * height * 4);
-      var i = 0;
-      var x = 0;
-      while (i < frameData.length) {
-        const b = payload[x++];
-        const g = payload[x++];
-        const r = payload[x++];
-        frameData[i++] = r; // red
-        frameData[i++] = g; // green
-        frameData[i++] = b; // blue
-        frameData[i++] = 0xFF; // alpha - ignored in JPEGs
-      }
-      const rawBuf: RawImageData<Buffer> = { width, height, data: frameData };
-      const jpgImg = encode(rawBuf, 50);
-      const imageBase64: string = 'data:image/jpeg;base64,' + jpgImg.data.toString('base64');
-
-      let sensorData: ISensorData = { idx, ts, width, height, channels, imageBase64 };
-      store.dispatch(updateSensorStorage(sensorData));
+    else if (type == 2) { // Frame Data in Capnp format
+      const message = new capnp.Message(payload);
+      const frameData: CapnpOutput_Frame = message.getRoot(CapnpOutput_Frame);
+      
+      const reduxWorld: IReduxWorld = parseWorldObj(frameData);
+      const ctrlData: ICtrlData = parseCtrlData(frameData.getCtrlData());
+      const runtimeMeasFrame: IRuntimeMeasFrame = praseRuntimeMeasFrameData(frameData);
+      store.dispatch(updateWorld(reduxWorld));
+      store.dispatch(updateCtrlData(ctrlData));
+      store.dispatch(addRuntimeMeas(runtimeMeasFrame));
+      console.log("Done msg handling");
     }
     else {
       console.log("WARNING: Unkown message type " + type);
