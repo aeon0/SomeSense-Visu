@@ -10,15 +10,11 @@ import { parseWorldObj } from '../redux/world/parse'
 // CtrlData store
 import { ICtrlData } from '../redux/ctrl_data/reducer'
 import { updateCtrlData, resetCtrlData } from '../redux/ctrl_data/actions'
-import { parseCtrlData } from '../redux/ctrl_data/parse'
 // RuntimeMeas store
 import { IRuntimeMeasFrame } from "../redux/runtime_meas/reducer"
 import { addRuntimeMeas } from "../redux/runtime_meas/actions"
 import { praseRuntimeMeasFrameData } from "../redux/runtime_meas/parse"
 
-function delay(ms: number) {
-  return new Promise( resolve => setTimeout(resolve, ms) );
-}
 
 enum Reading {
   HEADER = 0,
@@ -98,7 +94,6 @@ export class IPCServer {
         console.log("## connected to server ##");
         store.dispatch(waitForData());
         this.waitForData = true;
-        this.sendMessage("register", { "id": this.ipc.config.id });
       });
 
       this.ipc.of.server.on('disconnect', () => {
@@ -177,9 +172,27 @@ export class IPCServer {
             }
             else if (this.reading == Reading.PAYLOAD) {
               if (this.waitForData) {
-                console.log("## Recived well formated data from server ##");
+                console.log("## recived well formated data from server ##");
                 this.waitForData = false;
                 store.dispatch(setConnected());
+
+                this.sendMessage("get_ctrl_data", {}, (data: any) => {
+                  var ctrlData: ICtrlData = {
+                    isStoring: false,
+                    isPlaying: false,
+                    isARecording: false,
+                    recLength: -1,
+                  }
+                  if ("store_info" in data) {
+                    ctrlData.isStoring = data["store_info"]["is_storing"];
+                  }
+                  if ("rec_info" in data) {
+                    ctrlData.isARecording = data["rec_info"]["is_rec"];
+                    ctrlData.isPlaying = data["rec_info"]["is_playing"];
+                    ctrlData.recLength = data["rec_info"]["rec_length"];
+                  }
+                  store.dispatch(updateCtrlData(ctrlData));
+                });
               }
 
               this.bytesToRead = HEADERSIZE;
@@ -204,10 +217,9 @@ export class IPCServer {
       try {
         const msg: any = JSON.parse(msgStr);
         if(msg["type"] == "server.callback") {
-          console.log("Got callback from server");
           // Callback for some request, search for callback in the callback list and execute
           const cbIndex: number = msg["cbIndex"];
-          if (cbIndex in this.callbacks) {
+          if (cbIndex !== -1 && cbIndex in this.callbacks) {
             this.callbacks[cbIndex](msg["data"]);
             delete this.callbacks[cbIndex];
           }
@@ -227,19 +239,16 @@ export class IPCServer {
       const frameData: CapnpOutput_Frame = message.getRoot(CapnpOutput_Frame);
       
       const reduxWorld: IReduxWorld = parseWorldObj(frameData);
-      const ctrlData: ICtrlData = parseCtrlData(frameData.getCtrlData());
       const runtimeMeasFrame: IRuntimeMeasFrame = praseRuntimeMeasFrameData(frameData);
       store.dispatch(updateWorld(reduxWorld));
-      store.dispatch(updateCtrlData(ctrlData));
       store.dispatch(addRuntimeMeas(runtimeMeasFrame));
-      console.log("Done msg handling");
     }
     else {
       console.log("WARNING: Unkown message type " + type);
     }
   }
 
-  public sendMessage(type: string, msg: any = "", cb: Function = null) {
+  public async sendMessage(type: string, msg: any = "", cb: Function = null) {
     if (store.getState().connection.connected) {
       let cbIndex = -1;
       if (cb !== null) {

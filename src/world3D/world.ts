@@ -7,8 +7,6 @@ import { showAxis, showGrid } from './debug_mesh'
 import { Image2D } from './image2d'
 import { CameraFrustum } from './sensors/camera_frustum'
 import { CameraSensor } from './sensors/camera_sensor'
-import { ICamSensor, IReduxWorld } from '../redux/world/types'
-import { ICtrlData } from '../redux/ctrl_data/reducer'
 import { TrackManager } from './objects/track_manager'
 
 
@@ -71,17 +69,17 @@ export class World {
       this.egoVehicle.update(perspective);
       this.camera.update(perspective);
 
-      const worldData: IReduxWorld = store.getState().world;
-      const ctrldata: ICtrlData = store.getState().ctrlData;
+      const worldData = store.getState().world;
+      const isARecording: boolean = store.getState().ctrlData ? store.getState().ctrlData.isARecording : false;
       // Currently just expect to only have one cam sensor and access directly with [0]
       if (worldData && worldData.camSensors.length > 0) {
         let imageBase64 = (' ' + worldData.camSensors[0].imageBase64).slice(1); // force copy of image
-        this.image2D.update(perspective, imageBase64, ctrldata.isARecording);
+        this.image2D.update(perspective, imageBase64, isARecording);
     
         this.timestamp = worldData.timestamp;
 
         // In case current cam sensor differs from received one, update
-        const sensorData: ICamSensor = worldData.camSensors[0];
+        const sensorData = worldData.camSensors[0];
         const camSensor = new CameraSensor(
           sensorData.position,
           sensorData.rotation,
