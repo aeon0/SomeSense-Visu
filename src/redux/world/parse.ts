@@ -38,7 +38,7 @@ export function parseWorldObj(frame: CapnpOutput_Frame) : IReduxWorld {
 
     // Fill camera interface
     let camSensor: ICamSensor = {
-      timestamp: val.getTimestamp(),
+      timestamp: val.getTimestamp().toNumber(),
       key: val.getKey(),
       position: new Vector3(val.getX(), val.getY(), val.getZ()),
       rotation: new Vector3(val.getYaw(), val.getYaw(), val.getRoll()),

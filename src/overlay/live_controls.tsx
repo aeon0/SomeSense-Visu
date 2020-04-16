@@ -63,16 +63,16 @@ function usToTime(durationUs: number) {
 }
 
 export function LiveControls(props: any) {
-  const world: IReduxWorld = props.world;  // No null handling needed
-  const ctrlData: ICtrlData = props.ctrlData;  // No null handling needed
+  const world: IReduxWorld = props.world;  // Null handling needed
+  const ctrlData: ICtrlData = props.ctrlData;  // Null handling needed
   const ipcServer: IPCServer = props.ipcServer;
 
-  const [playerTs, setPlayerTs] = React.useState(world.timestamp);
-  const [record, setRecord] = React.useState(ctrlData.isStoring);
+  const [playerTs, setPlayerTs] = React.useState(world !== null ? world.timestamp : 0);
+  const [record, setRecord] = React.useState(ctrlData !== null ? ctrlData.isPlaying : false);
 
   // Update timestamp from props
-  React.useEffect(() => { setPlayerTs(world.timestamp); }, [world.timestamp]);
-  React.useEffect(() => { setRecord(ctrlData.isStoring); }, [ctrlData.isStoring]);
+  React.useEffect(() => { setPlayerTs(world.timestamp); }, [world !== null ? world.timestamp : 0]);
+  React.useEffect(() => { setRecord(ctrlData.isStoring); }, [ctrlData !== null ? ctrlData.isPlaying : false]);
 
   return <Container>
     <ButtonContainer>

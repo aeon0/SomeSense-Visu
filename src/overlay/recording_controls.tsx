@@ -57,11 +57,11 @@ function usToTime(durationUs: number) {
 
 export function RecordingControls(props: any) {
   const world: IReduxWorld = props.world;  // Null handling needed
-  const ctrlData: ICtrlData = props.ctrlData; // No null handling needed
+  const ctrlData: ICtrlData = props.ctrlData; // Mull handling needed
   const ipcServer: IPCServer = props.ipcServer;
 
   const [playerTs, setPlayerTs] = React.useState(world !== null ? world.timestamp : 0);
-  const [play, setPlay] = React.useState(ctrlData.isPlaying);
+  const [play, setPlay] = React.useState(ctrlData !== null ? ctrlData.isPlaying : false);
 
   // Update timestamp from props
   React.useEffect(() => {
@@ -71,7 +71,7 @@ export function RecordingControls(props: any) {
     }
     setPlayerTs(world.timestamp); 
   }, [world !== null ? world.timestamp : 0]);
-  React.useEffect(() => { setPlay(ctrlData.isPlaying); }, [ctrlData.isPlaying]);
+  React.useEffect(() => { setPlay(ctrlData.isPlaying); }, [ctrlData !== null ? ctrlData.isPlaying : false]);
 
   // Key handlers
   React.useEffect(() => {
