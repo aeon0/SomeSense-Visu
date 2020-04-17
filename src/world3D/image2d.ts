@@ -21,8 +21,9 @@ export class Image2D {
     this.textureMaterial.backFaceCulling = false;
     this.dynamicTexture = new DynamicTexture("image3DTexture", 1, this.scene, false);
     this.textureMaterial.ambientTexture = this.dynamicTexture;
-    const width = 4 * Math.tan(this.camSensor.getFovHorizontal() * 0.5);
-    const height = 4 * Math.tan(this.camSensor.getFovVertical() * 0.5);
+    const imgDistanceFromCamera = 1;
+    const width = imgDistanceFromCamera * 2 * Math.tan(this.camSensor.getFovHorizontal() * 0.5);
+    const height = imgDistanceFromCamera * 2 * Math.tan(this.camSensor.getFovVertical() * 0.5);
     this.image3DMesh = MeshBuilder.CreatePlane("image2D", {width: width, height: height}, this.scene);
     this.image3DMesh.material = this.textureMaterial;
     this.image3DMesh.renderingGroupId = 1;
@@ -30,7 +31,7 @@ export class Image2D {
     // Rotate image
     this.image3DMesh.addRotation(this.camSensor.getPitch(), this.camSensor.getYaw(), this.camSensor.getRoll());
     // Move camera 1 forward
-    this.image3DMesh.position = this.image3DMesh.position.add(this.camSensor.getDirection().normalize().multiply(new Vector3(2, 2, 2)));
+    this.image3DMesh.position = this.image3DMesh.position.add(this.camSensor.getDirection().normalize().multiply(new Vector3(imgDistanceFromCamera, imgDistanceFromCamera, imgDistanceFromCamera)));
   }
 
   public updateCamera(camSensor: CameraSensor) {
@@ -53,7 +54,6 @@ export class Image2D {
         this.canvas2D.style.display = "block";
       }
       else {
-
         this.image3DMesh.setEnabled(true);
         this.canvas2D.style.display = "none";
       }

@@ -51,6 +51,7 @@ export class Camera {
         this.camera.bankedTurn = false;
         this.camera.bankedTurnMultiplier = 0;
         this.camera.rotationQuaternion = this.camSensor.getQuaternion();
+        this.camera.fov = this.camSensor.getFovHorizontal();
         this.ratioDiffFactor = this.camSensor.getRatio() / this.engine.getAspectRatio(this.camera);
         this.adjustZoomFactor(1.05);
         break;
