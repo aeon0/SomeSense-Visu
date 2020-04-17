@@ -71,7 +71,6 @@ export class Image2D {
         this.dynamicTexture.update();
       }
       else {
-        console.time("Draw Img");
         // Draw the full image to the tmp canvas
         this.tmpCanvas2D.height = imageData.height;
         this.tmpCanvas2D.width = imageData.width;
