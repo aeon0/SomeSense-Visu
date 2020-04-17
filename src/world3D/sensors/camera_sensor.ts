@@ -15,8 +15,8 @@ export class CameraSensor {
         this.quaternion = Quaternion.FromEulerAngles(rotation.x, rotation.y, rotation.z)
         new Vector3(0, 0, 1).rotateByQuaternionToRef(this.quaternion, this.direction);
         // calc ratio
-        const width = 4 * Math.tan(this.getFovHorizontal() * 0.5);
-        const height = 4 * Math.tan(this.getFovVertical() * 0.5);
+        const width = 2 * Math.tan(this.getFovHorizontal() * 0.5);
+        const height = 2 * Math.tan(this.getFovVertical() * 0.5);
         this.ratio = (width / height);
     }
 
