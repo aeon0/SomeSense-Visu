@@ -66,6 +66,7 @@ export class IPCServer {
   private reading = Reading.HEADER;
   private isReadingPkg = false;
   private waitForData = false;
+  private requestCtrlDataFlag = false;
 
   constructor() {
     this.ipc.config.id = 'visu_client';
@@ -94,6 +95,7 @@ export class IPCServer {
         console.log("## connected to server ##");
         store.dispatch(waitForData());
         this.waitForData = true;
+        this.requestCtrlDataFlag = true;
       });
 
       this.ipc.of.server.on('disconnect', () => {
@@ -103,6 +105,8 @@ export class IPCServer {
         store.dispatch(resetCtrlData());
         this.bytesToRead = HEADERSIZE;
         this.reading = Reading.HEADER;
+        this.waitForData = false;
+        this.requestCtrlDataFlag = false;
         console.log('## disconnected from server ##');
       });
 
@@ -152,9 +156,10 @@ export class IPCServer {
           if (this.bytesToRead == 0) {
             if (this.reading == Reading.HEADER) {
               if (this.currHeader[0] != 0x0F && this.currHeader[1] != 0xF0) {
-                console.log("WARNING: Wrong msg start byte. Drop Package and trying to read Header in next Package.");
+                console.log("WARNING: Wrong msg start bytes Drop Package and trying to read Header in next Package.");
                 this.bytesToRead = HEADERSIZE;
                 this.reading = Reading.HEADER;
+                this.requestCtrlDataFlag = true;
                 break;
               }
               else {
@@ -175,24 +180,10 @@ export class IPCServer {
                 console.log("## recived well formated data from server ##");
                 this.waitForData = false;
                 store.dispatch(setConnected());
-
-                this.sendMessage("get_ctrl_data", {}, (data: any) => {
-                  var ctrlData: ICtrlData = {
-                    isStoring: false,
-                    isPlaying: false,
-                    isARecording: false,
-                    recLength: -1,
-                  }
-                  if ("store_info" in data) {
-                    ctrlData.isStoring = data["store_info"]["is_storing"];
-                  }
-                  if ("rec_info" in data) {
-                    ctrlData.isARecording = data["rec_info"]["is_rec"];
-                    ctrlData.isPlaying = data["rec_info"]["is_playing"];
-                    ctrlData.recLength = data["rec_info"]["rec_length"];
-                  }
-                  store.dispatch(updateCtrlData(ctrlData));
-                });
+              }
+              if (this.requestCtrlDataFlag) {
+                this.requestCtrlData();
+                this.requestCtrlDataFlag = false;
               }
 
               this.bytesToRead = HEADERSIZE;
@@ -216,13 +207,16 @@ export class IPCServer {
       const msgStr: string = new TextDecoder("utf-8").decode(payload);
       try {
         const msg: any = JSON.parse(msgStr);
-        if(msg["type"] == "server.callback") {
+        if (msg["type"] == "server.callback") {
           // Callback for some request, search for callback in the callback list and execute
           const cbIndex: number = msg["cbIndex"];
           if (cbIndex !== -1 && cbIndex in this.callbacks) {
             this.callbacks[cbIndex](msg["data"]);
             delete this.callbacks[cbIndex];
           }
+        }
+        else if (msg["type"] == "server.test") {
+          console.log("Got test message from server");
         }
         else {
           console.log("WARNING: Unkown server message: " + msg["type"]);
@@ -246,6 +240,28 @@ export class IPCServer {
     else {
       console.log("WARNING: Unkown message type " + type);
     }
+  }
+
+  public async requestCtrlData() {
+    this.sendMessage("get_ctrl_data", {}, (data: any) => {
+      var ctrlData: ICtrlData = {
+        isStoring: false,
+        isPlaying: false,
+        isARecording: false,
+        recLength: -1,
+      }
+      console.log("Callback:");
+      console.log(data);
+      if ("store_info" in data) {
+        ctrlData.isStoring = data["store_info"]["is_storing"];
+      }
+      if ("rec_info" in data) {
+        ctrlData.isARecording = data["rec_info"]["is_rec"];
+        ctrlData.isPlaying = data["rec_info"]["is_playing"];
+        ctrlData.recLength = data["rec_info"]["rec_length"];
+      }
+      store.dispatch(updateCtrlData(ctrlData));
+    });
   }
 
   public async sendMessage(type: string, msg: any = "", cb: Function = null) {
