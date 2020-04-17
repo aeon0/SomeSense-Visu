@@ -73,8 +73,8 @@ export class World {
       const isARecording: boolean = store.getState().ctrlData ? store.getState().ctrlData.isARecording : false;
       // Currently just expect to only have one cam sensor and access directly with [0]
       if (worldData && worldData.camSensors.length > 0) {
-        let imageBase64 = (' ' + worldData.camSensors[0].imageBase64).slice(1); // force copy of image
-        this.image2D.update(perspective, imageBase64, isARecording);
+        let imageData = worldData.camSensors[0].imageData;
+        this.image2D.update(perspective, imageData, isARecording);
     
         this.timestamp = worldData.timestamp;
 

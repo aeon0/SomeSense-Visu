@@ -29,7 +29,7 @@ export interface ICamSensor {
   rotation: Vector3; // pitch, yaw, roll in [rad]
   fovHorizontal: number, // [rad]
   fovVertical: number, // [rad]
-  imageBase64: string,
+  imageData: ImageData,
   timestamp: number, // timestamp of the image [us]
 }
 

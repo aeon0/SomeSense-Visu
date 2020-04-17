@@ -23,6 +23,9 @@ const CanvasS = styled.canvas`
 const FixedCanvas = styled.canvas`
   position: fixed;
 `
+const HiddenCanvas = styled.canvas`
+  display: none;
+`
 
 function App() {
   // Only runs on mount
@@ -38,6 +41,7 @@ function App() {
     <React.Fragment>
       <CanvasS id="world" />
       <FixedCanvas id="front_cam_img" />
+      <HiddenCanvas id="tmp_front_cam_img" />
     </React.Fragment>
 
     <SnackbarQueue

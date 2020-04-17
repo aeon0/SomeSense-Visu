@@ -16,26 +16,22 @@ export function parseWorldObj(frame: CapnpOutput_Frame) : IReduxWorld {
 
   // Convert Sensor Data
   frame.getCamSensors().forEach( (val) => {
-    // Make base64 image from buffer
     const imgWidth = val.getImg().getWidth();
     const imgHeight = val.getImg().getHeight();
-    var rawImgData = Buffer.alloc( imgWidth * imgHeight * 4);
+    var imageData = new ImageData(imgWidth, imgHeight);
     var rawImgPayload = val.getImg().getData().toUint8Array();
-    var i = 0;
     var x = 0;
-    while (i < rawImgData.length) {
+    var z = 0;
+    while (x < rawImgPayload.length) {
       const b = rawImgPayload[x++];
       const g = rawImgPayload[x++];
       const r = rawImgPayload[x++];
-      rawImgData[i++] = r; // red
-      rawImgData[i++] = g; // green
-      rawImgData[i++] = b; // blue
-      rawImgData[i++] = 0xFF; // alpha - ignored in JPEGs
+      imageData.data[z++] = r; // red
+      imageData.data[z++] = g; // green
+      imageData.data[z++] = b; // blue
+      imageData.data[z++] = 0xFF; // alpha
     }
-    const rawBuf: RawImageData<Buffer> = { width: imgWidth, height: imgHeight, data: rawImgData };
-    const jpgImg = encode(rawBuf, 50);
-    const imageBase64: string = 'data:image/jpeg;base64,' + jpgImg.data.toString('base64');
-
+    
     // Fill camera interface
     let camSensor: ICamSensor = {
       timestamp: val.getTimestamp().toNumber(),
@@ -45,7 +41,7 @@ export function parseWorldObj(frame: CapnpOutput_Frame) : IReduxWorld {
       idx: val.getIdx(),
       fovVertical: val.getFovVertical(),
       fovHorizontal: val.getFovHorizontal(),
-      imageBase64: imageBase64
+      imageData: imageData,
     };
     worldObj.camSensors.push(camSensor);
   });
