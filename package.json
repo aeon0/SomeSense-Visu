@@ -16,6 +16,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
+    "pack-win": "electron-builder --dir --win",
+    "dist-win": "electron-builder --win",
     "postinstall": "rm -rf node_modules/@types/react-native && electron-builder install-app-deps && bash capnp-ts-fixes/replace_files.sh"
   },
   "build": {
@@ -29,6 +31,11 @@
       "target": [
         "AppImage",
         "deb"
+      ]
+    },
+    "win": {
+      "target": [
+        "zip"
       ]
     }
   },
@@ -44,7 +51,8 @@
     "react-redux": "^7.2.0",
     "redux": "^4.0.5",
     "rmwc": "^5.7.2",
-    "styled-components": "^4.4.1"
+    "styled-components": "^4.4.1",
+    "electron-devtools-installer": "^3.0.0"
   },
   "devDependencies": {
     "@types/electron-devtools-installer": "^2.2.0",

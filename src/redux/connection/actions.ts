@@ -24,3 +24,10 @@ export function waitForData() {
     type: EReduxActionTypes.WAIT_FOR_DATA,
   }
 }
+
+export function setHost(host: string) {
+  return {
+    type: EReduxActionTypes.SET_HOST,
+    host
+  }
+}

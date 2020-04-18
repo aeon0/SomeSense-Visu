@@ -34,13 +34,16 @@ const LinearProgressS = styled(LinearProgress)`
   left: 0px;
   position: absolute;
 `
-
+const ConnectTo = styled.span`
+  font-size: 10px;
+`
 
 export function ConnectionSetting() {
   const dispatch = useDispatch();
   const connected = useSelector((store: ApplicationState) => store.connection.connected);
   const connecting = useSelector((store: ApplicationState) => store.connection.connecting);
   const waitForData = useSelector((store: ApplicationState) => store.connection.waitForData);
+  const host = useSelector((store: ApplicationState) => store.connection.host);
 
   return <ContainerS>
     {!connected && !connecting &&
@@ -53,7 +56,8 @@ export function ConnectionSetting() {
     {(connecting || waitForData)&&
       <ConnectingInfoS z={2}>
         <LinearProgressS />
-        {connecting ? "Connecting..." : "Waiting For Data..."}
+        <div>{connecting ? "Connecting..." : "Waiting For Data..."}</div>
+        <ConnectTo>Host: {host}</ConnectTo>
       </ConnectingInfoS>
     }
   </ContainerS>

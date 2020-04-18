@@ -7,6 +7,7 @@ export enum EReduxActionTypes {
   CONNECTED = 'CONNECTED',
   DISCONNECTED = 'DISCONNECTED',
   WAIT_FOR_DATA = "WAIT_FOR_DATA",
+  SET_HOST = "SET_HOST",
 
   // world
   RESET_WORLD = "RESET_WORLD",

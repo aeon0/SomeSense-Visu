@@ -1,6 +1,6 @@
 import { IPC } from 'node-ipc'
 import { store } from '../redux/store'
-import { setConnecting, setConnected, waitForData } from '../redux/connection/actions'
+import { setConnecting, setConnected, waitForData, setHost } from '../redux/connection/actions'
 import { toUTF8Array } from './util'
 import { handleMsgData, resetAppState } from './data_handler'
 
@@ -19,8 +19,8 @@ enum Reading {
   PAYLOAD
 }
 const HEADERSIZE: number = 16;
-const HOST: string = "localhost";
-// const HOST: string = "10.42.0.81"
+// const HOST: string = "localhost";
+const HOST: string = "10.42.0.81"
 
 export class IPCClient {
   private ipc = new IPC();
@@ -49,6 +49,7 @@ export class IPCClient {
 
   private start() {
     store.dispatch(setConnecting());
+    store.dispatch(setHost(HOST));
 
     console.log("## start listening for server connections #");
 
