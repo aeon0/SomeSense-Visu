@@ -4,10 +4,10 @@ import { CapnpOutput_Frame } from '../../com/frame.capnp';
 
 export function parseCtrlData(capnpData: CapnpOutput_Frame) : ICtrlData {
   let ctrlData: ICtrlData = {
-    isARecording: false,
-    recLength: 0,
-    isPlaying: false,
-    isStoring: false,
+    isARecording: capnpData.getRecState().getIsARecording(),
+    recLength: capnpData.getRecState().getRecLength().toNumber(),
+    isPlaying: capnpData.getRecState().getIsPlaying(),
+    isStoring: capnpData.getSaveToFileState().getIsStoring(),
   }
   return ctrlData;
 }

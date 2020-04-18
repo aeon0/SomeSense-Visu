@@ -44,7 +44,7 @@ export function handleMsgData(msgType: number, payload: Uint8Array) {
   else if (msgType == 2) { // Frame Data in Capnp format
     const message = new capnp.Message(payload);
     const frameData: CapnpOutput_Frame = message.getRoot(CapnpOutput_Frame);
-    
+
     const reduxWorld: IReduxWorld = parseWorldObj(frameData);
     const runtimeMeasFrame: IRuntimeMeasFrame = praseRuntimeMeasFrameData(frameData);
     const ctrlData: ICtrlData = parseCtrlData(frameData);
