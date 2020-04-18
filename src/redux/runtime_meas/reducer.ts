@@ -32,15 +32,18 @@ export default function(state: IRuntimeMeasStore = initialState, action: any) {
     case EReduxActionTypes.HIDE_RUNTIME_MEAS:
       state.show = false;
       return state;
+    case EReduxActionTypes.CLEAR_RUNTIME_MEAS:
+      return initialState;
     case EReduxActionTypes.ADD_RUNTIME_MEAS:
       // In case the user goes backwards somehow, reset the runtime meas store
-      // TODO: reevaluate if the reseting is actually wanted or not after doing some actual developing with it
+      // TODO: actually not 100% convinced reseting here is the way to go. Might have a usecase to keep the meas around
       const currLength = state.data.length;
       if (currLength > 0 && state.data[currLength - 1].timestamp > action.runtimeMeasFrame.timestamp) {
         state.data = [];
       }
       state.data.push(action.runtimeMeasFrame);
-      if (state.data.length >= 50) {
+      // Max 30 runtime measurements, otherwise it will be too much data
+      if (state.data.length >= 30) {
         state.data.shift();
       }
       return state;

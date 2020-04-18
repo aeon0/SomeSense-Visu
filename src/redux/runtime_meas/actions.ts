@@ -20,3 +20,9 @@ export function addRuntimeMeas(runtimeMeasFrame: IRuntimeMeasFrame) {
     runtimeMeasFrame,
   }
 }
+
+export function clearRuntimeMeas() {
+  return {
+    type: EReduxActionTypes.CLEAR_RUNTIME_MEAS,
+  }
+}

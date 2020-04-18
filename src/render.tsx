@@ -7,11 +7,11 @@ import { store } from './redux/store'
 import { Overlay } from './overlay'
 import { World } from './world3D/world'
 import { snackbarQueue } from './snackbar_queue'
-import { IPCServer } from './com/tcp_sockets'
+import { IPCClient } from './com/ipc_client'
 
 
 // Connect to server
-const ipcServer = new IPCServer();
+const ipcClient = new IPCClient();
 
 const MainWrapper = styled.div`
   all: inherit;
@@ -36,7 +36,7 @@ function App() {
   }, []);
 
   return <MainWrapper>
-    <Overlay ipcServer={ipcServer}/>
+    <Overlay ipcClient={ipcClient}/>
 
     <React.Fragment>
       <CanvasS id="world" />

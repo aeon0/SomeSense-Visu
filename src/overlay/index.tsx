@@ -8,7 +8,7 @@ import { LiveControls } from './live_controls'
 import { RuntimeMeas } from './runtime_meas'
 import { useSelector } from 'react-redux'
 import { ApplicationState } from '../redux/store'
-import { IPCServer } from '../com/tcp_sockets'
+import { IPCClient } from '../com/ipc_client'
 
 
 const OverlayWrapper = styled.div`
@@ -20,7 +20,7 @@ const OverlayWrapper = styled.div`
 `
 
 export function Overlay(props: any) {
-  const ipcServer: IPCServer = props.ipcServer;
+  const ipcClient: IPCClient = props.ipcClient;
 
   const world = useSelector((store: ApplicationState) => store.world);
   const ctrlData = useSelector((store: ApplicationState) => store.ctrlData);
@@ -39,11 +39,11 @@ export function Overlay(props: any) {
     
     {/* world can be null in the recording case, has to be handled inside RecordingsControls */}
     {connected && ctrlData && ctrlData.isARecording && 
-      <RecordingControls world={world} ctrlData={ctrlData} ipcServer={ipcServer} />
+      <RecordingControls world={world} ctrlData={ctrlData} ipcClient={ipcClient} />
     }
 
     {connected && world && ctrlData && !ctrlData.isARecording &&
-      <LiveControls world={world} ctrlData={ctrlData} ipcServer={ipcServer} />
+      <LiveControls world={world} ctrlData={ctrlData} ipcClient={ipcClient} />
     }
   </OverlayWrapper>
 }

@@ -3,7 +3,7 @@ import styled, { keyframes } from 'styled-components'
 import { IReduxWorld } from '../redux/world/types'
 import { ICtrlData } from '../redux/ctrl_data/reducer'
 import { IconButton } from '@rmwc/icon-button'
-import { IPCServer } from '../com/tcp_sockets'
+import { IPCClient } from '../com/ipc_client'
 
 
 const Container = styled.div`
@@ -65,7 +65,7 @@ function usToTime(durationUs: number) {
 export function LiveControls(props: any) {
   const world: IReduxWorld = props.world;  // Null handling needed
   const ctrlData: ICtrlData = props.ctrlData;  // Null handling needed
-  const ipcServer: IPCServer = props.ipcServer;
+  const ipcClient: IPCClient = props.ipcClient;
 
   const [playerTs, setPlayerTs] = React.useState(world !== null ? world.timestamp : 0);
   const [record, setRecord] = React.useState(ctrlData !== null ? ctrlData.isPlaying : false);
@@ -80,7 +80,7 @@ export function LiveControls(props: any) {
         <React.Fragment>
           <IconButtonS icon="stop" label="StopStoring"
             onClick={() => {
-              ipcServer.sendMessage("stop_storing");
+              ipcClient.sendMessage("stop_storing");
               setRecord(false);
             }}
           />
@@ -89,7 +89,7 @@ export function LiveControls(props: any) {
       :
         <IconButtonS icon="videocam" label="StartStoring"
           onClick={() => {
-            ipcServer.sendMessage("start_storing");
+            ipcClient.sendMessage("start_storing");
             setRecord(true);
           }}
         />

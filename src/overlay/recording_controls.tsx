@@ -5,7 +5,7 @@ import { ICtrlData } from '../redux/ctrl_data/reducer'
 import { Slider } from '@rmwc/slider'
 import { IconButton } from '@rmwc/icon-button'
 import { ThemeProvider } from '@rmwc/theme'
-import { IPCServer } from '../com/tcp_sockets'
+import { IPCClient } from '../com/ipc_client'
 
 
 const Container = styled.div`
@@ -58,7 +58,7 @@ function usToTime(durationUs: number) {
 export function RecordingControls(props: any) {
   const world: IReduxWorld = props.world;  // Null handling needed
   const ctrlData: ICtrlData = props.ctrlData; // Mull handling needed
-  const ipcServer: IPCServer = props.ipcServer;
+  const ipcClient: IPCClient = props.ipcClient;
 
   const [playerTs, setPlayerTs] = React.useState(world !== null ? world.timestamp : 0);
   const [play, setPlay] = React.useState(ctrlData !== null ? ctrlData.isPlaying : false);
@@ -66,7 +66,7 @@ export function RecordingControls(props: any) {
   // Update timestamp from props
   React.useEffect(() => {
     if (world.timestamp >= ctrlData.recLength) {
-      ipcServer.sendMessage("pause_rec");
+      ipcClient.sendMessage("pause_rec");
       setPlay(false);
     }
     setPlayerTs(world.timestamp); 
@@ -79,22 +79,22 @@ export function RecordingControls(props: any) {
       // TODO: When pressing backward or forward too fast, there is an error in the cpp code...
       if (e.keyCode === 101) { // 5, numpad
         if (play) {
-          ipcServer.sendMessage("pause_rec");
+          ipcClient.sendMessage("pause_rec");
           setPlay(false);
         }
         else {
-          ipcServer.sendMessage("play_rec");
+          ipcClient.sendMessage("play_rec");
           setPlay(true);
         }
       }
       else if (e.keyCode === 100) { // 4 (arrow left), numpad
         if (!play) {
-          ipcServer.sendMessage("step_backward");
+          ipcClient.sendMessage("step_backward");
         }
       }
       else if (e.keyCode === 102) { // 6 (arrow right), numpad
         if (!play) {
-          ipcServer.sendMessage("step_forward");
+          ipcClient.sendMessage("step_forward");
         }
       }
     }
@@ -107,25 +107,25 @@ export function RecordingControls(props: any) {
   return <Container>
     <ButtonContainer>
       <IconButtonS icon="keyboard_arrow_left" label="Step Back" disabled={play}
-        onClick={() => ipcServer.sendMessage("step_backward")}
+        onClick={() => ipcClient.sendMessage("step_backward")}
       />
       {play ?
         <IconButtonS icon="pause" label="Pause" disabled={playerTs >= ctrlData.recLength}
           onClick={() => {
-            ipcServer.sendMessage("pause_rec");
+            ipcClient.sendMessage("pause_rec");
             setPlay(false);
           }}
         />
       :
         <IconButtonS icon="play_arrow" label="Play" disabled={playerTs >= ctrlData.recLength}
           onClick={() => {
-            ipcServer.sendMessage("play_rec");
+            ipcClient.sendMessage("play_rec");
             setPlay(true);
           }}
         />
       }
       <IconButtonS icon="keyboard_arrow_right" label="Step Forward" disabled={play}
-        onClick={() => ipcServer.sendMessage("step_forward")}
+        onClick={() => ipcClient.sendMessage("step_forward")}
       />
     </ButtonContainer>
 
@@ -140,12 +140,12 @@ export function RecordingControls(props: any) {
           value={playerTs}
           onChange={evt => {
             // TODO: somehow this is called twice
-            ipcServer.sendMessage("jump_to_ts", Math.floor(evt.detail.value));
+            ipcClient.sendMessage("jump_to_ts", Math.floor(evt.detail.value));
             const currTs = Math.floor(evt.detail.value);
           }}
           onInput={evt => {
             if (play) {
-              ipcServer.sendMessage("pause_rec");
+              ipcClient.sendMessage("pause_rec");
               setPlay(false);
             }
             const currTs = Math.floor(evt.detail.value);
