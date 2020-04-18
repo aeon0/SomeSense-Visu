@@ -32,11 +32,11 @@ export function handleMsgData(msgType: number, payload: Uint8Array) {
         console.log("Got test message from server");
       }
       else {
-        console.log("WARNING: Unkown server message: " + msg["type"]);
+        console.warn("Unkown server message: " + msg["type"]);
       }
     }
     catch (e) {
-      console.log("WARNING: Error with json msg from Server:");
+      console.error("Error with json msg from Server:");
       console.log(msgStr);
       // console.log(e);
     }
