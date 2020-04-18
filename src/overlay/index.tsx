@@ -22,8 +22,7 @@ const OverlayWrapper = styled.div`
 export function Overlay(props: any) {
   const ipcClient: IPCClient = props.ipcClient;
 
-  const world = useSelector((store: ApplicationState) => store.world);
-  const ctrlData = useSelector((store: ApplicationState) => store.ctrlData);
+  const isARecording = useSelector((store: ApplicationState) => store.ctrlData !== null ? store.ctrlData.isARecording : null);
   const connected = useSelector((store: ApplicationState) => store.connection.connected);
   const showRuntimeMeas = useSelector((store: ApplicationState) => store.runtimeMeasStore.show);
 
@@ -38,12 +37,12 @@ export function Overlay(props: any) {
     <ConnectionSetting />
     
     {/* world can be null in the recording case, has to be handled inside RecordingsControls */}
-    {connected && ctrlData && ctrlData.isARecording && 
-      <RecordingControls world={world} ctrlData={ctrlData} ipcClient={ipcClient} />
+    {connected && isARecording !== null && isARecording && 
+      <RecordingControls ipcClient={ipcClient} />
     }
 
-    {connected && world && ctrlData && !ctrlData.isARecording &&
-      <LiveControls world={world} ctrlData={ctrlData} ipcClient={ipcClient} />
+    {connected && isARecording !== null && !isARecording &&
+      <LiveControls ipcClient={ipcClient} />
     }
   </OverlayWrapper>
 }

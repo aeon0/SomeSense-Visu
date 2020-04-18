@@ -1,7 +1,7 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import { IReduxWorld } from '../redux/world/types'
-import { ICtrlData } from '../redux/ctrl_data/reducer'
+import { useSelector } from 'react-redux'
+import { ApplicationState } from '../redux/store'
 import { Slider } from '@rmwc/slider'
 import { IconButton } from '@rmwc/icon-button'
 import { ThemeProvider } from '@rmwc/theme'
@@ -56,22 +56,14 @@ function usToTime(durationUs: number) {
 }
 
 export function RecordingControls(props: any) {
-  const world: IReduxWorld = props.world;  // Null handling needed
-  const ctrlData: ICtrlData = props.ctrlData; // Mull handling needed
   const ipcClient: IPCClient = props.ipcClient;
 
-  const [playerTs, setPlayerTs] = React.useState(world !== null ? world.timestamp : 0);
-  const [play, setPlay] = React.useState(ctrlData !== null ? ctrlData.isPlaying : false);
+  const currentTs = useSelector((store: ApplicationState) => store.world !== null ? store.world.timestamp : 0);
+  const play = useSelector((store: ApplicationState) => store.ctrlData !== null ? store.ctrlData.isPlaying : false);
+  const recLength = useSelector((store: ApplicationState) => store.ctrlData !== null ? store.ctrlData.recLength : 0);
 
-  // Update timestamp from props
-  React.useEffect(() => {
-    if (world.timestamp >= ctrlData.recLength) {
-      ipcClient.sendMessage("pause_rec");
-      setPlay(false);
-    }
-    setPlayerTs(world.timestamp); 
-  }, [world !== null ? world.timestamp : 0]);
-  React.useEffect(() => { setPlay(ctrlData.isPlaying); }, [ctrlData !== null ? ctrlData.isPlaying : false]);
+  const [playerTs, setPlayerTs] = React.useState(currentTs);
+  React.useEffect(() => setPlayerTs(currentTs), [currentTs]);
 
   // Key handlers
   React.useEffect(() => {
@@ -80,11 +72,9 @@ export function RecordingControls(props: any) {
       if (e.keyCode === 101) { // 5, numpad
         if (play) {
           ipcClient.sendMessage("pause_rec");
-          setPlay(false);
         }
         else {
           ipcClient.sendMessage("play_rec");
-          setPlay(true);
         }
       }
       else if (e.keyCode === 100) { // 4 (arrow left), numpad
@@ -110,17 +100,15 @@ export function RecordingControls(props: any) {
         onClick={() => ipcClient.sendMessage("step_backward")}
       />
       {play ?
-        <IconButtonS icon="pause" label="Pause" disabled={playerTs >= ctrlData.recLength}
+        <IconButtonS icon="pause" label="Pause" disabled={currentTs >= recLength}
           onClick={() => {
             ipcClient.sendMessage("pause_rec");
-            setPlay(false);
           }}
         />
       :
-        <IconButtonS icon="play_arrow" label="Play" disabled={playerTs >= ctrlData.recLength}
+        <IconButtonS icon="play_arrow" label="Play" disabled={currentTs >= recLength}
           onClick={() => {
             ipcClient.sendMessage("play_rec");
-            setPlay(true);
           }}
         />
       }
@@ -141,18 +129,15 @@ export function RecordingControls(props: any) {
           onChange={evt => {
             // TODO: somehow this is called twice
             ipcClient.sendMessage("jump_to_ts", Math.floor(evt.detail.value));
-            const currTs = Math.floor(evt.detail.value);
           }}
           onInput={evt => {
             if (play) {
               ipcClient.sendMessage("pause_rec");
-              setPlay(false);
             }
-            const currTs = Math.floor(evt.detail.value);
-            setPlayerTs(currTs);
+            setPlayerTs(Math.floor(evt.detail.value));
           }}
           min={0}
-          max={ctrlData.recLength}
+          max={recLength}
         />
       </SliderContainer>
     </ThemeProvider>

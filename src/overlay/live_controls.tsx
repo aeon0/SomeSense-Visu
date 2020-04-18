@@ -1,9 +1,9 @@
 import * as React from 'react'
 import styled, { keyframes } from 'styled-components'
-import { IReduxWorld } from '../redux/world/types'
-import { ICtrlData } from '../redux/ctrl_data/reducer'
+import { useSelector } from 'react-redux'
 import { IconButton } from '@rmwc/icon-button'
 import { IPCClient } from '../com/ipc_client'
+import { ApplicationState } from '../redux/store'
 
 
 const Container = styled.div`
@@ -63,25 +63,19 @@ function usToTime(durationUs: number) {
 }
 
 export function LiveControls(props: any) {
-  const world: IReduxWorld = props.world;  // Null handling needed
-  const ctrlData: ICtrlData = props.ctrlData;  // Null handling needed
   const ipcClient: IPCClient = props.ipcClient;
 
-  const [playerTs, setPlayerTs] = React.useState(world !== null ? world.timestamp : 0);
-  const [record, setRecord] = React.useState(ctrlData !== null ? ctrlData.isPlaying : false);
+  const isStoring = useSelector((store: ApplicationState) => store.ctrlData !== null ? store.ctrlData.isStoring : false);
+  const currentTs = useSelector((store: ApplicationState) => store.world !== null ? store.world.timestamp : 0);
 
-  // Update timestamp from props
-  React.useEffect(() => { setPlayerTs(world.timestamp); }, [world !== null ? world.timestamp : 0]);
-  React.useEffect(() => { setRecord(ctrlData.isStoring); }, [ctrlData !== null ? ctrlData.isPlaying : false]);
 
   return <Container>
     <ButtonContainer>
-      {record?
+      {isStoring?
         <React.Fragment>
           <IconButtonS icon="stop" label="StopStoring"
             onClick={() => {
               ipcClient.sendMessage("stop_storing");
-              setRecord(false);
             }}
           />
           <RecLight />
@@ -90,12 +84,11 @@ export function LiveControls(props: any) {
         <IconButtonS icon="videocam" label="StartStoring"
           onClick={() => {
             ipcClient.sendMessage("start_storing");
-            setRecord(true);
           }}
         />
       }
     </ButtonContainer>
 
-    <InfoBox>{usToTime(playerTs)} [{playerTs} us]</InfoBox>
+    <InfoBox>{usToTime(currentTs)} [{currentTs} us]</InfoBox>
   </Container>
 }
