@@ -78,7 +78,6 @@ function onMouseMove(e: any) {
   sliderRef.current.scrollLeft = scrollLeft - walk;
 }
 
-
 function usToMs(us: number) {
   return us / 1000.0;
 }
@@ -144,13 +143,24 @@ function createRuntimeMeasFrame(key: string, measFrame: IRuntimeMeasFrame, pixel
 export function RuntimeMeas() {
   const dispatch = useDispatch();
 
-  const data = useSelector((store: ApplicationState) => store.runtimeMeasStore.data);
+  // Otherwise the update is too fast and we get performance issues
+  let lastUpdate: number = null;
+  const delay: number = 400; // in [ms]
+  const data = useSelector((store: ApplicationState) => store.runtimeMeasStore.data, () => {
+    if (!lastUpdate || ((Date.now() - lastUpdate) > delay)) {
+      lastUpdate = Date.now();
+      return false;
+    }
+    return true;
+  });
   React.useEffect(() => {
     sliderRef.current.scrollLeft = sliderRef.current.scrollWidth;
   });
 
   let pixelPerMs: number = 10; // Scale of each frame, pixel per millisecond
   const measOrder: string[] = createMeasOrder(data);
+
+  console.log("Update");
 
   return <WrapperDivS>
     <CloseBtnS className="material-icons" onClick={() => dispatch(hideRuntimeMeas())}>keyboard_arrow_up</CloseBtnS>
