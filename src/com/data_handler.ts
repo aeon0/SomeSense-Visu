@@ -15,7 +15,7 @@ import { addRuntimeMeas, clearRuntimeMeas } from "../redux/runtime_meas/actions"
 import { praseRuntimeMeasFrameData } from "../redux/runtime_meas/parse"
 
 
-export function handleMsgData(msgType: number, payload: Uint8Array) {
+export function handleMsgData(msgType: number, payload: Uint8Array, callbacks: { [cbIndex: number]: Function }) {
   if (msgType == 1) { // Json message
     const msgStr: string = new TextDecoder("utf-8").decode(payload);
     try {
@@ -23,9 +23,9 @@ export function handleMsgData(msgType: number, payload: Uint8Array) {
       if (msg["type"] == "server.callback") {
         // Callback for some request, search for callback in the callback list and execute
         const cbIndex: number = msg["cbIndex"];
-        if (cbIndex !== -1 && cbIndex in this.callbacks) {
-          this.callbacks[cbIndex](msg["data"]);
-          delete this.callbacks[cbIndex];
+        if (cbIndex !== -1 && cbIndex in callbacks) {
+          callbacks[cbIndex](msg["data"]);
+          delete callbacks[cbIndex];
         }
       }
       else if (msg["type"] == "server.test") {

@@ -143,7 +143,7 @@ export class IPCClient {
               const payload = this.currPayload.slice(0);
               // copy is important since this is a async function in order to not block tpc package reading
               const msgType: number = header[6];
-              handleMsgData(msgType, payload);
+              handleMsgData(msgType, payload, this.callbacks);
             }
           }
         }
