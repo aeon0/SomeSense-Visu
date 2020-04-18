@@ -1,7 +1,6 @@
 import { Vector3 } from 'babylonjs'
 import { IReduxWorld, ICamSensor, ITrack } from './types'
 import { CapnpOutput_Frame } from '../../com/frame.capnp'
-import { encode, RawImageData } from 'jpeg-js'
 
 
 export function parseWorldObj(frame: CapnpOutput_Frame) : IReduxWorld {

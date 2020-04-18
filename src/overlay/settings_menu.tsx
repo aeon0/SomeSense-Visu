@@ -22,14 +22,14 @@ export function SettingsMenu() {
 
   return <React.Fragment>
     <MenuSurfaceAnchorS>
-      <MenuSurface open={openMenu} onClose={evt => setOpenMenu(false)}>
+      <MenuSurface open={openMenu} onClose={() => setOpenMenu(false)}>
         {showRuntimeMeasFlag ?
         <MenuItem onClick={() => { dispatch(hideRuntimeMeas()); setOpenMenu(false);}}>Hide Runtime Meas</MenuItem>
         :
         <MenuItem onClick={() => { dispatch(showRuntimeMeas()); setOpenMenu(false);}}>Show Runtime Meas</MenuItem>
         }
       </MenuSurface>
-      <Fab icon="menu" onClick={evt => setOpenMenu(!openMenu)} />
+      <Fab icon="menu" onClick={() => setOpenMenu(!openMenu)} />
     </MenuSurfaceAnchorS>
   </React.Fragment>
 }

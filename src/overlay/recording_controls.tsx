@@ -126,11 +126,11 @@ export function RecordingControls(props: any) {
       <SliderContainer>
         <SliderS
           value={playerTs}
-          onChange={evt => {
+          onChange={(evt: any) => {
             // TODO: somehow this is called twice
             ipcClient.sendMessage("jump_to_ts", Math.floor(evt.detail.value));
           }}
-          onInput={evt => {
+          onInput={(evt: any) => {
             if (play) {
               ipcClient.sendMessage("pause_rec");
             }
