@@ -160,8 +160,6 @@ export function RuntimeMeas() {
   let pixelPerMs: number = 10; // Scale of each frame, pixel per millisecond
   const measOrder: string[] = createMeasOrder(data);
 
-  console.log("Update");
-
   return <WrapperDivS>
     <CloseBtnS className="material-icons" onClick={() => dispatch(hideRuntimeMeas())}>keyboard_arrow_up</CloseBtnS>
     <ContentS ref={sliderRef} onMouseDown={onMouseDown} onMouseUp={onMouseUpOrLeave} onMouseLeave={onMouseUpOrLeave} onMouseMove={onMouseMove}>
