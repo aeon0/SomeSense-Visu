@@ -1,5 +1,5 @@
 import { ICtrlData } from './reducer'
-import { CapnpOutput_Frame } from '../../com/frame.capnp';
+import { CapnpOutput_Frame } from '../../com/frame_v1.capnp';
 
 
 export function parseCtrlData(capnpData: CapnpOutput_Frame) : ICtrlData {

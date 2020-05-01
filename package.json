@@ -11,7 +11,7 @@
   "license": "ISC",
   "scripts": {
     "build-sass": "node-sass --include-path node_modules --include-path src src/index.scss app/src/index.css --output-style compressed",
-    "gen-capnp": "capnp compile -o node_modules/.bin/capnpc-ts src/com/frame.capnp",
+    "gen-capnp": "capnp compile -o node_modules/.bin/capnpc-ts src/com/frame_v1.capnp",
     "start": "npm run gen-capnp && npm run build-sass && ./node_modules/typescript/bin/tsc && electron ./app/src/main.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "pack": "electron-builder --dir",
