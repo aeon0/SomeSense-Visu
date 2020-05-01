@@ -76,6 +76,8 @@ struct CapnpOutput {
   }
 
   struct Frame {
+    versionMajor @0 :Int32; # major interface version, should always be increased once breaking changes happen
+    versionMinor @1: Int32; # minor interface version, should always be increase for non breaking changes
     timestamp @0 :Int64; # from the start of the app in [us] (is the latest of sensor input)
     frameStart @1 :Int64; # time of current frame start in [us]
                           # difference between frameStart and timestamp is the latency we have
