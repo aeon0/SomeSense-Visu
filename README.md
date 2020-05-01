@@ -18,6 +18,13 @@ cd OpenCep
 scp -rp user@IP:/path/to/storage_data ~/local/folder 
 ```
 
+#### Find IP address without Monitor
+```bash
+# check your ip (ifconfig) and then use nmap
+sudo namp -sn 10.42.0.0/24
+# this will output your own ip and the ip of the raspberry pi
+```
+
 ### Planing
 - Display 2D boxes (for detection algo, in normalized coords)
 - How to add this "debug" data the best way?

@@ -20,7 +20,7 @@ enum Reading {
 }
 const HEADERSIZE: number = 16;
 // const HOST: string = "localhost";
-const HOST: string = "10.42.0.81"
+const HOST: string = "10.42.0.18"
 
 export class IPCClient {
   private ipc = new IPC();
