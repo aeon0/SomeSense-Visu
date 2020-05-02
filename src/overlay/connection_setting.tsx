@@ -1,9 +1,9 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import { Card, CardActions, CardActionButtons, CardActionButton } from '@rmwc/card';
+import { Card, CardActions, CardActionButtons, CardActionButton } from '@rmwc/card'
 import { LinearProgress } from '@rmwc/linear-progress'
 import { useDispatch, useSelector } from 'react-redux'
-import { setConnecting } from '../redux/connection/actions'
+import { setConnecting, setServer } from '../redux/connection/actions'
 import { ApplicationState } from '../redux/store'
 
 
@@ -41,17 +41,26 @@ const CardActionButtonsS = styled(CardActionButtons)`
 const Spacer = styled.div`
   flex: 1 1 auto;
 `
+const InputS = styled.input`
+  font-size: 16px;
+  padding: 5px;
+  margin: 8px;
+`
 
 export function ConnectionSetting() {
   const dispatch = useDispatch();
   const connected = useSelector((store: ApplicationState) => store.connection.connected);
   const connecting = useSelector((store: ApplicationState) => store.connection.connecting);
   const waitForData = useSelector((store: ApplicationState) => store.connection.waitForData);
-  const host = useSelector((store: ApplicationState) => store.connection.host);
-  const port = useSelector((store: ApplicationState) => store.connection.port);
+  const stateHost = useSelector((store: ApplicationState) => store.connection.host);
+  const statePort = useSelector((store: ApplicationState) => store.connection.port);
+
+  const [host, setHost] = React.useState(stateHost);
+  const [port, setPort] = React.useState(statePort);
+  const [showChangeHost, setShowChangeHost] = React.useState(false);
 
   let infoStr = "unkown";
-  const hostStr = host + ":" + port.toString();
+  const hostStr = stateHost + ":" + statePort.toString();
   if (connecting) {
     if (waitForData) infoStr = "Wait for data from " + hostStr + "...";
     else infoStr = "Connecting to " + hostStr + "...";
@@ -61,21 +70,41 @@ export function ConnectionSetting() {
   }
 
   if (!connected) {
+    // TODO: Textfield from RMWC has some trouble... using normal inputs for now
     return <ContainerS>
       <CardS>
-        {connecting && <LinearProgressS /> }
-        <InfoS>{infoStr}</InfoS>
-        <CardActions>
-          <CardActionButtonsS>
-            {!connecting && <CardActionButton onClick={() => dispatch(setConnecting())}>Connect</CardActionButton>}
-            <Spacer />
-            {connecting ? 
-              <CardActionButton onClick={() => dispatch(setConnecting(false))}>Cancel</CardActionButton>
-              :
-              <CardActionButton> Change Host</CardActionButton>
-            }
-          </CardActionButtonsS>
-        </CardActions>
+        {!showChangeHost ?
+          <React.Fragment>
+            {connecting && <LinearProgressS /> }
+            <InfoS>{infoStr}</InfoS>
+            <CardActions>
+              <CardActionButtonsS>
+                {!connecting && <CardActionButton onClick={() => dispatch(setConnecting())}>Connect</CardActionButton>}
+                <Spacer />
+                {connecting ? 
+                  <CardActionButton onClick={() => dispatch(setConnecting(false))}>Cancel</CardActionButton>
+                  :
+                  <CardActionButton onClick={() => setShowChangeHost(true)}>Change Host</CardActionButton>
+                }
+              </CardActionButtonsS>
+            </CardActions>
+          </React.Fragment>
+          :
+          <React.Fragment>
+            <InputS value={host} placeholder="host" onChange={(e: any) => {setHost(e.target.value);}} />
+            <InputS value={port} placeholder="port" onChange={(e: any) => {setPort(parseInt(e.target.value));}} />
+            <CardActions>
+              <CardActionButtonsS>
+                <CardActionButton onClick={() => {
+                  dispatch(setServer(host, port));
+                  setShowChangeHost(false);
+                }}>Update</CardActionButton>
+                <Spacer />
+                <CardActionButton onClick={() => setShowChangeHost(false)}>Cancel</CardActionButton>
+              </CardActionButtonsS>
+            </CardActions>
+          </React.Fragment>
+        }
       </CardS>
     </ContainerS>
   }

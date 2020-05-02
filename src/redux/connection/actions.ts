@@ -26,7 +26,7 @@ export function waitForData() {
   }
 }
 
-export function setHost(host: string, port: number) {
+export function setServer(host: string, port: number) {
   return {
     type: EReduxActionTypes.SET_HOST,
     host,
