@@ -68,6 +68,25 @@ export function LiveControls(props: any) {
   const isStoring = useSelector((store: ApplicationState) => store.ctrlData !== null ? store.ctrlData.isStoring : false);
   const currentTs = useSelector((store: ApplicationState) => store.world !== null ? store.world.timestamp : 0);
 
+  // Key handlers
+  React.useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.keyCode === 49) { // 1
+        if (!isStoring) {
+          ipcClient.sendMessage("start_storing");
+        }
+      }
+      else if (e.keyCode === 50) { // 2
+        if (isStoring) {
+          ipcClient.sendMessage("stop_storing");
+        }
+      }
+    }
+    document.addEventListener("keydown", handleKeyDown, false);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown, false);
+    }
+  })
 
   return <Container>
     <ButtonContainer>

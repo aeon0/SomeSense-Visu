@@ -68,8 +68,7 @@ export function RecordingControls(props: any) {
   // Key handlers
   React.useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
-      // TODO: When pressing backward or forward too fast, there is an error in the cpp code...
-      if (e.keyCode === 101) { // 5, numpad
+      if (e.keyCode === 49) { // 1
         if (play) {
           ipcClient.sendMessage("pause_rec");
         }
@@ -77,12 +76,12 @@ export function RecordingControls(props: any) {
           ipcClient.sendMessage("play_rec");
         }
       }
-      else if (e.keyCode === 100) { // 4 (arrow left), numpad
+      else if (e.keyCode === 50) { // 2
         if (!play) {
           ipcClient.sendMessage("step_backward");
         }
       }
-      else if (e.keyCode === 102) { // 6 (arrow right), numpad
+      else if (e.keyCode === 51) { // 3
         if (!play) {
           ipcClient.sendMessage("step_forward");
         }
