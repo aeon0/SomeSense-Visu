@@ -19,8 +19,8 @@ enum Reading {
   PAYLOAD
 }
 const HEADERSIZE: number = 16;
-// const HOST: string = "localhost";
-const HOST: string = "10.42.0.18"
+const HOST: string = "localhost";
+// const HOST: string = "10.42.0.18"
 
 export class IPCClient {
   private ipc = new IPC();
@@ -140,10 +140,8 @@ export class IPCClient {
 
               this.readHeader();
               // this.currPayload and this.currHeader should be filled correctly. Lets read the message
-              const header = this.currHeader.slice(0);
-              const payload = this.currPayload.slice(0);
-              // copy is important since this is a async function in order to not block tpc package reading
-              const msgType: number = header[6];
+              const payload = this.currPayload.slice(); // copy since handleMsgData is a async function
+              const msgType: number = this.currHeader[6];
               handleMsgData(msgType, payload, this.callbacks);
             }
           }

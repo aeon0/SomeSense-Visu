@@ -34,3 +34,6 @@ scp -rp user@IP:/path/to/storage_data ~/local/folder
 - On weaker computers the processing of data is slower than the rate data is recived which leads to issues such as not recognizing key press, a lag in pause (multiple frames are still played), etc. 
 Solution could be to have a rec speed setting in the backend and adjust it automatically in this case.
 - So, we can not update styled components, because the new version has problems with RMWC. This problem would be fixed in the new RMWC, but upgrading RMWC has then a new issue with styled components. Most probably styled components has an issue there. Further investiagtion needed.
+
+## TODO
+- Select IP to connect to on the interface and ability to disconnect and connect to different IP on the fly

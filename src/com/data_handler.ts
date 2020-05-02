@@ -15,7 +15,7 @@ import { addRuntimeMeas, clearRuntimeMeas } from "../redux/runtime_meas/actions"
 import { praseRuntimeMeasFrameData } from "../redux/runtime_meas/parse"
 
 
-export function handleMsgData(msgType: number, payload: Uint8Array, callbacks: { [cbIndex: number]: Function }) {
+export async function handleMsgData(msgType: number, payload: Uint8Array, callbacks: { [cbIndex: number]: Function }) {
   if (msgType == 1) { // Json message
     const msgStr: string = new TextDecoder("utf-8").decode(payload);
     try {
@@ -57,7 +57,7 @@ export function handleMsgData(msgType: number, payload: Uint8Array, callbacks: {
   }
 }
 
-export function resetAppState() {
+export async function resetAppState() {
   store.dispatch(resetWorld());
   store.dispatch(clearRuntimeMeas());
   store.dispatch(resetCtrlData());
