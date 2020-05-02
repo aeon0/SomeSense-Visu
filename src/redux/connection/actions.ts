@@ -1,9 +1,10 @@
 import { EReduxActionTypes } from "../action_types"
 
 
-export function setConnecting() {
+export function setConnecting(connecting: boolean = true) {
   return {
-    type: EReduxActionTypes.CONNECTING,
+    type: EReduxActionTypes.SET_CONNECTING,
+    connecting
   }
 }
 
@@ -25,9 +26,10 @@ export function waitForData() {
   }
 }
 
-export function setHost(host: string) {
+export function setHost(host: string, port: number) {
   return {
     type: EReduxActionTypes.SET_HOST,
-    host
+    host,
+    port,
   }
 }

@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Fab } from '@rmwc/fab'
 import { MenuSurfaceAnchor, MenuSurface, MenuItem } from '@rmwc/menu'
 import { showRuntimeMeas, hideRuntimeMeas } from '../redux/runtime_meas/actions'
+import { setConnecting } from '../redux/connection/actions'
 import { ApplicationState } from '../redux/store'
 
 
@@ -19,6 +20,7 @@ export function SettingsMenu() {
   const dispatch = useDispatch();
   const [openMenu, setOpenMenu] = React.useState(false);
   const showRuntimeMeasFlag = useSelector((store: ApplicationState) => store.runtimeMeasStore.show);
+  const connected = useSelector((store: ApplicationState) => store.connection.connected);
 
   return <React.Fragment>
     <MenuSurfaceAnchorS>
@@ -28,6 +30,7 @@ export function SettingsMenu() {
         :
         <MenuItem onClick={() => { dispatch(showRuntimeMeas()); setOpenMenu(false);}}>Show Runtime Meas</MenuItem>
         }
+        {connected && <MenuItem onClick={() => dispatch(setConnecting(false))}>Disconnect</MenuItem>}
       </MenuSurface>
       <Fab icon="menu" onClick={() => setOpenMenu(!openMenu)} />
     </MenuSurfaceAnchorS>

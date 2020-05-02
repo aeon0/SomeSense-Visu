@@ -37,3 +37,4 @@ Solution could be to have a rec speed setting in the backend and adjust it autom
 
 ## TODO
 - Select IP to connect to on the interface and ability to disconnect and connect to different IP on the fly
+- Compare interface version from TCP packages with the internal one and visualize in case there is a missmatch

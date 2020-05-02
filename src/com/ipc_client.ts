@@ -1,9 +1,8 @@
 import { IPC } from 'node-ipc'
 import { store } from '../redux/store'
-import { setConnecting, setConnected, waitForData, setHost } from '../redux/connection/actions'
+import { setConnecting, setConnected, waitForData, setDisconnected } from '../redux/connection/actions'
 import { toUTF8Array } from './util'
 import { handleMsgData, resetAppState } from './data_handler'
-
 
 
 // Client for IPC communication via TCP Sockets
@@ -19,8 +18,6 @@ enum Reading {
   PAYLOAD
 }
 const HEADERSIZE: number = 16;
-const HOST: string = "localhost";
-// const HOST: string = "10.42.0.18"
 
 export class IPCClient {
   private ipc = new IPC();
@@ -33,25 +30,44 @@ export class IPCClient {
   private reading = Reading.HEADER;
   private isReadingPkg = false;
   private waitForData = false;
+  private connecting: boolean;
 
   constructor() {
     this.ipc.config.id = 'visu_client';
     this.ipc.config.silent = true;
-    this.ipc.config.retry = 2000; // time between reconnects in [ms]
+    this.ipc.config.retry = 1000; // time between reconnects in [ms]
     this.ipc.config.rawBuffer = true;
     this.ipc.config.encoding = "hex";
-    this.ipc.config.networkHost = HOST;
-    this.ipc.config.networkPort = 8999;
+    this.ipc.config.networkHost = store.getState().connection.host;
+    this.ipc.config.networkPort = store.getState().connection.port;
     this.callbacks = {};
 
-    this.start();
+    this.connecting = store.getState().connection.connecting;
+    if (this.connecting) {
+      this.start();
+    }
+    store.subscribe(() => {
+      var newConnecting = store.getState().connection.connecting;
+      if (newConnecting !== this.connecting) {
+        this.connecting = newConnecting;
+        if (this.connecting) {
+          console.log("Okay connecting...");
+          this.ipc.config.stopRetrying = false;
+          this.start();
+        }
+        else {
+          console.log("Disconnect this server!");
+          this.ipc.config.stopRetrying = true;
+          this.ipc.disconnect('server');
+        }
+      }
+    });
   }
 
   private start() {
     store.dispatch(setConnecting());
-    store.dispatch(setHost(HOST));
 
-    console.log("## start listening for server connections #");
+    console.log("## start listening for server connections on " + this.ipc.config.networkHost + " #");
 
     this.ipc.connectToNet('server', () => {
       this.ipc.of.server.on('connect', () => {
@@ -61,8 +77,8 @@ export class IPCClient {
       });
 
       this.ipc.of.server.on('disconnect', () => {
+        store.dispatch(setDisconnected());
         // Retry connecting
-        store.dispatch(setConnecting());
         resetAppState();
         this.bytesToRead = HEADERSIZE;
         this.reading = Reading.HEADER;
