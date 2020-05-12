@@ -56,6 +56,7 @@ function usToTime(durationUs: number) {
 }
 
 export function RecordingControls(props: any) {
+  var lastUpdate: number = -1;
   const ipcClient: IPCClient = props.ipcClient;
 
   const currentTs = useSelector((store: ApplicationState) => store.world !== null ? store.world.timestamp : 0);
@@ -126,10 +127,15 @@ export function RecordingControls(props: any) {
         <SliderS
           value={playerTs}
           onChange={(evt: any) => {
-            // TODO: somehow this is called twice
-            ipcClient.sendMessage("jump_to_ts", Math.floor(evt.detail.value));
+            // TODO: somehow this is called twice, using this ugly hack for now
+            var value: number = evt.detail.value;
+            if (value !== lastUpdate) {
+              lastUpdate = value;
+              ipcClient.sendMessage("jump_to_ts", Math.floor(value));
+            }
           }}
           onInput={(evt: any) => {
+            console.log("On input!");
             if (play) {
               ipcClient.sendMessage("pause_rec");
             }

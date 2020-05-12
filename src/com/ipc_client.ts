@@ -11,7 +11,9 @@ import { handleMsgData, resetAppState } from './data_handler'
 //   [1-5]:  Payload size in bytes
 //   [6]:    Message type: 0x01: Json in form of {type: string, cbIndex: int, data: any}
 //                         0x02: Packed Capnp (CapnpOutput::Frame)
-//   [7-15]: Currently not in use
+//   [7-8]:  Interface verison byte [7]: major [8]: minor
+//           TODO: use the interface version to check for compatibility
+//   [9-15]: Currently not in use
 
 enum Reading {
   HEADER = 0,
