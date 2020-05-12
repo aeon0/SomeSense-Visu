@@ -135,7 +135,6 @@ export function RecordingControls(props: any) {
             }
           }}
           onInput={(evt: any) => {
-            console.log("On input!");
             if (play) {
               ipcClient.sendMessage("pause_rec");
             }
