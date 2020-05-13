@@ -79,7 +79,7 @@ export function RecordingControls(props: any) {
       }
       else if (e.keyCode === 50) { // 2
         if (!play) {
-          ipcClient.sendMessage("step_backward");
+          ipcClient.sendMessage("step_backward", "", () => ipcClient.sendMessage("reset_algo"));
         }
       }
       else if (e.keyCode === 51) { // 3
@@ -97,7 +97,7 @@ export function RecordingControls(props: any) {
   return <Container>
     <ButtonContainer>
       <IconButtonS icon="keyboard_arrow_left" label="Step Back" disabled={play}
-        onClick={() => ipcClient.sendMessage("step_backward")}
+        onClick={() => ipcClient.sendMessage("step_backward", "", () => ipcClient.sendMessage("reset_algo"))}
       />
       {play ?
         <IconButtonS icon="pause" label="Pause" disabled={currentTs >= recLength}
@@ -131,7 +131,7 @@ export function RecordingControls(props: any) {
             var value: number = evt.detail.value;
             if (value !== lastUpdate) {
               lastUpdate = value;
-              ipcClient.sendMessage("jump_to_ts", Math.floor(value));
+              ipcClient.sendMessage("jump_to_ts", Math.floor(value), (res: any) => ipcClient.sendMessage("reset_algo"));
             }
           }}
           onInput={(evt: any) => {
