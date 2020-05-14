@@ -19,7 +19,7 @@ export class TrackManager {
           break;
         }
       }
-      if (!found) {
+      if (!found && trackId in this.tracks) {
         this.tracks[trackId].reset();
         delete this.tracks[trackId];
       }
