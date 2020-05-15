@@ -1,4 +1,4 @@
-import { Vector3 } from 'babylonjs'
+import { Vector3, Vector2 } from 'babylonjs'
 
 
 export enum ECLass {
@@ -22,6 +22,12 @@ export interface ITrack {
   ttc: number; // [s]
 }
 
+export interface IOpticalFlow {
+  endTs: number; // in [us]
+  deltaTime: number; // in [ms]
+  flowTracks: {start: Vector2, end: Vector2}[];
+}
+
 export interface ICamSensor {
   idx: number;
   key: string;
@@ -31,13 +37,18 @@ export interface ICamSensor {
   fovVertical: number, // [rad]
   imageData: ImageData,
   timestamp: number, // timestamp of the image [us]
+  focalLength: Vector2; // (x, y) in pixel
+  principalPoint: Vector2; // (x, y) in pixel
+
+  opticalFlow: IOpticalFlow;
 }
 
 export interface IReduxWorld {
-  tracks: ITrack[];
   camSensors: ICamSensor[];
   timestamp: number; // timestamp of the algo [us]
   frameCount: number; // current number of the frame
   frameStart: number; // timestamp of the start of the frame [us] (including pause time during recordings)
   plannedFrameLength: number; // planned length of frame in [ms]
+
+  tracks: ITrack[];
 }

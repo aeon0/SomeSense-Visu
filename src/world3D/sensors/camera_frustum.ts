@@ -17,20 +17,22 @@ export class CameraFrustum {
     transparentMaterial.alpha = 0.03;
     transparentMaterial.backFaceCulling = false;
 
-    const d: number = 140;
-    const delta_x = Math.tan(this.camSensor.getFovHorizontal() / 2) * d;
-    const delta_y = Math.tan(this.camSensor.getFovVertical() / 2) * d;
+    const depth: number = 140;
+    const delta_y = Math.tan(this.camSensor.getFovHorizontal() / 2) * depth;
+    const delta_z = Math.tan(this.camSensor.getFovVertical() / 2) * depth;
 
-    this.frustum = new Mesh("custom", this.scene);
+    this.frustum = new Mesh("cam_furstum", this.scene);
 
     let vertexData = new VertexData();
     vertexData.positions = [
-      ...this.camSensor.getPosition().asArray(),
-      this.camSensor.getPosition().x + delta_x, this.camSensor.getPosition().y + delta_y, this.camSensor.getPosition().z + d, // top-left
-      this.camSensor.getPosition().x - delta_x, this.camSensor.getPosition().y + delta_y, this.camSensor.getPosition().z + d, // top-right
-      this.camSensor.getPosition().x + delta_x, this.camSensor.getPosition().y - delta_y, this.camSensor.getPosition().z + d, // bottom-left
-      this.camSensor.getPosition().x - delta_x, this.camSensor.getPosition().y - delta_y, this.camSensor.getPosition().z + d, // bottom-right
+      0, 0, 0,
+      depth,  delta_y,  delta_z, // top-left
+      depth,  delta_y, -delta_z, // top-right
+      depth, -delta_y,  delta_z, // bottom-left
+      depth, -delta_y, -delta_z, // bottom-right
     ];
+    vertexData = vertexData.transform(this.camSensor.getCamToWorld());
+
     vertexData.indices = [
       0, 1, 2, // top
       0, 3, 4, // bottom
@@ -46,6 +48,5 @@ export class CameraFrustum {
 
     // rotate frustum
     this.frustum.setPivotPoint(this.camSensor.getPosition());
-    this.frustum.addRotation(this.camSensor.getPitch(), this.camSensor.getYaw(), this.camSensor.getRoll());
   }
 }

@@ -1,5 +1,5 @@
-import { Vector3 } from 'babylonjs'
-import { IReduxWorld, ICamSensor, ITrack } from './types'
+import { Vector3, Vector2 } from 'babylonjs'
+import { IReduxWorld, ICamSensor, ITrack, IOpticalFlow } from './types'
 import { CapnpOutput_Frame } from '../../com/frame_v1.capnp'
 
 
@@ -31,16 +31,32 @@ export function parseWorldObj(frame: CapnpOutput_Frame) : IReduxWorld {
       imageData.data[z++] = 0xFF; // alpha
     }
     
+    // Parse optical flow
+    let flowData: IOpticalFlow = {
+      endTs: val.getOpticalFlow().getEndTs().toNumber(),
+      deltaTime: val.getOpticalFlow().getDeltaTime(),
+      flowTracks: [],
+    };
+    val.getOpticalFlow().getFlowTracks().forEach( flowTrack => {
+      flowData.flowTracks.push({
+        start: new Vector2(flowTrack.getStartX(), flowTrack.getStartY()),
+        end: new Vector2(flowTrack.getStartX(), flowTrack.getStartY()),
+      });
+    });
+
     // Fill camera interface
     let camSensor: ICamSensor = {
       timestamp: val.getTimestamp().toNumber(),
       key: val.getKey(),
-      position: new Vector3(val.getX(), val.getY(), val.getZ()),
-      rotation: new Vector3(val.getYaw(), val.getYaw(), val.getRoll()),
+      position: new Vector3(val.getX(), val.getY(), val.getZ()), // autosar coordiante system
+      rotation: new Vector3(val.getRoll(), val.getPitch(), val.getYaw()), // autosar coordiante system
       idx: val.getIdx(),
       fovVertical: val.getFovVertical(),
       fovHorizontal: val.getFovHorizontal(),
       imageData: imageData,
+      focalLength: new Vector2(val.getFocalLengthX(), val.getFocalLengthY()),
+      principalPoint: new Vector2(val.getPrincipalPointX(), val.getPrincipalPointY()),
+      opticalFlow: flowData
     };
     worldObj.camSensors.push(camSensor);
   });

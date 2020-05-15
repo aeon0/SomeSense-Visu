@@ -14,12 +14,14 @@ export class EgoVehicle {
     const length: number = 3.5;
     const height: number = 1.5;
     this.mesh = MeshBuilder.CreateBox("box", {height: height, width: 2.5, depth: length}, this.scene);
-    this.mesh.position = new Vector3(0, (height/2), -(length/2));
+    this.mesh.rotation.y = Math.PI*0.5;
+    this.mesh.rotation.z = Math.PI*0.5;
+    this.mesh.position = new Vector3(-length * 0.5, 0, height * 0.5);
     this.mesh.edgesWidth = 4.0;
     this.mesh.edgesColor = new Color4(1, 1, 1, 1);
     this.mesh.enableEdgesRendering(.9999);
     this.mesh.material  = transparentMaterial;
-    this.mesh.renderingGroupId = 2;
+    this.mesh.renderingGroupId = 2; // this makes sure that it the 2D image does not obscure the object
   }
 
   public update(perspective: EPerspectiveTypes) {

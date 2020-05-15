@@ -1,4 +1,4 @@
-import { StandardMaterial, Color3, Scene, Mesh, MeshBuilder, Vector3, DynamicTexture } from 'babylonjs'
+import { StandardMaterial, Color3, Axis, Space, Scene, Mesh, MeshBuilder, Vector3, DynamicTexture, Matrix } from 'babylonjs'
 import { EPerspectiveTypes } from '../redux/perspective/reducer'
 import { CameraSensor } from './sensors/camera_sensor'
 
@@ -23,16 +23,22 @@ export class Image2D {
     this.textureMaterial.backFaceCulling = false;
     this.dynamicTexture = new DynamicTexture("image3DTexture", 1, this.scene, false);
     this.textureMaterial.ambientTexture = this.dynamicTexture;
-    const imgDistanceFromCamera = 1;
+    const imgDistanceFromCamera = 2; // TODO: does not like distance of 1 (maybe depth buffer of free cam not sufficient?)
     const width = imgDistanceFromCamera * 2 * Math.tan(this.camSensor.getFovHorizontal() * 0.5);
     const height = imgDistanceFromCamera * 2 * Math.tan(this.camSensor.getFovVertical() * 0.5);
     this.image3DMesh = MeshBuilder.CreatePlane("image2D", {width: width, height: height}, this.scene);
     this.image3DMesh.material = this.textureMaterial;
     this.image3DMesh.renderingGroupId = 1;
-    this.image3DMesh.position = this.camSensor.getPosition();
-    // Rotate image
-    this.image3DMesh.addRotation(this.camSensor.getPitch(), this.camSensor.getYaw(), this.camSensor.getRoll());
-    // Move camera 1 forward
+
+    this.image3DMesh.rotate(Axis.Y, -Math.PI/2, Space.LOCAL);
+    this.image3DMesh.rotate(Axis.Z, -Math.PI/2, Space.LOCAL);
+    // TODO: No idea why the rotation has to be applied in such a confusing way... give this thing a thought maybe at some time
+    this.image3DMesh.addRotation(
+      -this.camSensor.getRotation().y,
+       this.camSensor.getRotation().z,
+      -this.camSensor.getRotation().x
+    );
+    // Move camera forward
     this.image3DMesh.position = this.image3DMesh.position.add(this.camSensor.getDirection().normalize().multiply(new Vector3(imgDistanceFromCamera, imgDistanceFromCamera, imgDistanceFromCamera)));
   }
 
