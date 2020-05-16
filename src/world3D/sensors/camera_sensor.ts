@@ -19,10 +19,8 @@ export class CameraSensor {
       this.translationMat = Matrix.Translation(position.x, position.y, position.z);
       this.camToWorldMat = this.translationMat.multiply(this.rotationMat);
 
-      this.direction = new Vector3(1, 0, 0);
-      this.direction = Vector3.TransformCoordinates(this.direction, this.rotationMat);
-      this.upVector = new Vector3(0, 0, 1);
-      this.upVector = Vector3.TransformCoordinates(this.upVector, this.rotationMat);
+      this.direction = Vector3.TransformCoordinates(new Vector3(1, 0, 0), this.rotationMat);
+      this.upVector = Vector3.TransformCoordinates(new Vector3(0, 0, 1), this.rotationMat);
 
       // calc ratio
       const width = 2 * Math.tan(this.getFovHorizontal() * 0.5);
@@ -33,7 +31,6 @@ export class CameraSensor {
     getPosition() { return this.position; }
     getFovHorizontal() { return this.fovHorizontal; }
     getFovVertical() { return this.fovVertical; }
-    getRotation() { return this.rotation; }
     getDirection() { return this.direction; }
     getUpVector() { return this.upVector; }
     getRatio() { return this.ratio; }

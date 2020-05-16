@@ -43,14 +43,15 @@ export class Camera {
   private updatePerspective(): void {
     switch(this.perspective) {
       case EPerspectiveTypes.IMAGE_2D:
-        const pos = this.camSensor.getPosition();
-        const target = this.camSensor.getPosition().add(this.camSensor.getDirection().normalize());
+        const pos = Vector3.TransformCoordinates(new Vector3(0, 0, 0), this.camSensor.getCamToWorld());
+        const target = Vector3.TransformCoordinates(new Vector3(1, 0, 0), this.camSensor.getCamToWorld());
         this.camera = new FlyCamera("2D_cam", pos, this.scene);
         this.camera.upVector = this.camSensor.getUpVector();
         this.camera.setTarget(target);
         this.camera.applyGravity = false;
         this.camera.bankedTurn = false;
         this.camera.bankedTurnMultiplier = 0;
+        this.camera.inputs.clear(); // no inputs needed, should be locked
         this.camera.fov = this.camSensor.getFovHorizontal();
         this.ratioDiffFactor = this.camSensor.getRatio() / this.engine.getAspectRatio(this.camera);
         this.adjustZoomFactor(1.05);

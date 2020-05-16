@@ -45,8 +45,5 @@ export class CameraFrustum {
     this.frustum.material  = transparentMaterial;
     this.frustum.edgesColor = new Color4(1, 1, 1, 1);
     this.frustum.enableEdgesRendering(.9999);
-
-    // rotate frustum
-    this.frustum.setPivotPoint(this.camSensor.getPosition());
   }
 }
