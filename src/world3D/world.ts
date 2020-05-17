@@ -1,4 +1,4 @@
-import { Engine, Scene, Vector3 }from 'babylonjs'
+import { Engine, Scene, Vector3, Vector2 }from 'babylonjs'
 import { store } from '../redux/store'
 import { Lights } from './lights'
 import { Camera } from './camera'
@@ -7,7 +7,7 @@ import { showAxis, showGrid } from './debug_mesh'
 import { Image2D } from './image2d'
 import { CameraFrustum } from './sensors/camera_frustum'
 import { CameraSensor } from './sensors/camera_sensor'
-import { TrackManager } from './objects/track_manager'
+import { VisManager } from './algo_visu/vis_manager'
 
 
 export class World {
@@ -20,19 +20,23 @@ export class World {
   private cameraFrustum: CameraFrustum;
   private timestamp: number;
   private camSensor: CameraSensor;
-  private trackManager: TrackManager;
+  private visManager: VisManager;
 
   constructor(private canvas: HTMLCanvasElement) {
     // default camera
     this.camSensor = new CameraSensor(
-      new Vector3(0, 1, -0.5),
-      new Vector3(0, 0, 0), // pitch, yaw, roll
+      "default_cam",
+      new Vector3(-1.0, 0, 0.8),
+      new Vector3(0, 0, 0), // roll, pitch, yaw
       (1/2)*Math.PI, // 90 degree
       (1/4)*Math.PI, // 45 degree
+      new Vector2(320, 160),
+      new Vector2(640, 640),
     );
 
     this.engine = new Engine(this.canvas, true);
     this.scene = new Scene(this.engine);
+    this.scene.useRightHandedSystem = true; // autosar uses right handed system
 
     this.camera = new Camera(this.scene, this.engine, this.camSensor);
     this.lights = new Lights(this.scene);
@@ -46,7 +50,8 @@ export class World {
     });
 
     this.timestamp = -1;
-    this.trackManager = new TrackManager(this.scene);
+
+    this.visManager = new VisManager(this.scene);
   }
 
   public load(): void {
@@ -81,10 +86,13 @@ export class World {
         // In case current cam sensor differs from received one, update
         const sensorData = worldData.camSensors[0];
         const camSensor = new CameraSensor(
+          sensorData.key,
           sensorData.position,
           sensorData.rotation,
           sensorData.fovHorizontal,
           sensorData.fovVertical,
+          sensorData.principalPoint,
+          sensorData.focalLength,
         );
         if (!camSensor.equals(this.camSensor)) {
           this.camSensor = camSensor;
@@ -93,10 +101,12 @@ export class World {
           this.camera.updateCamera(camSensor);
         }
 
-        this.trackManager.update(worldData.tracks);
+        // Update algo visus
+        this.visManager.update(this.camSensor, worldData);
       }
 
       this.scene.render();
+      // console.log(this.engine.getFps().toFixed());
     });
   }
 }

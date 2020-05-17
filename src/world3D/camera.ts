@@ -43,8 +43,8 @@ export class Camera {
   private updatePerspective(): void {
     switch(this.perspective) {
       case EPerspectiveTypes.IMAGE_2D:
-        const pos = Vector3.TransformCoordinates(new Vector3(0, 0, 0), this.camSensor.getCamToWorld());
-        const target = Vector3.TransformCoordinates(new Vector3(1, 0, 0), this.camSensor.getCamToWorld());
+        const pos = this.camSensor.calcCamToWorld(new Vector3(0, 0, 0));
+        const target = this.camSensor.calcCamToWorld(new Vector3(1, 0, 0));
         this.camera = new FlyCamera("2D_cam", pos, this.scene);
         this.camera.upVector = this.camSensor.getUpVector();
         this.camera.setTarget(target);
