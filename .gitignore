@@ -3,4 +3,5 @@ node_modules
 *.tsbuildinfo
 dist
 tmp
+export/
 *.capnp.ts

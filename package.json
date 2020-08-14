@@ -45,14 +45,15 @@
     "babylonjs-gui": "^4.1.0",
     "babylonjs-materials": "^4.1.0",
     "capnpc-ts": "^0.4.0",
+    "electron-devtools-installer": "^3.0.0",
+    "fast-png": "^5.0.2",
     "node-ipc": "^9.1.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-redux": "^7.2.0",
     "redux": "^4.0.5",
     "rmwc": "^5.7.2",
-    "styled-components": "^4.4.1",
-    "electron-devtools-installer": "^3.0.0"
+    "styled-components": "^4.4.1"
   },
   "devDependencies": {
     "@types/electron-devtools-installer": "^2.2.0",
