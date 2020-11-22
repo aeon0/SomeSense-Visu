@@ -1,30 +1,31 @@
 # VISU
 
-Visu for OpenCep backend. Recives Cap'n Proto data via TCP sockets and uses Electron and Babylon.JS to visualize the scene.
+Visu for backend. Recives Cap'n Proto data via TCP sockets and uses Electron and Babylon.JS to visualize the scene.
+![Screenshot](./assets/screenshot.png?raw=true)
 
 ## Add new Algo visualization
 If you have a new algo or extend an exisiting one, this is what you want to do:</br>
 TODO
 
-## Running OpenCep on Remote machine
-When running OpenCep on a remote machine the two machines will need a TCP connection. Find the IP of the remote and connect to this IP via the Visualization GUI.
+## Running on Remote machine
+When running on a remote machine the two machines will need a TCP connection. Find the IP of the remote and connect to this IP via the Visualization GUI.
 #### Find IP address without Monitor
 ```bash
 # check your ip (ifconfig) and then use nmap
 sudo namp -sn 10.42.0.0/24
 # this will output your own ip and the ip of the raspberry pi
 ```
-#### Start OpenCep on remote machine
+#### Start on remote machine
 ```bash
 # Find out the IP of the device
 # ssh into it
 ssh user@IP
-# Clone, build and start OpenCep
+# Clone, build and start
 git clone ...
-cd OpenCep
+cd visu
 ./scripts/dependencies.sh
 ./scripts/build.sh --build_type=release
-./dist/bin/release/OpenCep
+./dist/bin/release/app
 
 # Copy recordings from remote device
 scp -rp user@IP:/path/to/storage_data ~/local/folder 
