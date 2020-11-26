@@ -7,6 +7,9 @@
     "baseUrl": ".",
     "jsx": "react",
     "incremental": true,
+    "types": [
+      "babylonjs"
+    ],
     "paths": {
       "*": [
         "node_modules/*"
