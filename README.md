@@ -3,6 +3,12 @@
 Visu for backend. Recives Cap'n Proto data via TCP sockets and uses Electron and Babylon.JS to visualize the scene.
 ![Screenshot](./assets/screenshot.png?raw=true)
 
+## Install
+Node.js and npm needs to be installed (tested with node version 14.15.1).
+```bash
+npm install
+npm start
+```
 ## Add new Algo visualization
 If you have a new algo or extend an exisiting one, this is what you want to do:</br>
 TODO
