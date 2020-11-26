@@ -1,13 +1,13 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import { Select } from '@rmwc/select'
+import { Select, SelectProps, SelectHTMLProps } from '@rmwc/select'
 import { useDispatch, useSelector } from 'react-redux'
 import { setPerspective } from '../redux/perspective/actions'
 import { EPerspectiveTypes } from "../redux/perspective/reducer"
 import { ApplicationState } from '../redux/store'
 
 
-const SelectS = styled(Select)`
+const SelectS = styled(Select)<SelectProps & SelectHTMLProps>`
   position: relative;
   float: right;
   margin-right: 25px;

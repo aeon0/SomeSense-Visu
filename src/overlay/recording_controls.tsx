@@ -2,8 +2,8 @@ import * as React from 'react'
 import styled from 'styled-components'
 import { useSelector } from 'react-redux'
 import { ApplicationState } from '../redux/store'
-import { Slider } from '@rmwc/slider'
-import { IconButton } from '@rmwc/icon-button'
+import { Slider, SliderProps, SliderHTMLProps } from '@rmwc/slider'
+import { IconButton, IconButtonProps, IconButtonHTMLProps } from '@rmwc/icon-button'
 import { ThemeProvider } from '@rmwc/theme'
 import { IPCClient } from '../com/ipc_client'
 
@@ -22,7 +22,7 @@ const SliderContainer = styled.div`
   margin-left: auto;
   margin-right: auto;
 `
-const SliderS = styled(Slider)`
+const SliderS = styled(Slider)<SliderProps & SliderHTMLProps>`
   pointer-events: auto;
 `
 const ButtonContainer = styled.div`
@@ -30,7 +30,7 @@ const ButtonContainer = styled.div`
   align-items: center;
   justify-content: center;
 `
-const IconButtonS = styled(IconButton)`
+const IconButtonS = styled(IconButton)<IconButtonProps & IconButtonHTMLProps>`
   pointer-events: auto;
   color: #EEE;
 `

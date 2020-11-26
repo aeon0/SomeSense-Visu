@@ -1,7 +1,7 @@
 import * as React from 'react'
 import styled, { keyframes } from 'styled-components'
 import { useSelector } from 'react-redux'
-import { IconButton } from '@rmwc/icon-button'
+import { IconButton, IconButtonProps, IconButtonHTMLProps } from '@rmwc/icon-button'
 import { IPCClient } from '../com/ipc_client'
 import { ApplicationState } from '../redux/store'
 
@@ -20,7 +20,7 @@ const ButtonContainer = styled.div`
   align-items:center;
   padding: 10px;
 `
-const IconButtonS = styled(IconButton)`
+const IconButtonS = styled(IconButton)<IconButtonProps & IconButtonHTMLProps>`
   pointer-events: auto;
   color: #EEE;
 `

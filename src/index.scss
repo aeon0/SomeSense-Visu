@@ -1,16 +1,15 @@
 // MDC Theme
-$mdc-theme-primary: #66e9de;
-
-$mdc-theme-secondary: #424242;
-
-$mdc-theme-error: #e84e4e;
-$mdc-theme-on-error: #fff;
-
-$mdc-theme-surface: #323232;
-$mdc-theme-on-surface: #fff;
+@use "@material/theme" with (
+  $primary:  #66e9de,
+  $secondary: #424242,
+  $error: #e84e4e,
+  $on-error: #fff,
+  $surface: #323232,
+  $on-surface: #fff
+);
 
 // MDC SCSS files
-@import 'material-components-web/material-components-web';
+@use 'material-components-web/material-components-web';
 
 // Change scrollbar for whole app
 *::-webkit-scrollbar {
