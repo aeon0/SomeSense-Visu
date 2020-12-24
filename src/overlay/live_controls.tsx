@@ -1,6 +1,9 @@
 import * as React from 'react'
 import styled, { keyframes } from 'styled-components'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { ICtrlData } from '../redux/ctrl_data/reducer'
+import { updateCtrlData } from '../redux/ctrl_data/actions'
+import { parseCtrlData } from '../redux/ctrl_data/parse'
 import { IconButton, IconButtonProps, IconButtonHTMLProps } from '@rmwc/icon-button'
 import { IPCClient } from '../com/ipc_client'
 import { ApplicationState } from '../redux/store'
@@ -64,6 +67,7 @@ function usToTime(durationUs: number) {
 
 export function LiveControls(props: any) {
   const ipcClient: IPCClient = props.ipcClient;
+  const dispatch = useDispatch();
 
   const isStoring = useSelector((store: ApplicationState) => store.ctrlData !== null ? store.ctrlData.isStoring : false);
   const currentTs = useSelector((store: ApplicationState) => store.world !== null ? store.world.timestamp : 0);
@@ -73,12 +77,18 @@ export function LiveControls(props: any) {
     function handleKeyDown(e: KeyboardEvent) {
       if (e.keyCode === 49) { // 1
         if (!isStoring) {
-          ipcClient.sendMessage("start_storing");
+          ipcClient.sendMessage("start_storing", null, (res: any) => {
+            const ctrlData: ICtrlData = parseCtrlData(res);
+            dispatch(updateCtrlData(ctrlData));
+          });
         }
       }
       else if (e.keyCode === 50) { // 2
         if (isStoring) {
-          ipcClient.sendMessage("stop_storing");
+          ipcClient.sendMessage("stop_storing", null, (res: any) => {
+            const ctrlData: ICtrlData = parseCtrlData(res);
+            dispatch(updateCtrlData(ctrlData));
+          });
         }
       }
     }
@@ -94,7 +104,10 @@ export function LiveControls(props: any) {
         <React.Fragment>
           <IconButtonS icon="stop" label="StopStoring"
             onClick={() => {
-              ipcClient.sendMessage("stop_storing");
+              ipcClient.sendMessage("stop_storing", null, (res: any) => {
+                const ctrlData: ICtrlData = parseCtrlData(res);
+                dispatch(updateCtrlData(ctrlData));
+              });
             }}
           />
           <RecLight />
@@ -102,7 +115,10 @@ export function LiveControls(props: any) {
       :
         <IconButtonS icon="videocam" label="StartStoring"
           onClick={() => {
-            ipcClient.sendMessage("start_storing");
+            ipcClient.sendMessage("start_storing", null, (res: any) => {
+              const ctrlData: ICtrlData = parseCtrlData(res);
+              dispatch(updateCtrlData(ctrlData));
+            });
           }}
         />
       }

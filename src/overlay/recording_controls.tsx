@@ -1,7 +1,10 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { ApplicationState } from '../redux/store'
+import { ICtrlData } from '../redux/ctrl_data/reducer'
+import { updateCtrlData } from '../redux/ctrl_data/actions'
+import { parseCtrlData } from '../redux/ctrl_data/parse'
 import { Slider, SliderProps, SliderHTMLProps } from '@rmwc/slider'
 import { IconButton, IconButtonProps, IconButtonHTMLProps } from '@rmwc/icon-button'
 import { ThemeProvider } from '@rmwc/theme'
@@ -58,6 +61,7 @@ function usToTime(durationUs: number) {
 export function RecordingControls(props: any) {
   var lastUpdate: number = -1;
   const ipcClient: IPCClient = props.ipcClient;
+  const dispatch = useDispatch();
 
   const currentTs = useSelector((store: ApplicationState) => store.world !== null ? store.world.timestamp : 0);
   const play = useSelector((store: ApplicationState) => store.ctrlData !== null ? store.ctrlData.isPlaying : false);
@@ -71,20 +75,33 @@ export function RecordingControls(props: any) {
     function handleKeyDown(e: KeyboardEvent) {
       if (e.keyCode === 49) { // 1
         if (play) {
-          ipcClient.sendMessage("pause_rec");
+          ipcClient.sendMessage("pause_rec", null, (res: any) => {
+            const ctrlData: ICtrlData = parseCtrlData(res);
+            dispatch(updateCtrlData(ctrlData));
+          });
         }
         else {
-          ipcClient.sendMessage("play_rec");
+          ipcClient.sendMessage("play_rec", null, (res: any) => {
+            const ctrlData: ICtrlData = parseCtrlData(res);
+            dispatch(updateCtrlData(ctrlData));
+          });
         }
       }
       else if (e.keyCode === 50) { // 2
         if (!play) {
-          ipcClient.sendMessage("step_backward", "", () => ipcClient.sendMessage("reset_algo"));
+          ipcClient.sendMessage("step_backward", null, (res: any) => {
+            const ctrlData: ICtrlData = parseCtrlData(res);
+            dispatch(updateCtrlData(ctrlData));
+            ipcClient.sendMessage("reset_algo")
+          });
         }
       }
       else if (e.keyCode === 51) { // 3
         if (!play) {
-          ipcClient.sendMessage("step_forward");
+          ipcClient.sendMessage("step_forward", null, (res: any) => {
+            const ctrlData: ICtrlData = parseCtrlData(res);
+            dispatch(updateCtrlData(ctrlData));
+          });
         }
       }
     }
@@ -97,23 +114,40 @@ export function RecordingControls(props: any) {
   return <Container>
     <ButtonContainer>
       <IconButtonS icon="keyboard_arrow_left" label="Step Back" disabled={play}
-        onClick={() => ipcClient.sendMessage("step_backward", "", () => ipcClient.sendMessage("reset_algo"))}
+        onClick={() => {
+          ipcClient.sendMessage("step_backward", null, (res: any) => {
+            const ctrlData: ICtrlData = parseCtrlData(res);
+            dispatch(updateCtrlData(ctrlData));
+            ipcClient.sendMessage("reset_algo")
+          });
+        }}
       />
       {play ?
         <IconButtonS icon="pause" label="Pause" disabled={currentTs >= recLength}
           onClick={() => {
-            ipcClient.sendMessage("pause_rec");
+            ipcClient.sendMessage("pause_rec", null, (res: any) => {
+              const ctrlData: ICtrlData = parseCtrlData(res);
+              dispatch(updateCtrlData(ctrlData));
+            });
           }}
         />
       :
         <IconButtonS icon="play_arrow" label="Play" disabled={currentTs >= recLength}
           onClick={() => {
-            ipcClient.sendMessage("play_rec");
+            ipcClient.sendMessage("play_rec", null, (res: any) => {
+              const ctrlData: ICtrlData = parseCtrlData(res);
+              dispatch(updateCtrlData(ctrlData));
+            });
           }}
         />
       }
       <IconButtonS icon="keyboard_arrow_right" label="Step Forward" disabled={play}
-        onClick={() => ipcClient.sendMessage("step_forward")}
+        onClick={() => {
+          ipcClient.sendMessage("step_forward", null, (res: any) => {
+            const ctrlData: ICtrlData = parseCtrlData(res);
+            dispatch(updateCtrlData(ctrlData));
+          });
+        }}
       />
     </ButtonContainer>
 
@@ -131,12 +165,19 @@ export function RecordingControls(props: any) {
             var value: number = evt.detail.value;
             if (value !== lastUpdate) {
               lastUpdate = value;
-              ipcClient.sendMessage("jump_to_ts", Math.floor(value), (res: any) => ipcClient.sendMessage("reset_algo"));
+              ipcClient.sendMessage("jump_to_ts", Math.floor(value), (res: any) => {
+                const ctrlData: ICtrlData = parseCtrlData(res);
+                dispatch(updateCtrlData(ctrlData));
+                ipcClient.sendMessage("reset_algo");
+              });
             }
           }}
           onInput={(evt: any) => {
             if (play) {
-              ipcClient.sendMessage("pause_rec");
+              ipcClient.sendMessage("pause_rec", null, (res: any) => {
+                const ctrlData: ICtrlData = parseCtrlData(res);
+                dispatch(updateCtrlData(ctrlData));
+              });
             }
             setPlayerTs(Math.floor(evt.detail.value));
           }}

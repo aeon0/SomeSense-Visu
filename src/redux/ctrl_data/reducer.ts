@@ -12,6 +12,13 @@ export interface ICtrlData {
 export default function(state: ICtrlData = null, action: any) {
   switch (action.type) {
     case EReduxActionTypes.UPDATE_CTRL_DATA:
+      if (state !== null) {
+        // Keep the state for all fields that are undefined
+        if (action.ctrlData.isStoring === undefined) { action.ctrlData.isStoring = state.isStoring; }
+        if (action.ctrlData.isARecording === undefined) { action.ctrlData.isARecording = state.isARecording; }
+        if (action.ctrlData.recLength === undefined) { action.ctrlData.recLength = state.recLength; }
+        if (action.ctrlData.isPlaying === undefined) { action.ctrlData.isPlaying = state.isPlaying; }
+      }
       return action.ctrlData;
     case EReduxActionTypes.RESET_CTRL_DATA:
       return null;

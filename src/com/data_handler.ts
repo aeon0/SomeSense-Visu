@@ -20,13 +20,19 @@ export async function handleMsgData(msgType: number, payload: Uint8Array, callba
     const msgStr: string = new TextDecoder("utf-8").decode(payload);
     try {
       const msg: any = JSON.parse(msgStr);
+
       if (msg["type"] == "server.callback") {
-        // Callback for some request, search for callback in the callback list and execute
         const cbIndex: number = msg["cbIndex"];
         if (cbIndex !== -1 && cbIndex in callbacks) {
           callbacks[cbIndex](msg["data"]);
           delete callbacks[cbIndex];
         }
+      }
+      else if (msg["type"] == "server.ctrlData")
+      {
+        console.log(msg["data"])
+        const ctrlData: ICtrlData = parseCtrlData(msg["data"]);
+        store.dispatch(updateCtrlData(ctrlData));
       }
       else if (msg["type"] == "server.test") {
         console.log("Got test message from server");
@@ -38,7 +44,7 @@ export async function handleMsgData(msgType: number, payload: Uint8Array, callba
     catch (e) {
       console.error("Error with json msg from Server:");
       console.log(msgStr);
-      // console.log(e);
+      console.log(e);
     }
   }
   else if (msgType == 2) { // Frame Data in Capnp format
@@ -47,10 +53,8 @@ export async function handleMsgData(msgType: number, payload: Uint8Array, callba
 
     const reduxWorld: IReduxWorld = parseWorldObj(frameData);
     const runtimeMeasFrame: IRuntimeMeasFrame = praseRuntimeMeasFrameData(frameData);
-    const ctrlData: ICtrlData = parseCtrlData(frameData);
     store.dispatch(updateWorld(reduxWorld));
     store.dispatch(addRuntimeMeas(runtimeMeasFrame));
-    store.dispatch(updateCtrlData(ctrlData));
   }
   else {
     console.warn("Unkown message type " + msgType);
