@@ -30,7 +30,6 @@ export async function handleMsgData(msgType: number, payload: Uint8Array, callba
       }
       else if (msg["type"] == "server.ctrlData")
       {
-        console.log(msg["data"])
         const ctrlData: ICtrlData = parseCtrlData(msg["data"]);
         store.dispatch(updateCtrlData(ctrlData));
       }
