@@ -4,21 +4,19 @@ import { IReduxWorld } from '../../../redux/world/types'
 import { CameraSensor } from '../../sensors/camera_sensor'
 
 
-export class OpticalFlowVis extends IAlgoVis2D {
+export class SemsegMaskVis extends IAlgoVis2D {
   private lineSys: LinesMesh;
 
   constructor(private scene: Scene) {
     super();
   }
 
+
   public reset() {
-    // Remove all previous drawings
-    if (this.lineSys) {
-      this.lineSys.dispose();
-    }
+
   }
 
-  public update(camSensor: CameraSensor, worldData: IReduxWorld) {
+  public update(worldData: IReduxWorld, camSensor: CameraSensor) {
     this.reset();
 
     // for (let i = 0; i < worldData.camSensors.length; i++) {

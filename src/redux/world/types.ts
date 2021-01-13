@@ -28,19 +28,28 @@ export interface IOpticalFlow {
   flowTracks: {start: Vector2, end: Vector2}[];
 }
 
+export interface ISemseg {
+  mask: ImageData; // semseg mask
+  offsetTop: number; // Offset from top compared to org image input (relative to org image) in [px]
+  offsetLeft: number; // Offset from left compared to org image input (relative to org image) in [px]
+  scale: number; // Scale factor of the image
+  pointCloud: Vector3[]; // Points in the 3D world in [m]
+}
+
 export interface ICamSensor {
   idx: number;
   key: string;
   position: Vector3; // [m]
   rotation: Vector3; // pitch, yaw, roll in [rad]
-  fovHorizontal: number, // [rad]
-  fovVertical: number, // [rad]
-  imageData: ImageData,
-  timestamp: number, // timestamp of the image [us]
+  fovHorizontal: number; // [rad]
+  fovVertical: number; // [rad]
+  imageData: ImageData;
+  timestamp: number; // timestamp of the image [us]
   focalLength: Vector2; // (x, y) in pixel
   principalPoint: Vector2; // (x, y) in pixel
 
   opticalFlow: IOpticalFlow;
+
 }
 
 export interface IReduxWorld {

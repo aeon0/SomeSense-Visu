@@ -16,8 +16,8 @@ export class CameraSensor {
     private fovHorizontal: number, 
     private fovVertical: number,
     private principalPoint: Vector2,
-    private focalLength: Vector2,
-  ) {
+    private focalLength: Vector2) 
+  {
     this.rotationMat =  Matrix.Identity().multiply(Matrix.RotationX(rotation.x))
                                           .multiply(Matrix.RotationY(rotation.y))
                                           .multiply(Matrix.RotationZ(rotation.z));

@@ -1,9 +1,9 @@
 // Access store and give to the different visus,
-// also has references to the current image and babylon js environment to pass to the visus
+// also holds references to the current image and babylon js environment to pass to the visus
 import { Scene } from 'babylonjs'
 import { IReduxWorld } from '../../redux/world/types'
-import { IAlgoVis2D, IAlgoVis3D } from './ivis'
-import { OpticalFlowVis } from './cam/optical_flow_vis'
+import { IAlgoVis2D, IAlgoVis3DCam, IAlgoVis3DWorld } from './ivis'
+import { SemsegMaskVis } from './cam/semseg_mask_vis'
 import { CameraSensor } from '../sensors/camera_sensor'
 import { store } from '../../redux/store'
 import { EPerspectiveTypes } from '../../redux/perspective/reducer'
@@ -13,12 +13,13 @@ import { EPerspectiveTypes } from '../../redux/perspective/reducer'
 export class VisManager {
   // member variable for all visus, add new visu here
   private vis2D: IAlgoVis2D[] = [];
-  private vis3D: IAlgoVis3D[] = [];
+  private vis3DCam: IAlgoVis3DCam[] = [];
+  private vis3DWorld: IAlgoVis3DWorld[] = [];
   private currPerspective: EPerspectiveTypes;
 
   constructor(private scene: Scene) {
     // Add all the visus
-    this.vis2D.push(new OpticalFlowVis(this.scene));
+    this.vis2D.push(new SemsegMaskVis(this.scene));
     this.currPerspective = store.getState().perspective.type;
 
     // Listen to store to 1) turn of 2D 
@@ -40,13 +41,15 @@ export class VisManager {
   public update(camSensor: CameraSensor, worldData: IReduxWorld) {
     // update all visus
     this.vis2D.forEach( vis => {
-      vis.update(camSensor, worldData);
+      vis.update(worldData, camSensor);
     });
-    this.vis3D.forEach( vis => {
+    this.vis3DCam.forEach( vis => {
+      vis.update(worldData, camSensor);
+    });
+    this.vis3DWorld.forEach( vis => {
       vis.update(worldData);
     });
   }
-
 };
 
 // Next, how to turn visu on off and other actions from user towards it? 
