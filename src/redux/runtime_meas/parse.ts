@@ -1,5 +1,5 @@
 import { IRuntimeMeasFrame, IRuntimeMeas } from './reducer'
-import { CapnpOutput_Frame } from '../../com/frame_v1.capnp';
+import { CapnpOutput_Frame } from '../../com/frame.capnp';
 
 
 export function praseRuntimeMeasFrameData(capnpData: CapnpOutput_Frame) : IRuntimeMeasFrame {
