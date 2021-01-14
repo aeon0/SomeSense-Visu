@@ -62,9 +62,6 @@ export function parseWorldObj(frame: CapnpOutput_Frame) : IReduxWorld {
     }
     let semseg: ISemseg = {
       maskData: maskData,
-      offsetTop: val.getSemseg().getOffsetTop(),
-      offsetLeft: val.getSemseg().getOffsetLeft(),
-      scale: val.getSemseg().getScale(),
       obstacles: [],
       laneMarkings: [],
     };

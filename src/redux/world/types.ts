@@ -30,9 +30,6 @@ export interface IOpticalFlow {
 
 export interface ISemseg {
   maskData: ImageData; // semseg mask
-  offsetTop: number; // Offset from top compared to org image input (relative to org image) in [px]
-  offsetLeft: number; // Offset from left compared to org image input (relative to org image) in [px]
-  scale: number; // Scale factor of the image
   obstacles: Vector3[]; // Points in the 3D world in [m]
   laneMarkings: Vector3[]; // Points in the 3D world in [m]
 }
