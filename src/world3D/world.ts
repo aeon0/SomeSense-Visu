@@ -80,7 +80,8 @@ export class World {
       if (worldData && worldData.camSensors.length > 0) {
         let imageData = worldData.camSensors[0].imageData;
         this.image2D.update(perspective, imageData, isARecording);
-    
+        
+        const timestampChanged = this.timestamp !== worldData.timestamp;
         this.timestamp = worldData.timestamp;
 
         // In case current cam sensor differs from received one, update
@@ -102,7 +103,9 @@ export class World {
         }
 
         // Update algo visus
-        this.visManager.update(this.camSensor, worldData);
+        if (timestampChanged) {
+          this.visManager.update(this.camSensor, worldData);
+        }
       }
 
       this.scene.render();

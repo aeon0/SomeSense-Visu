@@ -29,11 +29,13 @@ export interface IOpticalFlow {
 }
 
 export interface ISemseg {
-  mask: ImageData; // semseg mask
+  maskData: ImageData; // semseg mask
   offsetTop: number; // Offset from top compared to org image input (relative to org image) in [px]
   offsetLeft: number; // Offset from left compared to org image input (relative to org image) in [px]
   scale: number; // Scale factor of the image
-  pointCloud: Vector3[]; // Points in the 3D world in [m]
+  obstacles: Vector3[]; // Points in the 3D world in [m]
+  laneMarkings: Vector3[]; // Points in the 3D world in [m]
+  driveableBins: {startPos: Vector3, extendX: number, absExtendY: number}[]; // Drivable bins, all values in [m]
 }
 
 export interface ICamSensor {
@@ -49,7 +51,7 @@ export interface ICamSensor {
   principalPoint: Vector2; // (x, y) in pixel
 
   opticalFlow: IOpticalFlow;
-
+  semseg: ISemseg;
 }
 
 export interface IReduxWorld {
