@@ -97,7 +97,7 @@ export class Image2D {
         const screenHeight = this.scene.getEngine().getRenderingCanvas().height;
         const imgOffset = screenHeight * 0.02;
 
-        const goalHeight = screenWidth * 0.125;
+        const goalHeight = screenWidth * 0.14;
         const goalWidth = goalHeight * this.camSensor.getRatio();
         this.canvas2D.height = goalHeight;
         this.canvas2D.width = goalWidth;
