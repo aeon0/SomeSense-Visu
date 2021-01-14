@@ -1,7 +1,7 @@
 # VISU
 
-Visu for backend. Recives Cap'n Proto data via TCP sockets and uses Electron and Babylon.JS to visualize the scene.
-![Screenshot](./assets/screenshot.png?raw=true)
+Visualize Environment for automtive sensor algorithms. Recives Cap'n Proto data via TCP sockets and uses Electron and Babylon.JS to visualize the scene. Related C++ Core App: https://github.com/j-o-d-o/app-frame.
+![Example](./assets/example.gif?raw=true)
 
 ## Install
 Node.js and npm needs to be installed (tested with node version 14.15.1).
@@ -14,7 +14,7 @@ If you have a new algo or extend an exisiting one, this is what you want to do:<
 TODO
 
 ## Running on Remote machine
-When running on a remote machine the two machines will need a TCP connection. Find the IP of the remote and connect to this IP via the Visualization GUI.
+When running on a remote machine the two machines will need a TCP connection. Find the IP of the remote and connect to this IP via the GUI on visu app.
 #### Find IP address without Monitor
 ```bash
 # check your ip (ifconfig) and then use nmap
