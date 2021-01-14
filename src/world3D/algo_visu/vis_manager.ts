@@ -5,6 +5,7 @@ import { IReduxWorld } from '../../redux/world/types'
 import { IAlgoVis2D, IAlgoVis3DCam, IAlgoVis3DWorld } from './ivis'
 import { SemsegMaskVis } from './cam/semseg_mask_vis'
 import { SemsegObstacleVis } from './cam/semseg_obstacle_vis'
+import { SemsegLaneMarkingVis } from './cam/semseg_lane_marking_vis'
 import { CameraSensor } from '../sensors/camera_sensor'
 import { store } from '../../redux/store'
 import { EPerspectiveTypes } from '../../redux/perspective/reducer'
@@ -22,7 +23,7 @@ export class VisManager {
     // Add all the visus
     this.vis2D.push(new SemsegMaskVis(this.scene));
     this.vis3DCam.push(new SemsegObstacleVis(this.scene));
-
+    this.vis3DCam.push(new SemsegLaneMarkingVis(this.scene));
     this.currPerspective = store.getState().perspective.type;
 
     // Listen to store to 1) turn of 2D 

@@ -73,6 +73,7 @@ export class Camera {
         break;
     }
 
+    this.camera.minZ = 0.1;
     this.scene.activeCamera = this.camera;
     this.camera.attachControl(this.canvas, true);
   }

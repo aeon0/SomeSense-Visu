@@ -22,8 +22,8 @@ export class SemsegObstacleVis extends IAlgoVis3DCam {
   public update(worldData: IReduxWorld, camSensor: CameraSensor) {
     this.reset();
 
-    this.SPS = new SolidParticleSystem('SPS', this.scene);
-    this.model = MeshBuilder.CreateBox("m", {size: 0.15}, this.scene);
+    this.SPS = new SolidParticleSystem('SPS_obstacle', this.scene);
+    this.model = MeshBuilder.CreateBox("m_obstacle", {size: 0.15}, this.scene);
     
     var pointCloud: Vector3[] = [];
     for (let i = 0; i < worldData.camSensors.length; i++) {
