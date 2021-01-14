@@ -67,15 +67,9 @@ export function parseWorldObj(frame: CapnpOutput_Frame) : IReduxWorld {
       scale: val.getSemseg().getScale(),
       obstacles: [],
       laneMarkings: [],
-      driveableBins: [],
     };
     val.getSemseg().getObstacles().forEach(point => semseg.obstacles.push(new Vector3(point.getX(), point.getY(), point.getZ())));
     val.getSemseg().getLaneMarkings().forEach(point => semseg.laneMarkings.push(new Vector3(point.getX(), point.getY(), point.getZ())));
-    val.getSemseg().getDriveableBins().forEach(drivableBin => semseg.driveableBins.push({
-      startPos: new Vector3(drivableBin.getStartPos().getX(), drivableBin.getStartPos().getY(), drivableBin.getStartPos().getZ()),
-      extendX: drivableBin.getExtendX(),
-      absExtendY: drivableBin.getAbsExtendY(),
-    }));
 
     // Fill camera interface
     let camSensor: ICamSensor = {

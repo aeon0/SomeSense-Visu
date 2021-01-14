@@ -24,9 +24,9 @@ export class VisManager {
     this.vis2D.push(new SemsegMaskVis(this.scene));
     this.vis3DCam.push(new SemsegObstacleVis(this.scene));
     this.vis3DCam.push(new SemsegLaneMarkingVis(this.scene));
+
     this.currPerspective = store.getState().perspective.type;
 
-    // Listen to store to 1) turn of 2D 
     store.subscribe(() => {
       var newPerspective = store.getState().perspective.type;
       if (newPerspective !== this.currPerspective) {

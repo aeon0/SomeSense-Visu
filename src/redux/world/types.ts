@@ -35,7 +35,6 @@ export interface ISemseg {
   scale: number; // Scale factor of the image
   obstacles: Vector3[]; // Points in the 3D world in [m]
   laneMarkings: Vector3[]; // Points in the 3D world in [m]
-  driveableBins: {startPos: Vector3, extendX: number, absExtendY: number}[]; // Drivable bins, all values in [m]
 }
 
 export interface ICamSensor {

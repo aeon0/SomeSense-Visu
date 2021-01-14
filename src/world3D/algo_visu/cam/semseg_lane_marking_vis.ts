@@ -43,5 +43,6 @@ export class SemsegLaneMarkingVis extends IAlgoVis3DCam {
     this.SPS.buildMesh();
     this.SPS.initParticles();
     this.SPS.setParticles();
+    this.SPS.isAlwaysVisible = true;
   }
 }
