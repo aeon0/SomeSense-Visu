@@ -1,6 +1,6 @@
-# OpenSense - Visualization
+# SomeSense - Visualization
 
-Visualize Environment for automtive sensor algorithms. Recives Cap'n Proto data via TCP sockets and uses Electron and Babylon.JS to visualize the scene. Related C++ Core App: https://github.com/j-o-d-o/OpenSense-App.
+Visualize Environment for automtive sensor algorithms. Recives Cap'n Proto data via TCP sockets and uses Electron and Babylon.JS to visualize the scene. Related C++ Core App: https://github.com/j-o-d-o/SomeSense-App.
 
 ![Example](./assets/example.gif?raw=true)
 

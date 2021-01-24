@@ -75,6 +75,7 @@ export function RecordingControls(props: any) {
     function handleKeyDown(e: KeyboardEvent) {
       if (e.keyCode === 49) { // 1
         if (play) {
+          // TODO: When rec is playing the pause event is not always recognized, why?
           ipcClient.sendMessage("pause_rec", null, (res: any) => {
             const ctrlData: ICtrlData = parseCtrlData(res);
             dispatch(updateCtrlData(ctrlData));
