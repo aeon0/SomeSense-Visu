@@ -1,9 +1,9 @@
 import { Scene, Vector3, Color4, MeshBuilder, SolidParticleSystem, Mesh, AbstractMesh } from 'babylonjs'
-import { IAlgoVis3DWorld } from '../ivis'
+import { IAlgoVis3D } from '../ivis'
 import { IReduxWorld } from '../../../redux/world/types'
 
 
-export class SemsegLaneMarkingVis extends IAlgoVis3DWorld {
+export class SemsegLaneMarkingVis extends IAlgoVis3D {
   private SPS: SolidParticleSystem = null;
   private model: Mesh = null;
 

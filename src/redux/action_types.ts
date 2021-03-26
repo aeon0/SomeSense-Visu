@@ -1,7 +1,4 @@
 export enum EReduxActionTypes {
-  // perspective
-  SET_PERSPECTIVE = 'SET_PERSPECTIVE',
-
   // connection
   SET_CONNECTING = 'SET_CONNECTING',
   CONNECTED = 'CONNECTED',

@@ -1,7 +1,6 @@
 import * as React from 'react'
 import styled from 'styled-components'
 import { SettingsMenu } from './settings_menu'
-import { SelectPerspective } from './select_perspective'
 import { ConnectionSetting } from './connection_setting'
 import { RecordingControls } from './recording_controls'
 import { LiveControls } from './live_controls'
@@ -30,10 +29,7 @@ export function Overlay(props: any) {
     {showRuntimeMeas &&
       <RuntimeMeas />
     }
-
     <SettingsMenu />
-    <SelectPerspective />
-
     <ConnectionSetting />
     
     {/* world can be null in the recording case, has to be handled inside RecordingsControls */}

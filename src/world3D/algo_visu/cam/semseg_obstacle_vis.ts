@@ -1,9 +1,9 @@
 import { Scene, Vector3, Color4, MeshBuilder, SolidParticleSystem, Mesh, Scalar } from 'babylonjs'
-import { IAlgoVis3DWorld } from '../ivis'
+import { IAlgoVis3D } from '../ivis'
 import { IReduxWorld } from '../../../redux/world/types'
 
 
-export class SemsegObstacleVis extends IAlgoVis3DWorld {
+export class SemsegObstacleVis extends IAlgoVis3D {
   private SPS: SolidParticleSystem = null;
   private model: Mesh = null;
 
@@ -46,8 +46,7 @@ export class SemsegObstacleVis extends IAlgoVis3DWorld {
       }
     };
 
-    // We want to have 3 particals for each point in the point cloud
-    this.SPS.addShape(this.model, pointCloud.length * 3);
+    this.SPS.addShape(this.model, pointCloud.length);
     this.SPS.buildMesh();
     this.SPS.initParticles();
     this.SPS.setParticles();

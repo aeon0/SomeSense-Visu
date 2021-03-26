@@ -4,7 +4,6 @@ import { Lights } from './lights'
 import { Camera } from './camera'
 import { EgoVehicle } from './ego_vehicle'
 import { showAxis, showGrid } from './debug_mesh'
-import { Image2D } from './image2d'
 import { CameraFrustum } from './sensors/camera_frustum'
 import { CameraSensor } from './sensors/camera_sensor'
 import { VisManager } from './algo_visu/vis_manager'
@@ -16,7 +15,6 @@ export class World {
   private camera: Camera;
   private lights: Lights;
   private egoVehicle: EgoVehicle;
-  private image2D: Image2D;
   private cameraFrustum: CameraFrustum;
   private timestamp: number;
   private camSensor: CameraSensor;
@@ -43,7 +41,6 @@ export class World {
     this.egoVehicle = new EgoVehicle(this.scene);
 
     this.cameraFrustum = new CameraFrustum(this.scene, this.camSensor);
-    this.image2D = new Image2D(this.scene, this.camSensor);
 
     window.addEventListener("resize", () => {
       this.engine.resize();
@@ -62,7 +59,6 @@ export class World {
     this.lights.init();
     this.egoVehicle.init();
     this.cameraFrustum.init();
-    this.image2D.init();
 
     showAxis(4, this.scene);
     showGrid(this.scene);
@@ -70,10 +66,6 @@ export class World {
 
   public run(): void {
     this.engine.runRenderLoop(() => {
-      const perspective = store.getState().perspective.type;
-      this.egoVehicle.update(perspective);
-      this.camera.update(perspective);
-
       const worldData = store.getState().world;
       const isARecording: boolean = store.getState().ctrlData ? store.getState().ctrlData.isARecording : false;
       // Currently just expect to only have one cam sensor and access directly with [0]
@@ -96,14 +88,10 @@ export class World {
           if (!camSensor.equals(this.camSensor)) {
             this.camSensor = camSensor;
             this.cameraFrustum.updateCamera(camSensor);
-            this.image2D.updateCamera(camSensor);
-            // this.camera.updateCamera(camSensor);
+            this.camera.updateCamera(camSensor);
           }
 
           this.visManager.update(this.camSensor, worldData);
-
-          let imageData = worldData.camSensors[0].imageData;
-          this.image2D.update(perspective, imageData, isARecording);
         }
       }
 
