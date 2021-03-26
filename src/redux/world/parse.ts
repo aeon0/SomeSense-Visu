@@ -1,5 +1,5 @@
 import { Vector3, Vector2 } from 'babylonjs'
-import { IReduxWorld, ICamSensor, ITrack, IOpticalFlow, ISemseg } from './types'
+import { IReduxWorld, ICamSensor, ITrack, IOpticalFlow } from './types'
 import { CapnpOutput_Frame } from '../../com/frame.capnp'
 
 
@@ -11,6 +11,8 @@ export function parseWorldObj(frame: CapnpOutput_Frame) : IReduxWorld {
     frameCount: frame.getFrameCount().toNumber(),
     camSensors: [],
     tracks: [],
+    laneMarkings: [],
+    obstacles: [],
   };
 
   // Convert Sensor Data
@@ -44,29 +46,39 @@ export function parseWorldObj(frame: CapnpOutput_Frame) : IReduxWorld {
       });
     });
 
-    // Parse semseg data
-    const maskWidth = val.getSemseg().getMask().getWidth();
-    const maskHeight = val.getSemseg().getMask().getHeight();
-    var maskData = new ImageData(maskWidth, maskHeight);
-    rawImgPayload = val.getSemseg().getMask().getData().toUint8Array();
+    // Parse semseg img. TODO: Create Image Overlay from this
+    const maskWidth = val.getSemsegImg().getWidth();
+    const maskHeight = val.getSemsegImg().getHeight();
+    var semsegImgData = new ImageData(maskWidth, maskHeight);
+    rawImgPayload = val.getSemsegImg().getData().toUint8Array();
     x = 0;
     z = 0;
     while (x < rawImgPayload.length) {
       const b = rawImgPayload[x++];
       const g = rawImgPayload[x++];
       const r = rawImgPayload[x++];
-      maskData.data[z++] = r; // red
-      maskData.data[z++] = g; // green
-      maskData.data[z++] = b; // blue
-      maskData.data[z++] = 0xFF; // alpha
+      semsegImgData.data[z++] = r; // red
+      semsegImgData.data[z++] = g; // green
+      semsegImgData.data[z++] = b; // blue
+      semsegImgData.data[z++] = 0xFF; // alpha
     }
-    let semseg: ISemseg = {
-      maskData: maskData,
-      obstacles: [],
-      laneMarkings: [],
-    };
-    val.getSemseg().getObstacles().forEach(point => semseg.obstacles.push(new Vector3(point.getX(), point.getY(), point.getZ())));
-    val.getSemseg().getLaneMarkings().forEach(point => semseg.laneMarkings.push(new Vector3(point.getX(), point.getY(), point.getZ())));
+
+    // Parse depth img. TODO: Create Image Overlay from this
+    const depthWidth = val.getDepthImg().getWidth();
+    const depthHeight = val.getDepthImg().getHeight();
+    var depthImgData = new ImageData(depthWidth, depthHeight);
+    rawImgPayload = val.getDepthImg().getData().toUint8Array();
+    x = 0;
+    z = 0;
+    while (x < rawImgPayload.length) {
+      const b = rawImgPayload[x++];
+      const g = rawImgPayload[x++];
+      const r = rawImgPayload[x++];
+      depthImgData.data[z++] = r; // red
+      depthImgData.data[z++] = g; // green
+      depthImgData.data[z++] = b; // blue
+      depthImgData.data[z++] = 0xFF; // alpha
+    }
 
     // Fill camera interface
     let camSensor: ICamSensor = {
@@ -81,7 +93,8 @@ export function parseWorldObj(frame: CapnpOutput_Frame) : IReduxWorld {
       focalLength: new Vector2(val.getFocalLengthX(), val.getFocalLengthY()),
       principalPoint: new Vector2(val.getPrincipalPointX(), val.getPrincipalPointY()),
       opticalFlow: flowData,
-      semseg: semseg,
+      semsegImg: semsegImgData,
+      depthImg: depthImgData
     };
     worldObj.camSensors.push(camSensor);
   });
@@ -100,6 +113,10 @@ export function parseWorldObj(frame: CapnpOutput_Frame) : IReduxWorld {
     };
     worldObj.tracks.push(track);
   });
+
+  // Set pointcloud
+  frame.getObstacles().forEach(point => worldObj.obstacles.push(new Vector3(point.getX(), point.getY(), point.getZ())));
+  frame.getLaneMarkings().forEach(point => worldObj.laneMarkings.push(new Vector3(point.getX(), point.getY(), point.getZ())));
 
   return worldObj;
 }

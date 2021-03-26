@@ -81,7 +81,7 @@ export class World {
         const timestampChanged = this.timestamp !== worldData.timestamp;
         this.timestamp = worldData.timestamp;
         // Update algo visus
-        if (timestampChanged) {          
+        if (timestampChanged) {
           // In case current cam sensor differs from received one, update
           const sensorData = worldData.camSensors[0];
           const camSensor = new CameraSensor(
@@ -97,11 +97,11 @@ export class World {
             this.camSensor = camSensor;
             this.cameraFrustum.updateCamera(camSensor);
             this.image2D.updateCamera(camSensor);
-            this.camera.updateCamera(camSensor);
+            // this.camera.updateCamera(camSensor);
           }
 
           this.visManager.update(this.camSensor, worldData);
-        
+
           let imageData = worldData.camSensors[0].imageData;
           this.image2D.update(perspective, imageData, isARecording);
         }

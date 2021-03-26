@@ -22,8 +22,8 @@ export class VisManager {
   constructor(private scene: Scene) {
     // Add all the visus
     this.vis2D.push(new SemsegMaskVis(this.scene));
-    this.vis3DCam.push(new SemsegObstacleVis(this.scene));
-    this.vis3DCam.push(new SemsegLaneMarkingVis(this.scene));
+    this.vis3DWorld.push(new SemsegObstacleVis(this.scene));
+    this.vis3DWorld.push(new SemsegLaneMarkingVis(this.scene));
 
     this.currPerspective = store.getState().perspective.type;
 

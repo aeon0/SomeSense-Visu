@@ -28,12 +28,6 @@ export interface IOpticalFlow {
   flowTracks: {start: Vector2, end: Vector2}[];
 }
 
-export interface ISemseg {
-  maskData: ImageData; // semseg mask
-  obstacles: Vector3[]; // Points in the 3D world in [m]
-  laneMarkings: Vector3[]; // Points in the 3D world in [m]
-}
-
 export interface ICamSensor {
   idx: number;
   key: string;
@@ -47,7 +41,8 @@ export interface ICamSensor {
   principalPoint: Vector2; // (x, y) in pixel
 
   opticalFlow: IOpticalFlow;
-  semseg: ISemseg;
+  semsegImg: ImageData;
+  depthImg: ImageData;
 }
 
 export interface IReduxWorld {
@@ -58,4 +53,6 @@ export interface IReduxWorld {
   plannedFrameLength: number; // planned length of frame in [ms]
 
   tracks: ITrack[];
+  obstacles: Vector3[]; // Points in the 3D world in [m]
+  laneMarkings: Vector3[]; // Points in the 3D world in [m]
 }

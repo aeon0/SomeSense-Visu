@@ -1,10 +1,9 @@
 import { Scene, Vector3, Color4, MeshBuilder, SolidParticleSystem, Mesh, AbstractMesh } from 'babylonjs'
-import { IAlgoVis3DCam } from '../ivis'
+import { IAlgoVis3DWorld } from '../ivis'
 import { IReduxWorld } from '../../../redux/world/types'
-import { CameraSensor } from '../../sensors/camera_sensor'
 
 
-export class SemsegLaneMarkingVis extends IAlgoVis3DCam {
+export class SemsegLaneMarkingVis extends IAlgoVis3DWorld {
   private SPS: SolidParticleSystem = null;
   private model: Mesh = null;
 
@@ -19,18 +18,13 @@ export class SemsegLaneMarkingVis extends IAlgoVis3DCam {
     }
   }
 
-  public update(worldData: IReduxWorld, camSensor: CameraSensor) {
+  public update(worldData: IReduxWorld) {
     this.reset();
 
     this.SPS = new SolidParticleSystem('SPS_lane', this.scene);
     this.model = MeshBuilder.CreatePlane("m_lane", {width: 0.8, height: 0.13, sideOrientation: Mesh.DOUBLESIDE}, this.scene);
 
-    var laneMarkings: Vector3[] = [];
-    for (let i = 0; i < worldData.camSensors.length; i++) {
-      if (camSensor.getKey() == worldData.camSensors[i].key) {
-        laneMarkings = worldData.camSensors[i].semseg.laneMarkings;
-      }
-    }
+    var laneMarkings: Vector3[] = worldData.laneMarkings;
 
     this.SPS.initParticles = () => {
       for (let p = 0; p < this.SPS.nbParticles - 1; p++) {

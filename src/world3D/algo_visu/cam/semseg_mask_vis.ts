@@ -19,7 +19,7 @@ export class SemsegMaskVis extends IAlgoVis2D {
   public update(worldData: IReduxWorld, camSensor: CameraSensor) {
     for (let i = 0; i < worldData.camSensors.length; i++) {
       if (camSensor.getKey() == worldData.camSensors[i].key) {
-        worldData.camSensors[i].imageData = worldData.camSensors[i].semseg.maskData;
+        worldData.camSensors[i].imageData = worldData.camSensors[i].semsegImg;
       }
     }
   }
