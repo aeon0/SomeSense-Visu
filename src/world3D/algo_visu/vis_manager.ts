@@ -6,6 +6,7 @@ import { IAlgoVis2D, IAlgoVis3D } from './ivis'
 import { SemsegMaskVis } from './cam/semseg_mask_vis'
 import { SemsegObstacleVis } from './cam/semseg_obstacle_vis'
 import { SemsegLaneMarkingVis } from './cam/semseg_lane_marking_vis'
+import { TrackVis } from './cam/track_vis'
 import { CameraSensor } from '../sensors/camera_sensor'
 
 
@@ -18,6 +19,7 @@ export class VisManager {
     this.vis2D.push(new SemsegMaskVis(this.scene));
     this.vis3D.push(new SemsegObstacleVis(this.scene));
     this.vis3D.push(new SemsegLaneMarkingVis(this.scene));
+    this.vis3D.push(new TrackVis(this.scene));
   }
 
   public update(camSensor: CameraSensor, worldData: IReduxWorld) {

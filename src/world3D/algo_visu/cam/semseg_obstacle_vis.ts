@@ -1,7 +1,6 @@
 import { Scene, Vector3, Color4, PointsCloudSystem, CloudPoint } from 'babylonjs'
 import { IAlgoVis3D } from '../ivis'
 import { IReduxWorld } from '../../../redux/world/types'
-import { createGlobalStyle } from 'styled-components';
 
 
 export class SemsegObstacleVis extends IAlgoVis3D {

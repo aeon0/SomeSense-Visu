@@ -28,6 +28,11 @@ export interface IOpticalFlow {
   flowTracks: {start: Vector2, end: Vector2}[];
 }
 
+export interface IObject2D {
+  cx: number;
+  cy: number;
+}
+
 export interface ICamSensor {
   idx: number;
   key: string;
@@ -43,6 +48,7 @@ export interface ICamSensor {
   opticalFlow: IOpticalFlow;
   semsegImg: ImageData;
   depthImg: ImageData;
+  objects2D: IObject2D[];
 }
 
 export interface IReduxWorld {

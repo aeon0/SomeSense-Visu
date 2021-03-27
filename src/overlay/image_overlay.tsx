@@ -23,6 +23,8 @@ export function ImageOverlay(props: any) {
   const imgDataSemseg = useSelector((store: ApplicationState) => store.world.camSensors[0].semsegImg);
   const imgDataDepth = useSelector((store: ApplicationState) => store.world.camSensors[0].depthImg);
 
+  const objects = useSelector((store: ApplicationState) => store.world.camSensors[0].objects2D);
+
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
   const canvasRefSemseg = React.useRef<HTMLCanvasElement>(null);
   const canvasRefDepth = React.useRef<HTMLCanvasElement>(null);
@@ -56,6 +58,15 @@ export function ImageOverlay(props: any) {
     contextDepth.putImageData(imgDataDepth, 0, 0);
     canvasDepth.style.width = canvasWidth;
     canvasDepth.style.marginBottom = "20px";
+
+
+    for (var i = 0; i < objects.length; ++i) {
+      context.fillStyle = "#FF0000";
+      context.beginPath();
+      console.log(objects[i]);
+      context.fillRect(objects[i].cx, objects[i].cy, 9, 9);
+      context.stroke();
+    }
   });
 
   return <Container>

@@ -1,5 +1,5 @@
 import { Scene, Mesh, MeshBuilder, StandardMaterial, Vector3, Color4, FloatArray } from 'babylonjs'
-import { ITrack } from '../../redux/world/types'
+import { ITrack } from '../../../redux/world/types'
 
 
 // Tracks are displayed either with rectangluar 2D-Planes (no depth information) or with 3D-boxes

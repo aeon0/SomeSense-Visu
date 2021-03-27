@@ -1,14 +1,27 @@
 import { Scene } from 'babylonjs'
-import { ITrack } from "../../redux/world/types";
+import { IAlgoVis3D } from '../ivis'
+import { ITrack, IReduxWorld } from "../../../redux/world/types";
 import { Track } from "./track"
 
 
-export class TrackManager {
+export class TrackVis extends IAlgoVis3D {
   private tracks: {[key: string]: Track} = {};
 
-  constructor(private scene: Scene) {}
+  constructor(private scene: Scene) {
+    super();
+  }
 
-  public update(tracks: ITrack[]) {
+  public reset() {
+    for (let key in this.tracks) {
+      this.tracks[key].reset();
+      delete this.tracks[key];
+    }
+  }
+
+  public update(worldData: IReduxWorld) {
+    this.reset();
+    var tracks: ITrack[] = worldData.tracks;
+  
     // Check if tracks need to be removed
     for (let trackId in tracks) {
       // Check if trackId is within the received tracks

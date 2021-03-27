@@ -1,5 +1,5 @@
 import { Vector3, Vector2 } from 'babylonjs'
-import { IReduxWorld, ICamSensor, ITrack, IOpticalFlow } from './types'
+import { IReduxWorld, ICamSensor, ITrack, IOpticalFlow, IObject2D } from './types'
 import { CapnpOutput_Frame } from '../../com/frame.capnp'
 
 
@@ -77,7 +77,7 @@ export function parseWorldObj(frame: CapnpOutput_Frame) : IReduxWorld {
       depthImgData.data[z++] = value; // blue
       depthImgData.data[z++] = 0xFF; // alpha
     }
-
+  
     // Fill camera interface
     let camSensor: ICamSensor = {
       timestamp: val.getTimestamp().toNumber(),
@@ -92,8 +92,19 @@ export function parseWorldObj(frame: CapnpOutput_Frame) : IReduxWorld {
       principalPoint: new Vector2(val.getPrincipalPointX(), val.getPrincipalPointY()),
       opticalFlow: flowData,
       semsegImg: semsegImgData,
-      depthImg: depthImgData
+      depthImg: depthImgData,
+      objects2D: []
     };
+    // Parse object tracks
+    var objects2D = [];
+    val.getObjects2D().forEach((obj) => {
+      let obj2D: IObject2D = {
+        cx: obj.getCx(),
+        cy: obj.getCy()
+      }
+      camSensor.objects2D.push(obj2D);
+    });
+    
     worldObj.camSensors.push(camSensor);
   });
 
