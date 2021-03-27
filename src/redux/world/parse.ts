@@ -71,12 +71,10 @@ export function parseWorldObj(frame: CapnpOutput_Frame) : IReduxWorld {
     x = 0;
     z = 0;
     while (x < rawImgPayload.length) {
-      const b = rawImgPayload[x++];
-      const g = rawImgPayload[x++];
-      const r = rawImgPayload[x++];
-      depthImgData.data[z++] = r; // red
-      depthImgData.data[z++] = g; // green
-      depthImgData.data[z++] = b; // blue
+      const value = rawImgPayload[x++];
+      depthImgData.data[z++] = value; // red
+      depthImgData.data[z++] = value; // green
+      depthImgData.data[z++] = value; // blue
       depthImgData.data[z++] = 0xFF; // alpha
     }
 

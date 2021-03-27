@@ -5,6 +5,7 @@ import { ConnectionSetting } from './connection_setting'
 import { RecordingControls } from './recording_controls'
 import { LiveControls } from './live_controls'
 import { RuntimeMeas } from './runtime_meas'
+import { ImageOverlay } from './image_overlay'
 import { useSelector } from 'react-redux'
 import { ApplicationState } from '../redux/store'
 import { IPCClient } from '../com/ipc_client'
@@ -24,6 +25,7 @@ export function Overlay(props: any) {
   const isARecording = useSelector((store: ApplicationState) => store.ctrlData !== null ? store.ctrlData.isARecording : null);
   const connected = useSelector((store: ApplicationState) => store.connection.connected);
   const showRuntimeMeas = useSelector((store: ApplicationState) => store.runtimeMeasStore.show);
+  const hasCamSensor = useSelector((store: ApplicationState) => (store.world !== null && store.world.camSensors.length > 0));
 
   return <OverlayWrapper>
     {showRuntimeMeas &&
@@ -39,6 +41,9 @@ export function Overlay(props: any) {
 
     {connected && isARecording !== null && !isARecording &&
       <LiveControls ipcClient={ipcClient} />
+    }
+    {hasCamSensor &&
+      <ImageOverlay />
     }
   </OverlayWrapper>
 }

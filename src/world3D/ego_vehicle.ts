@@ -10,9 +10,9 @@ export class EgoVehicle {
     var transparentMaterial = new StandardMaterial("transparent_object", this.scene);
     transparentMaterial.alpha = 0.3; // value of 0.3 is applied for transparency
 
-    const length: number = 2.6;
-    const height: number = 1.25;
-    const width: number = 1.7;
+    const length: number = 2.9;
+    const height: number = 1.7;
+    const width: number = 1.9;
     this.mesh = MeshBuilder.CreateBox("box", {height: height, width: width, depth: length}, this.scene);
     this.mesh.rotation.y = Math.PI*0.5;
     this.mesh.rotation.z = Math.PI*0.5;

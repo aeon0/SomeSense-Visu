@@ -20,40 +20,42 @@ export class SemsegObstacleVis extends IAlgoVis3D {
 
   public update(worldData: IReduxWorld) {
     if (!this.PCS) {
-      this.PCS = new PointsCloudSystem("pcs", 1, this.scene);
+      this.PCS = new PointsCloudSystem("pcs", 3, this.scene);
       this.PCS.addPoints(8000);
-      this.PCS.buildMeshAsync();
+      this.PCS.buildMeshAsync().then( () => this.draw(worldData.obstacles));
     }
     else {
-      var pointCloud: Vector3[] = worldData.obstacles;
+      this.draw(worldData.obstacles);
+    }
+  }
 
-      const zeroVec = new Vector3(0, 0, 0);
-      this.PCS.updateParticle = (particle: CloudPoint) => {
-        if (particle.idx < pointCloud.length) {
-          const maxLength = 70;
-          const length = Math.min(pointCloud[particle.idx].length(), maxLength);
-          var r, g = 0;
-          if(length < (maxLength * 0.5)) {
-            r = 255;
-            g = Math.round(5.1 * length);
-          }
-          else {
-            g = 255;
-            r = Math.round(510 - 5.10 * length);
-          }
-          const color = new Color4(r/255.0, g/255.0, 0, 1.0);
-
-          particle.position = pointCloud[particle.idx];
-          particle.color = color;
+  private draw(pointCloud: Vector3[]) {
+    const zeroVec = new Vector3(0, 0, 0);
+    this.PCS.updateParticle = (particle: CloudPoint) => {
+      if (particle.idx < pointCloud.length) {
+        const maxLength = 70;
+        const length = Math.min(pointCloud[particle.idx].length(), maxLength);
+        var r, g = 0;
+        if(length < (maxLength * 0.5)) {
+          r = 255;
+          g = Math.round(5.1 * length);
         }
         else {
-          particle.position = zeroVec;
+          g = 255;
+          r = Math.round(510 - 5.10 * length);
         }
-        return particle;
-      };
+        const color = new Color4(r/255.0, g/255.0, 0, 1.0);
 
-      this.PCS.setParticles();
-      this.PCS.isAlwaysVisible = true;
-    }
+        particle.position = pointCloud[particle.idx];
+        particle.color = color;
+      }
+      else {
+        particle.position = zeroVec;
+      }
+      return particle;
+    };
+
+    this.PCS.setParticles();
+    this.PCS.isAlwaysVisible = true;
   }
 }
