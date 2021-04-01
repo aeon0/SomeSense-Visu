@@ -63,6 +63,11 @@ export class IPCClient {
           this.ipc.disconnect('server');
         }
       }
+      if (this.ipc.config.networkHost != store.getState().connection.host || this.ipc.config.networkPort != store.getState().connection.port) {
+        this.ipc.disconnect('server');
+        this.ipc.config.networkHost = store.getState().connection.host;
+        this.ipc.config.networkPort = store.getState().connection.port;
+      }
     });
   }
 
@@ -80,7 +85,6 @@ export class IPCClient {
 
       this.ipc.of.server.on('disconnect', () => {
         store.dispatch(setDisconnected());
-        // Retry connecting
         resetAppState();
         this.bytesToRead = HEADERSIZE;
         this.reading = Reading.HEADER;
