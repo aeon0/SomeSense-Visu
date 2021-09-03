@@ -9,7 +9,8 @@ function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({
     webPreferences: {
-      nodeIntegration: true
+      nodeIntegration: true,
+      contextIsolation: false
     }
   });
   mainWindow.maximize();

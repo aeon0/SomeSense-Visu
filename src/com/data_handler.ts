@@ -1,5 +1,5 @@
 import * as capnp from 'capnp-ts';
-import { CapnpOutput_Frame } from './frame.capnp'
+import { CapnpOutput_Frame } from './frame.capnp.js'
 import { store } from '../redux/store'
 // World store
 import { IReduxWorld } from '../redux/world/types'

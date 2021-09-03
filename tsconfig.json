@@ -1,7 +1,9 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "noImplicitAny": true,
+    "target": "ES6",
+    "noImplicitAny": false,
+    "allowJs": true,
     "sourceMap": true,
     "outDir": "app",
     "baseUrl": ".",

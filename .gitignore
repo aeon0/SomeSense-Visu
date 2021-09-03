@@ -5,3 +5,5 @@ dist
 tmp
 export/
 *.capnp.ts
+*.capnp.d.ts
+*.capnp.js
