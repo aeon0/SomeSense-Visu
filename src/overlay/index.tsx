@@ -6,6 +6,7 @@ import { RecordingControls } from './recording_controls'
 import { LiveControls } from './live_controls'
 import { RuntimeMeas } from './runtime_meas'
 import { ImageOverlay } from './image_overlay'
+import { VisConfig } from './vis_config'
 import { useSelector } from 'react-redux'
 import { ApplicationState } from '../redux/store'
 import { IPCClient } from '../com/ipc_client'
@@ -33,6 +34,7 @@ export function Overlay(props: any) {
     }
     <SettingsMenu />
     <ConnectionSetting />
+    <VisConfig />
     
     {/* world can be null in the recording case, has to be handled inside RecordingsControls */}
     {connected && isARecording !== null && isARecording && 
