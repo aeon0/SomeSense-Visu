@@ -90,9 +90,9 @@ export class World {
             this.cameraFrustum.updateCamera(camSensor);
             this.camera.updateCamera(camSensor);
           }
-
-          this.visManager.update(this.camSensor, worldData);
         }
+        // Update visualization
+        this.visManager.update(worldData);
       }
 
       this.scene.render();

@@ -5,6 +5,7 @@ import world from './world/reducer'
 import { IReduxWorld } from './world/types'
 import ctrlData, { ICtrlData } from './ctrl_data/reducer'
 import runtimeMeasStore, { IRuntimeMeasStore } from './runtime_meas/reducer'
+import vis, { IReduxVis } from './vis/reducer'
 
 
 declare global { interface Window { __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: typeof compose; } }
@@ -15,6 +16,7 @@ export interface ApplicationState {
   world: IReduxWorld,
   ctrlData: ICtrlData,
   runtimeMeasStore: IRuntimeMeasStore,
+  vis: IReduxVis,
 }
 
 export const store = createStore(
@@ -23,6 +25,7 @@ export const store = createStore(
     world,
     ctrlData,
     runtimeMeasStore,
+    vis,
   }),
   composeEnhancers(),
 );

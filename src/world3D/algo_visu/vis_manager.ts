@@ -2,37 +2,44 @@
 // also holds references to the current image and babylon js environment to pass to the visus
 import { Scene } from 'babylonjs'
 import { IReduxWorld } from '../../redux/world/types'
-import { IAlgoVis2D, IAlgoVis3D } from './ivis'
-import { SemsegMaskVis } from './cam/semseg_mask_vis'
+import { store } from '../../redux/store'
+import { IAlgoVis3D } from './ivis'
 import { SemsegObstacleVis } from './cam/semseg_obstacle_vis'
 import { SemsegLaneMarkingVis } from './cam/semseg_lane_marking_vis'
 import { TrackVis } from './cam/track_vis'
-import { CameraSensor } from '../sensors/camera_sensor'
 
+
+interface IVisuMetaData {
+  vis: IAlgoVis3D;
+  active: boolean;
+}
 
 export class VisManager {
-  private vis2D: IAlgoVis2D[] = [];
-  private vis3D: IAlgoVis3D[] = [];
+  private vis3D: { [key: string]: IVisuMetaData } = {};
 
   constructor(private scene: Scene) {
-    // Add all the visus
-    this.vis2D.push(new SemsegMaskVis(this.scene));
-    this.vis3D.push(new SemsegObstacleVis(this.scene));
-    this.vis3D.push(new SemsegLaneMarkingVis(this.scene));
-    this.vis3D.push(new TrackVis(this.scene));
+    const vis = store.getState().vis;
+    this.vis3D["point_cloud_obstacle"] = {vis: new SemsegObstacleVis(this.scene), active: vis.showPointCloudObstacle};
+    this.vis3D["point_cloud_lane"] = {vis: new SemsegLaneMarkingVis(this.scene), active: vis.showPointCloudLane};
+    this.vis3D["tracks"] = {vis: new TrackVis(this.scene), active: true};
+
+    store.subscribe(() => {
+      const vis = store.getState().vis;
+      this.vis3D["point_cloud_obstacle"].active = vis.showPointCloudObstacle;
+      this.vis3D["point_cloud_lane"].active = vis.showPointCloudLane;
+    });
   }
 
-  public update(camSensor: CameraSensor, worldData: IReduxWorld) {
-    this.vis2D.forEach( vis => {
-      vis.update(worldData, camSensor);
-    });
-    this.vis3D.forEach( vis => {
-      vis.update(worldData);
-    });
+  public update(worldData: IReduxWorld) {
+    for (let key in this.vis3D) {
+      if (this.vis3D[key].active)
+      {
+        this.vis3D[key].vis.update(worldData);
+      }
+      else
+      {
+        this.vis3D[key].vis.reset();
+      }
+    }
   }
 };
-
-// Next, how to turn visu on off and other actions from user towards it? 
-// Each "visu" which is registered should be able to turned on and off
-// Next2: how to do user interactions like hover and click on visus?
-// Next3: how to do 2D text onto this to show info
