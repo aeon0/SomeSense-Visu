@@ -1,0 +1,10 @@
+app
+node_modules
+*.tsbuildinfo
+dist
+tmp
+export/
+rec/
+*.capnp.ts
+*.capnp.d.ts
+*.capnp.js

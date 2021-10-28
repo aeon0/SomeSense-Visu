@@ -1,0 +1,1 @@
+Do not delete render.test.ts, otherwise the folder structure on the build will just leave the test folder and put the src folder as the root folder. But the scripts expect the main file to be in the app/src path.

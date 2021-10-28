@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "ES6",
+    "noImplicitAny": false,
+    "allowJs": true,
+    "sourceMap": true,
+    "outDir": "app",
+    "baseUrl": ".",
+    "jsx": "react",
+    "incremental": true,
+    "esModuleInterop": true,
+    "types": [
+      "babylonjs"
+    ],
+    "paths": {
+      "*": [
+        "node_modules/*"
+      ]
+    }
+  },
+  "include": [
+    "src/**/*",
+    "test/**/*"
+  ]
+}
