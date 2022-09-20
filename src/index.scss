@@ -9,8 +9,7 @@
   $background: #323232
 );
 
-// MDC SCSS files
-@use 'material-components-web/material-components-web';
+@use "@material/button/mdc-button";
 
 // Change scrollbar for whole app
 *::-webkit-scrollbar {

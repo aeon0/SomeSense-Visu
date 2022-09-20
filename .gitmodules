@@ -1,3 +1,4 @@
 [submodule "src/com/interface"]
 	path = src/com/interface
 	url = https://github.com/aeon0/SomeSense-Interface.git
+	branch = master

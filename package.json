@@ -12,8 +12,8 @@
   "scripts": {
     "b": "./node_modules/typescript/bin/tsc && electron ./app/src/main.js",
     "build-sass": "sass --load-path node_modules --load-path src src/index.scss app/src/index.css --style compressed",
-    "gen-capnp": "capnpc -o ts src/com/frame.capnp",
-    "start": "npm run gen-capnp && npm run build-sass && ./node_modules/typescript/bin/tsc && electron ./app/src/main.js",
+    "gen-proto": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_opt=esModuleInterop=true --ts_proto_out=./src/com/interface/proto -I=./src/com/interface/proto ./src/com/interface/proto/*.proto",
+    "start": "npm run gen-proto && npm run build-sass && ./node_modules/typescript/bin/tsc && electron ./app/src/main.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
@@ -42,33 +42,33 @@
     }
   },
   "dependencies": {
+    "@material/button": "^14.0.0",
+    "@material/theme": "^14.0.0",
     "@reduxjs/toolkit": "^1.8.5",
     "babylonjs": "5.24.0",
     "babylonjs-gui": "5.24.0",
     "babylonjs-materials": "5.24.0",
-    "capnp-ts": "0.7.0",
-    "capnpc-ts": "0.7.0",
     "electron-devtools-installer": "3.2.0",
     "fast-png": "6.1.0",
     "nodejs-ecal": "1.0.4",
-    "react": "17.0.2",
-    "react-dom": "17.0.2",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
     "react-redux": "8.0.2",
     "redux": "4.2.0",
-    "rmwc": "8.0.1",
-    "styled-components": "5.3.5"
+    "styled-components": "5.3.5",
+    "ts-proto": "^1.125.0"
   },
   "devDependencies": {
     "@types/electron-devtools-installer": "2.2.2",
     "@types/node": "16.11.59",
-    "@types/react": "17.0.50",
-    "@types/react-dom": "17.0.17",
+    "@types/react": "18.0.20",
+    "@types/react-dom": "18.0.6",
     "@types/react-redux": "7.1.24",
-    "@types/styled-components": "5.1.13",
+    "@types/styled-components": "5.1.26",
     "electron": "20.1.4",
     "electron-builder": "23.3.3",
     "electron-devtools-installer": "3.2.0",
-    "sass": "1.54.9",
+    "sass": "^1.41.1",
     "typescript": "~4.6.4"
   }
 }
