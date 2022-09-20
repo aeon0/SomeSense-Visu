@@ -1,17 +1,17 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import styled from 'styled-components'
-import { SnackbarQueue } from '@rmwc/snackbar'
 import { Provider } from 'react-redux'
 import { store } from './redux/store'
-import { Overlay } from './overlay'
-import { World } from './world3D/world'
-import { snackbarQueue } from './snackbar_queue'
-import { IPCClient } from './com/ipc_client'
+import { Ecal } from './com/ecal'
+import { ICom } from './com/icom'
 
+// import { SnackbarQueue } from '@rmwc/snackbar'
+// import { Overlay } from './overlay'
+// import { World } from './world3D/world'
+// import { snackbarQueue } from './snackbar_queue'
 
-// Connect to server
-const ipcClient = new IPCClient();
+var com: ICom;
 
 const MainWrapper = styled.div`
   all: inherit;
@@ -30,15 +30,17 @@ const HiddenCanvas = styled.canvas`
 function App() {
   // Only runs on mount
   React.useEffect(() => {
-    const world: World = new World(document.getElementById('world') as HTMLCanvasElement);
-    world.load();
-    world.run();
+    com = new Ecal();
+    // Start Vis
+    // const world: World = new World(document.getElementById('world') as HTMLCanvasElement);
+    // world.load();
+    // world.run();
   }, []);
 
   return <MainWrapper>
-    <Overlay ipcClient={ipcClient}/>
+    {/* <Overlay ipcClient={ipcClient}/> */}
 
-    <React.Fragment>
+    {/* <React.Fragment>
       <CanvasS id="world" />
       <FixedCanvas id="front_cam_img" />
       <HiddenCanvas id="tmp_front_cam_img" />
@@ -47,7 +49,7 @@ function App() {
     <SnackbarQueue
       messages={snackbarQueue.messages}
       dismissIcon
-    />
+    /> */}
   </MainWrapper>
 }
 
