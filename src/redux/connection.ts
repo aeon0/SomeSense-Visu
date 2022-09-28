@@ -2,28 +2,28 @@ import { createAction, createReducer } from '@reduxjs/toolkit'
 
 
 export interface IReduxConnection {
-  topicPub: string;
-  topicSub: string;
+  serverName: string;
+  topicSubs: string[];
   waitingForData: boolean;
 }
 
 const initialState: IReduxConnection = {
-  topicPub: "somesense_visu",
-  topicSub: "somesense_app",
+  serverName: "somesense_visu_server",
+  topicSubs: ["somesense_app"],
   waitingForData: true,
 }
 
-export const setTopicPub = createAction<string>('connection/setTopicPub')
-export const setTopicSub = createAction<string>('connection/setTopicSub')
+export const setServerName = createAction<string>('connection/setServerName')
+export const setTopicSubs = createAction<[string]>('connection/setTopicSubs')
 export const setWaitingForData = createAction<boolean>('connection/setWaitingForData')
 
 export const reducer = createReducer(initialState, (builder) => {
   builder
-    .addCase(setTopicPub, (state, action) => {
-      state.topicPub = action.payload;
+    .addCase(setServerName, (state, action) => {
+      state.serverName = action.payload;
     })
-    .addCase(setTopicSub, (state, action) => {
-      state.topicSub = action.payload;
+    .addCase(setTopicSubs, (state, action) => {
+      state.topicSubs = action.payload;
     })
     .addCase(setWaitingForData, (state, action) => {
       state.waitingForData = action.payload;

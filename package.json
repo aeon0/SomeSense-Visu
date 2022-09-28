@@ -10,7 +10,6 @@
   "homepage": "http://hompage.com",
   "license": "ISC",
   "scripts": {
-    "b": "./node_modules/typescript/bin/tsc && electron ./app/src/main.js",
     "build-sass": "sass --load-path node_modules --load-path src src/index.scss app/src/index.css --style compressed",
     "gen-proto": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_opt=esModuleInterop=true --ts_proto_out=./src/com/interface/proto -I=./src/com/interface/proto ./src/com/interface/proto/*.proto",
     "start": "npm run gen-proto && npm run build-sass && ./node_modules/typescript/bin/tsc && electron ./app/src/main.js",
@@ -50,7 +49,7 @@
     "babylonjs-materials": "5.24.0",
     "electron-devtools-installer": "3.2.0",
     "fast-png": "6.1.0",
-    "nodejs-ecal": "1.0.4",
+    "nodejs-ecal": "1.1.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-redux": "8.0.2",
