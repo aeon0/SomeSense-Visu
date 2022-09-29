@@ -8,6 +8,7 @@ import { Tabbar } from './tabbar'
 import { Menu } from './menu'
 import { RuntimeMeas } from './runtime_meas'
 import { LiveControls } from './live_controls'
+import { RecControls } from './rec_controls'
 
 
 const OverlayWrapper = styled.div`
@@ -30,6 +31,9 @@ export function Overlay(props: {client: ICom}) {
     <Menu />
     {isRec !== null && !isRec &&
       <LiveControls client={props.client} />
+    }
+    {isRec !== null && isRec &&
+      <RecControls client={props.client} />
     }
 
   </OverlayWrapper>

@@ -16,11 +16,12 @@ const WrapperDivS = styled.div`
 `
 
 export function Tabbar() {
+  const ref = React.useRef(null);
   let location = useLocation();
   let navigate = useNavigate();
 
   React.useEffect(() => {
-    const tabBar = new MDCTabBar(document.querySelector('.mdc-tab-bar'));
+    const tabBar = new MDCTabBar(ref.current);
   });
 
   const Tab = (props: { title: string, link: string, idx: number }) => {
@@ -42,7 +43,7 @@ export function Tabbar() {
 
   return (
     <WrapperDivS>
-      <div className="mdc-tab-bar" role="tablist">
+      <div ref={ref} className="mdc-tab-bar" role="tablist">
         <div className="mdc-tab-scroller">
           <div className="mdc-tab-scroller__scroll-area">
             <div className="mdc-tab-scroller__scroll-content">

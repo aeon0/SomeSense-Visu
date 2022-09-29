@@ -13,7 +13,6 @@ const WrapperDivS = styled.div`
   color: white;
   width: 100%;
   height: auto;
-  padding-top: 10px;
   position: relative;
   user-select: none;
 `
@@ -33,7 +32,6 @@ const ContentS = styled.div`
   width: 100%;
   overflow: auto;
   white-space: nowrap;
-  padding-bottom: 10px;
   cursor: move;
 `
 const FrameS = styled.div`
@@ -111,8 +109,6 @@ function createRuntimeMeasFrame(key: string, measFrame: IProtoFrameAdapted, pixe
       // Start and end time in [ms] relative to frame start
       let startTimeMs = usToMs(meas.start - measFrame.timestamp);
       let endTimeMs = startTimeMs + meas.duration;
-      console.log(meas.start);
-      console.log(measFrame.timestamp);
 
       let background = "#73ab29";
       if (endTimeMs > measFrame.plannedFrameLength) {
@@ -157,7 +153,6 @@ export function RuntimeMeas() {
     }
     return true;
   });
-  console.log(data.length);
 
   React.useEffect(() => {
     sliderRef.current.scrollLeft = sliderRef.current.scrollWidth;

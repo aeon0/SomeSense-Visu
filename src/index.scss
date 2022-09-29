@@ -11,6 +11,7 @@
 
 
 @use "@material/button/mdc-button";
+@use "@material/icon-button/icon-button";
 @use "@material/fab";
 // Tab Bar
 @use "@material/tab-bar/mdc-tab-bar";
@@ -21,8 +22,12 @@
 @use "@material/list/mdc-list";
 @use "@material/menu-surface/mdc-menu-surface";
 @use "@material/menu/mdc-menu";
+// Controls
+@use "@material/slider/slider";
 
 @include fab.core-styles;
+@include icon-button.core-styles;
+@include slider.core-styles;
 
 // Change scrollbar for whole app
 *::-webkit-scrollbar {
