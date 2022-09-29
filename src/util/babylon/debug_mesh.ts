@@ -36,8 +36,8 @@ export const showAxis = function(size: number, scene: Scene) {
 
 export const showGrid = function(scene: Scene) {
   const offsetToFront = 40;
-  const width = 140;
-  const height = 100;
+  const width = 300; // x-direction
+  const height = 200; // y-direction
   let gridGround = MeshBuilder.CreateGround("grid_ground", {height: height, width: width, subdivisions: 0, updatable: false}, scene);
   gridGround.rotation.x = Math.PI*0.5;
   gridGround.position.x += offsetToFront;
@@ -46,18 +46,18 @@ export const showGrid = function(scene: Scene) {
   material.minorUnitVisibility = 0.5;
   material.mainColor = new Color3(0, 0, 0);
   material.lineColor = new Color3(0.6, 0.6, 0.6);
-  material.opacity = 0.4;
+  material.opacity = 0.25;
   material.backFaceCulling = false;
   gridGround.material = material;
 
   let rulerMaterial = material.clone("ruler_material");
-  rulerMaterial.opacity = 0.7;
-  const xRuler = MeshBuilder.CreatePlane("x_ruler", {width: length, height: 0.5}, scene);
+  rulerMaterial.opacity = 0.6;
+  const xRuler = MeshBuilder.CreatePlane("x_ruler", {width: width, height: 0.5}, scene);
   xRuler.rotation.x = Math.PI * 0.5;
   xRuler.position.x += offsetToFront;
   xRuler.material = rulerMaterial;
 
-  const yRuler = MeshBuilder.CreatePlane("y_ruler", {width: width, height: 0.5}, scene);
+  const yRuler = MeshBuilder.CreatePlane("y_ruler", {width: height, height: 0.5}, scene);
   yRuler.rotation.z = Math.PI * 0.5;
   yRuler.rotation.y = Math.PI * 0.5;
   yRuler.material = rulerMaterial;

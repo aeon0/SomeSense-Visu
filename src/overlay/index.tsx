@@ -1,9 +1,7 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import { ImageOverlay } from './image_overlay'
-import { useSelector } from 'react-redux'
-import { AppState } from '../redux/store'
 import { ICom } from '../com/icom'
+import { Tabbar } from './tabbar';
 
 
 const OverlayWrapper = styled.div`
@@ -14,14 +12,12 @@ const OverlayWrapper = styled.div`
   pointer-events: none;
 `
 
-export function Overlay(props: any) {
-  const client: ICom = props.client;
+interface OverlayProps {
+  client: ICom
+}
 
-  const hasCamSensor = useSelector((store: AppState) => (store.frame.data !== null && store.frame.data.camSensors.length > 0));
-
+export function Overlay(props: OverlayProps) {
   return <OverlayWrapper>
-    {hasCamSensor &&
-      <ImageOverlay />
-    }
+    <Tabbar />
   </OverlayWrapper>
 }

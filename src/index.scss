@@ -1,6 +1,6 @@
 // MDC Theme
 @use "@material/theme" with (
-  $primary:  #66e9de,
+  $primary:  #791fa7,
   $secondary: #424242,
   $error: #e84e4e,
   $on-error: #fff,
@@ -9,7 +9,12 @@
   $background: #323232
 );
 
+
 @use "@material/button/mdc-button";
+@use "@material/tab-bar/mdc-tab-bar";
+@use "@material/tab-scroller/mdc-tab-scroller";
+@use "@material/tab-indicator/mdc-tab-indicator";
+@use "@material/tab/mdc-tab";
 
 // Change scrollbar for whole app
 *::-webkit-scrollbar {

@@ -3,53 +3,43 @@ import { createRoot } from 'react-dom/client'
 import styled from 'styled-components'
 import { Provider } from 'react-redux'
 import { store } from './redux/store'
+import { HashRouter, Routes, Route } from 'react-router-dom';
+import {Outlet} from 'react-router-dom';
+// Communication
 import { Ecal } from './com/ecal'
 import { ICom } from './com/icom'
-
-// import { SnackbarQueue } from '@rmwc/snackbar'
+// Global Overlays
 import { Overlay } from './overlay'
-import { World } from './world3D/world'
-// import { snackbarQueue } from './snackbar_queue'
+// Tab Pages
+import { Default } from './tabs/default';
+import { Example } from './tabs/example';
 
-let com: ICom;
 
 const MainWrapper = styled.div`
   all: inherit;
 `
-const CanvasS = styled.canvas`
-  all: inherit;
-  touch-action: none;
-`
-const FixedCanvas = styled.canvas`
-  position: fixed;
-`
-const HiddenCanvas = styled.canvas`
-  display: none;
-`
 
 function App() {
-  // Only runs on mount
+  const [com, setCom] = React.useState<ICom>();
+
   React.useEffect(() => {
-    com = new Ecal();
-    // Start Vis
-    const world: World = new World(document.getElementById('world') as HTMLCanvasElement);
-    world.load();
-    world.run();
+    setCom(new Ecal());
   }, []);
 
-  return <MainWrapper>
+  const Layout = () => (<>
     <Overlay client={com}/>
+    <Outlet/>
+  </>);
 
-    <React.Fragment>
-      <CanvasS id="world" />
-      <FixedCanvas id="front_cam_img" />
-      <HiddenCanvas id="tmp_front_cam_img" />
-    </React.Fragment>
-
-    {/* <SnackbarQueue
-      messages={snackbarQueue.messages}
-      dismissIcon
-    /> */}
+  return <MainWrapper>
+    <HashRouter>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Default client={com} />} />
+          <Route path="example" element={<Example />} />
+        </Route>
+      </Routes>
+    </HashRouter>
   </MainWrapper>
 }
 
