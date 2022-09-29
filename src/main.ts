@@ -25,6 +25,7 @@ function createMainWindow() {
 
   // Stuff needed for pop up windows with @electron/remote
   initialize();
+  enable(mainWindow.webContents);
   mainWindow.on("closed", () => {
     app.quit();
   });

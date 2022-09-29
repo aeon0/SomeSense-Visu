@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setShowRuntimeMeas } from '../redux/settings'
 import { AppState } from '../redux/store'
 import { FrameAdapted as IProtoFrameAdapted } from '../redux/frame'
+import * as v8 from 'v8'
 
 
 const WrapperDivS = styled.div`
@@ -86,9 +87,10 @@ function createMeasOrder(measFrameArr: IProtoFrameAdapted[]): string[] {
   let mapping: string[] = [];
   for (let i = 0; i < measFrameArr.length; ++i) {
     // Sort by start time
-    // measFrameArr[i].runtimeMeas.sort((a, b) => a.start - b.start);
+    let rm = measFrameArr[i].runtimeMeas.map(item => v8.deserialize(v8.serialize(item)));
+    rm.sort((a, b) => a.start - b.start);
     // If not found in list, add to list at new index
-    for (var meas of measFrameArr[i].runtimeMeas) {
+    for (var meas of rm) {
       if (!mapping.includes(meas.name)) {
         mapping.push(meas.name);
       }
@@ -109,6 +111,8 @@ function createRuntimeMeasFrame(key: string, measFrame: IProtoFrameAdapted, pixe
       // Start and end time in [ms] relative to frame start
       let startTimeMs = usToMs(meas.start - measFrame.timestamp);
       let endTimeMs = startTimeMs + meas.duration;
+      console.log(meas.start);
+      console.log(measFrame.timestamp);
 
       let background = "#73ab29";
       if (endTimeMs > measFrame.plannedFrameLength) {
