@@ -1,7 +1,8 @@
-import { configureStore } from "@reduxjs/toolkit";
-import { combineReducers } from "redux"
-import { reducer as connectionReducer, IReduxConnection } from "./connection"
-import { reducer as frameReducer, IReduxFrame } from "./frame"
+import { configureStore } from '@reduxjs/toolkit';
+import { combineReducers } from 'redux'
+import { createStateSyncMiddleware, initMessageListener } from 'redux-state-sync'
+import { reducer as connectionReducer, IReduxConnection } from './connection'
+import { reducer as frameReducer, IReduxFrame } from './frame'
 
 
 export interface AppState {
@@ -20,5 +21,6 @@ export const store = configureStore({
     serializableCheck: {
       ignoredActions: ['frame/setData'],
       ignoredPaths: ['frame.data.camSensors']
-  }}),
+  }}).prepend(createStateSyncMiddleware()),
 });
+initMessageListener(store);

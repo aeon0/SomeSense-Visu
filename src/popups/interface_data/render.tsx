@@ -3,6 +3,9 @@ import { createRoot } from 'react-dom/client'
 import styled from 'styled-components'
 import { Provider } from 'react-redux'
 import { store } from '../../redux/store'
+// Test
+import { useSelector } from 'react-redux'
+import { AppState } from '../../redux/store'
 
 
 const MainWrapper = styled.div`
@@ -10,8 +13,10 @@ const MainWrapper = styled.div`
 `
 
 function InterfaceData() {
+  const ts = useSelector((store: AppState) => store.frame.data !== null ? store.frame.data.timestamp : -1);
+
   return <MainWrapper>
-    Hello World
+    Hello World {ts}
   </MainWrapper>
 }
 
