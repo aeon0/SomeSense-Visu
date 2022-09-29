@@ -1,9 +1,10 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { MDCMenu } from '@material/menu'
 import { MDCRipple } from '@material/ripple'
 import { AppState } from '../redux/store'
+import { setShowRuntimeMeas } from '../redux/settings'
 import { exportImg } from '../util/img_data'
 import { createInterfaceDataWindow } from '../popups/interface_data'
 
@@ -17,6 +18,9 @@ const MenuSurfaceS = styled.div`
 `
 
 export function Menu() {
+  const dispatch = useDispatch();
+  const showRuntimeMeas = useSelector((store: AppState) => store.settings.showRuntimeMeas);
+
   const [menu, setMenu] = React.useState<MDCMenu>();
 
   React.useEffect(() => {
@@ -38,9 +42,8 @@ export function Menu() {
       <div className="mdc-menu mdc-menu-surface">
         <ul className="mdc-deprecated-list" role="menu" aria-hidden="true" aria-orientation="vertical" tabIndex={-1}>
           <MenuItem name="Export Image" onClick={() => exportImg(null, 0)}/>
-          <MenuItem name="Show Interface Data" onClick={() => {
-              createInterfaceDataWindow();
-          }}/>
+          <MenuItem name="Show Interface Data" onClick={() => createInterfaceDataWindow()}/>
+          <MenuItem name={showRuntimeMeas ? "Hide Runtime Meas" : "Show Runtime Meas"} onClick={() => dispatch(setShowRuntimeMeas(!showRuntimeMeas))} />
         </ul>
       </div>
       <button onClick={() => menu.open = true} className="mdc-fab" aria-label="Menu">

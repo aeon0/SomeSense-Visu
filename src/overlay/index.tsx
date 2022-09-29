@@ -3,6 +3,9 @@ import styled from 'styled-components'
 import { ICom } from '../com/icom'
 import { Tabbar } from './tabbar'
 import { Menu } from './menu'
+import { RuntimeMeas } from './runtime_meas'
+import { AppState } from '../redux/store'
+import { useSelector } from 'react-redux'
 
 
 const OverlayWrapper = styled.div`
@@ -13,13 +16,14 @@ const OverlayWrapper = styled.div`
   pointer-events: none;
 `
 
-interface OverlayProps {
-  client: ICom
-}
+export function Overlay(props: {client: ICom}) {
+  const showRuntimeMeas = useSelector((store: AppState) => store.settings.showRuntimeMeas);
 
-export function Overlay(props: OverlayProps) {
   return <OverlayWrapper>
     <Tabbar />
+    {showRuntimeMeas &&
+      <RuntimeMeas />
+    }
     <Menu />
   </OverlayWrapper>
 }

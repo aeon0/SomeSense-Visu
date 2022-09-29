@@ -23,17 +23,8 @@ function createMainWindow() {
     mainWindow.webContents.openDevTools();
   });
 
-  // Install google chrome extensions for electron
-  installExtension(REACT_DEVELOPER_TOOLS)
-    .then((name) => console.log(`Added Extension:  ${name}`))
-    .catch((err) => console.log('An error occurred: ', err));
-  installExtension(REDUX_DEVTOOLS)
-    .then((name) => console.log(`Added Extension:  ${name}`))
-    .catch((err) => console.log('An error occurred: ', err));
-
   // Stuff needed for pop up windows with @electron/remote
   initialize();
-  enable(mainWindow.webContents);
   mainWindow.on("closed", () => {
     app.quit();
   });

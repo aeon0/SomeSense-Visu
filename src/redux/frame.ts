@@ -27,7 +27,7 @@ const initialState: IReduxFrame = {
   storage: []
 }
 
-export const setData = createAction<Frame>('frame/setData')
+export const setData = createAction<Frame>('frame/setData');
 
 export const reducer = createReducer(initialState, (builder) => {
   builder

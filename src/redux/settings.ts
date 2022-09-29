@@ -9,7 +9,7 @@ const initialState: IReduxSettings = {
   showRuntimeMeas: false
 }
 
-export const setShowRuntimeMeas = createAction<boolean>('settings/setShowRuntimeMeas')
+export const setShowRuntimeMeas = createAction<boolean>('settings/setShowRuntimeMeas');
 
 export const reducer = createReducer(initialState, (builder) => {
   builder
