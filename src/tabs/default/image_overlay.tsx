@@ -19,10 +19,11 @@ const Container = styled.div`
 `
 
 export function ImageOverlay(props: any) {
-  const img = useSelector((store: AppState) => store.frame.data.camSensors[0].img);
+  const img = useSelector((store: AppState) => store.frame.data !== null ? store.frame.data.camSensors[0].img : null);
   const canvasRef = React.useRef<HTMLCanvasElement>();
 
   React.useEffect(() => {
+    if (img == null) return;
     const canvasWidth = window.innerWidth * 0.20 + "px";
 
     // Set Image Data

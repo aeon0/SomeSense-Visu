@@ -50,26 +50,27 @@
     "@material/tab-bar": "^14.0.0",
     "@material/theme": "^14.0.0",
     "@reduxjs/toolkit": "^1.8.5",
-    "babylonjs": "5.24.0",
-    "babylonjs-gui": "5.24.0",
-    "babylonjs-materials": "5.24.0",
+    "babylonjs": "5.26.0",
+    "babylonjs-gui": "5.26.0",
+    "babylonjs-materials": "5.26.0",
     "classnames": "^2.3.2",
     "electron-devtools-installer": "3.2.0",
     "fast-png": "6.1.0",
     "nodejs-ecal": "1.1.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-redux": "8.0.2",
+    "react-json-view": "^1.21.3",
+    "react-redux": "8.0.4",
     "react-router-dom": "^6.4.1",
     "redux": "4.2.0",
     "redux-state-sync": "^3.1.4",
-    "styled-components": "5.3.5",
-    "ts-proto": "^1.125.0"
+    "styled-components": "5.3.6",
+    "ts-proto": "^1.126.1"
   },
   "devDependencies": {
     "@types/electron-devtools-installer": "2.2.2",
     "@types/node": "16.11.59",
-    "@types/react": "18.0.20",
+    "@types/react": "18.0.21",
     "@types/react-dom": "18.0.6",
     "@types/react-redux": "7.1.24",
     "@types/redux-state-sync": "^3.1.5",
@@ -81,5 +82,11 @@
     "electron-devtools-installer": "3.2.0",
     "sass": "^1.41.1",
     "typescript": "~4.6.4"
+  },
+  "overrides": {
+    "react-json-view": {
+      "react": "18.2.0",
+      "react-dom": "18.2.0"
+    }
   }
 }

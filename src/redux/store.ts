@@ -17,10 +17,6 @@ const reducer = combineReducers<AppState>({
 
 export const store = configureStore({
   reducer,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware({
-    serializableCheck: {
-      ignoredActions: ['frame/setData'],
-      ignoredPaths: ['frame.data.camSensors']
-  }}).prepend(createStateSyncMiddleware()),
+  middleware: [createStateSyncMiddleware()],
 });
 initMessageListener(store);

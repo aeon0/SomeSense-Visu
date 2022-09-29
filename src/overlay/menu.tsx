@@ -18,8 +18,6 @@ const MenuSurfaceS = styled.div`
 
 export function Menu() {
   const [menu, setMenu] = React.useState<MDCMenu>();
-  const imgData = useSelector((store: AppState) => store.frame.data !== null ? store.frame.data.camSensors[0].img.data : null);
-  const currentTs = useSelector((store: AppState) => store.frame.data !== null ? store.frame.data.timestamp : 0);
 
   React.useEffect(() => {
     const mdcMenu = new MDCMenu(document.querySelector('.mdc-menu'));
@@ -39,7 +37,7 @@ export function Menu() {
     <MenuSurfaceS id="main-menu" className="mdc-menu-surface--anchor">
       <div className="mdc-menu mdc-menu-surface">
         <ul className="mdc-deprecated-list" role="menu" aria-hidden="true" aria-orientation="vertical" tabIndex={-1}>
-          <MenuItem name="Export Image" onClick={() => exportImg(imgData, currentTs)}/>
+          <MenuItem name="Export Image" onClick={() => exportImg(null, 0)}/>
           <MenuItem name="Show Interface Data" onClick={() => {
               createInterfaceDataWindow();
           }}/>
