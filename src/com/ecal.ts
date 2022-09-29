@@ -2,8 +2,6 @@ import * as ecal from "nodejs-ecal"
 import { ICom, IComCallback } from "./icom"
 import { store } from "./../redux/store"
 import { hanldeProtobufMsg } from "./msg_handler"
-import { createGlobalStyle } from "styled-components";
-import { clipPlaneFragment } from "babylonjs/Shaders/ShadersInclude/clipPlaneFragment";
 
 
 export class Ecal extends ICom {

@@ -1,5 +1,7 @@
 import * as fs from 'fs'
 import { encode } from 'fast-png'
+import { Img } from '../com/interface/proto/types'
+
 
 export function exportImg(imgData: ImageData, ts: number) {
   if (imgData === null)
@@ -20,4 +22,20 @@ export function exportImg(imgData: ImageData, ts: number) {
       console.log("Image has been saved as " + saveTo);
     }
   });
+}
+
+export function convertImg(rawImgPayload: Uint8Array, width: number, height: number) {
+  var imageData = new ImageData(width, height);
+  let x = 0;
+  let z = 0;
+  while (x < rawImgPayload.length) {
+    const b = rawImgPayload[x++];
+    const g = rawImgPayload[x++];
+    const r = rawImgPayload[x++];
+    imageData.data[z++] = r; // red
+    imageData.data[z++] = g; // green
+    imageData.data[z++] = b; // blue
+    imageData.data[z++] = 0xFF; // alpha
+  }
+  return imageData;
 }

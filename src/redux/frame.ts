@@ -1,6 +1,7 @@
-import { bindActionCreators, createAction, createReducer } from '@reduxjs/toolkit'
+import { createAction, createReducer } from '@reduxjs/toolkit'
 import { Frame, CamSensor } from '../com/interface/proto/frame'
 import { Img } from '../com/interface/proto/types'
+import { convertImg } from '../util/img_data'
 
 
 // We need to adapt the proto interface here in order to convert Uint8Arrays to ImageData
@@ -18,10 +19,12 @@ export interface FrameAdapted extends Omit<Frame, 'camSensors'> {
 
 export interface IReduxFrame {
   data: FrameAdapted;
+  storage: FrameAdapted[]
 }
 
 const initialState: IReduxFrame = {
-  data: null
+  data: null,
+  storage: []
 }
 
 export const setData = createAction<Frame>('frame/setData')
@@ -31,28 +34,24 @@ export const reducer = createReducer(initialState, (builder) => {
     .addCase(setData, (state, action) => {
       for (let i = 0; i < action.payload.camSensors.length; ++i) {
         if (action.payload.camSensors[i].isValid && action.payload.camSensors[i].img.data !== undefined) {
-          const width = action.payload.camSensors[i].img.width;
-          const height = action.payload.camSensors[i].img.height;
-          let rawImgPayload = action.payload.camSensors[i].img.data;
-          var imageData = new ImageData(width, height);
-          let x = 0;
-          let z = 0;
-          while (x < rawImgPayload.length) {
-            const b = rawImgPayload[x++];
-            const g = rawImgPayload[x++];
-            const r = rawImgPayload[x++];
-            imageData.data[z++] = r; // red
-            imageData.data[z++] = g; // green
-            imageData.data[z++] = b; // blue
-            imageData.data[z++] = 0xFF; // alpha
-          }
-          action.payload.camSensors[i].img.data = imageData as any;
+          const img = action.payload.camSensors[i].img;
+          action.payload.camSensors[i].img.data = convertImg(img.data, img.width, img.height) as any;
         }
         else {
           action.payload.camSensors[i].img.data = null;
         }
       }
       state.data = action.payload as unknown as FrameAdapted;
+      // Save in storage, but set all other image data to null to save storage
+      state.storage.push(state.data);
+      if (state.storage.length >= 30) {
+        state.storage.shift();
+      }
+      for (let i = 0; i < (state.storage.length - 1); ++i) {
+        for (let ii = 0; ii < (state.storage[i].camSensors.length); ++ii) {
+          state.storage[i].camSensors[ii].img.data = null;
+        }
+      }
     })
     .addDefaultCase((state, _) => state)
 });

@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { MDCMenu } from '@material/menu'
 import { MDCRipple } from '@material/ripple'
 import { AppState } from '../redux/store'
-import { exportImg } from '../util/export_imgs'
+import { exportImg } from '../util/img_data'
 import { createInterfaceDataWindow } from '../popups/interface_data'
 
 
