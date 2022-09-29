@@ -1,11 +1,13 @@
 import * as React from 'react'
 import styled from 'styled-components'
 import { ICom } from '../com/icom'
+import { AppState } from '../redux/store'
+import { useSelector } from 'react-redux'
+
 import { Tabbar } from './tabbar'
 import { Menu } from './menu'
 import { RuntimeMeas } from './runtime_meas'
-import { AppState } from '../redux/store'
-import { useSelector } from 'react-redux'
+import { LiveControls } from './live_controls'
 
 
 const OverlayWrapper = styled.div`
@@ -18,6 +20,7 @@ const OverlayWrapper = styled.div`
 
 export function Overlay(props: {client: ICom}) {
   const showRuntimeMeas = useSelector((store: AppState) => store.settings.showRuntimeMeas);
+  const isRec = useSelector((store: AppState) => store.frame.data !== null ? store.frame.data.isRec : null);
 
   return <OverlayWrapper>
     <Tabbar />
@@ -25,5 +28,9 @@ export function Overlay(props: {client: ICom}) {
       <RuntimeMeas />
     }
     <Menu />
+    {isRec !== null && !isRec &&
+      <LiveControls client={props.client} />
+    }
+
   </OverlayWrapper>
 }
