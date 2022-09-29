@@ -10,16 +10,17 @@
   "homepage": "http://hompage.com",
   "license": "ISC",
   "scripts": {
+    "clean": "del-cli app",
+    "copy-files": "copyfiles -V ./src/**/*.html ./app ./assets/*.woff2 ./app",
     "build-sass": "sass --load-path node_modules --load-path src src/index.scss app/src/index.css --style compressed",
     "gen-proto": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_opt=esModuleInterop=true --ts_proto_out=./src/com/interface/proto -I=./src/com/interface/proto ./src/com/interface/proto/*.proto",
-    "start": "npm run gen-proto && npm run build-sass && ./node_modules/typescript/bin/tsc && electron ./app/src/main.js",
+    "start": "npm run copy-files && npm run gen-proto && npm run build-sass && ./node_modules/typescript/bin/tsc && electron ./app/src/main.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
     "pack-win": "electron-builder --dir --win",
     "dist-win": "electron-builder --win",
-    "postinstall": "rm -rf node_modules/@types/react-native && electron-builder install-app-deps",
-    "electron": "ELECTRON_DISABLE_SECURITY_WARNINGS=true electron ."
+    "postinstall": "rm -rf node_modules/@types/react-native && electron-builder install-app-deps"
   },
   "build": {
     "appId": "visu.id",
@@ -41,7 +42,10 @@
     }
   },
   "dependencies": {
+    "@electron/remote": "^2.0.8",
     "@material/button": "^14.0.0",
+    "@material/fab": "^14.0.0",
+    "@material/menu": "^14.0.0",
     "@material/tab": "^14.0.0",
     "@material/tab-bar": "^14.0.0",
     "@material/theme": "^14.0.0",
@@ -68,6 +72,8 @@
     "@types/react-dom": "18.0.6",
     "@types/react-redux": "7.1.24",
     "@types/styled-components": "5.1.26",
+    "copyfiles": "^2.4.1",
+    "del-cli": "^5.0.0",
     "electron": "20.1.4",
     "electron-builder": "23.3.3",
     "electron-devtools-installer": "3.2.0",

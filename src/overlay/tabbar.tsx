@@ -23,8 +23,7 @@ export function Tabbar() {
     const tabBar = new MDCTabBar(document.querySelector('.mdc-tab-bar'));
   });
 
-  interface TabProps { title: string, link: string, idx: number };
-  const Tab = (props: TabProps) => {
+  const Tab = (props: { title: string, link: string, idx: number }) => {
     const isActive = location.pathname == props.link;
     return (<>
       <button className={cn("mdc-tab", "mdc-tab--min-width", {"mdc-tab--active": isActive})} role="tab" aria-selected="true"
@@ -48,7 +47,7 @@ export function Tabbar() {
           <div className="mdc-tab-scroller__scroll-area">
             <div className="mdc-tab-scroller__scroll-content">
               <Tab title="Default" link="/" idx={0}/>
-              {/* <Tab title="Example" link="/example" idx={1}/> */}
+              <Tab title="Example" link="/example" idx={1}/>
             </div>
           </div>
         </div>

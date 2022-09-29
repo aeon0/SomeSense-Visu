@@ -1,7 +1,8 @@
 import * as React from 'react'
 import styled from 'styled-components'
 import { ICom } from '../com/icom'
-import { Tabbar } from './tabbar';
+import { Tabbar } from './tabbar'
+import { Menu } from './menu'
 
 
 const OverlayWrapper = styled.div`
@@ -19,5 +20,6 @@ interface OverlayProps {
 export function Overlay(props: OverlayProps) {
   return <OverlayWrapper>
     <Tabbar />
+    <Menu />
   </OverlayWrapper>
 }
