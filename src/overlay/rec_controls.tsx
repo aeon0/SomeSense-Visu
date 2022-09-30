@@ -1,7 +1,7 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import cn from 'classnames';
-import { useDispatch, useSelector } from 'react-redux'
+import * as promises from "timers/promises"
+import { useSelector } from 'react-redux'
 import { AppState } from '../redux/store'
 import { ICom } from '../com/icom'
 import { MDCSlider } from '@material/slider'
@@ -66,56 +66,85 @@ function usToTime(durationUs: number) {
   return h + ":" + m + ":" + s + "." + ms;
 }
 
+
 export function RecControls(props: {client: ICom}) {
   const refSlider = React.useRef(null);
-  const dispatch = useDispatch();
+  const refSliderInput = React.useRef(null);
 
-  const currentTs = useSelector((store: AppState) => store.frame.data !== null ? store.frame.data.relTs : -1);
-  const play = useSelector((store: AppState) => store.frame.data !== null ? store.frame.data.recData.isPlaying : false);
-  const recLength = useSelector((store: AppState) => store.frame.data !== null ? store.frame.data.recData.recLength : 0);
+  const currentTs = useSelector((store: AppState) => store.frame.data !== null ? store.frame.data.relTs : 0);
+  const plannedFrameLength = useSelector((store: AppState) => store.frame.data !== null ? store.frame.data.plannedFrameLength : 0);
+  const play = useSelector((store: AppState) => store.recMeta.isPlaying);
+  const recLength = useSelector((store: AppState) => store.recMeta.recLength);
 
-  const [playerTs, setPlayerTs] = React.useState(currentTs);
-  React.useEffect(() => setPlayerTs(currentTs), [currentTs]);
-  React.useEffect(() => { new MDCSlider(refSlider.current) }, []);
+  const [slider, setSlider] = React.useState<MDCSlider>();
+  let [sliderTs, setSliderTs] = React.useState(null);
+
+  // Ugh: Custom events... why??
+  React.useEffect(() => {
+    const mdcSlider = new MDCSlider(refSlider.current);
+    mdcSlider.setValue(currentTs);
+    setSlider(mdcSlider);
+    function handleChange() {
+      props.client.sendMsg("frame_ctrl", {action: "jump_to_rel_ts", rel_ts: mdcSlider.getValue()}, async () => {
+        // Dirty hack in the hope that in 250ms the server has sent a new frame and currentTs is updated.
+        await promises.setTimeout(250);
+        setSliderTs(null);
+      });
+    }
+    function handleInput() {
+      setSliderTs(mdcSlider.getValue());
+    }
+    mdcSlider.listen("MDCSlider:change", handleChange);
+    mdcSlider.listen("MDCSlider:input", handleInput);
+    return () => {
+      mdcSlider.unlisten("MDCSlider:change", handleChange);
+      mdcSlider.unlisten("MDCSlider:input", handleInput);
+      mdcSlider.destroy();
+    }
+  }, []);
+
+  if (slider !== undefined && sliderTs == null) {
+    slider.setDisabled(play);
+    slider.setValue(currentTs);
+  }
 
   return <Container>
     <ButtonContainer>
-      <IconButtonS icon="keyboard_arrow_left" disabled={play}
+      <IconButtonS icon="keyboard_arrow_left" disabled={play || (currentTs <= plannedFrameLength * 1000.0)}
         onClick={() => {
-          console.log("Step Backwards");
+          props.client.sendMsg("frame_ctrl", {action: "step_back"}, () => {});
         }}
       />
-      {play && <IconButtonS icon="pause" disabled={currentTs >= recLength}
+      {play && <IconButtonS icon="pause" disabled={currentTs >= (recLength - plannedFrameLength * 1000.0)}
         onClick={() => {
-          console.log("Pause");
+          console.log("PAUSE");
+          props.client.sendMsg("frame_ctrl", {action: "pause"}, () => {});
         }}
       />}
-      {!play && <IconButtonS icon="play_arrow" disabled={currentTs >= recLength}
+      {!play && <IconButtonS icon="play_arrow" disabled={currentTs >= (recLength - plannedFrameLength * 1000.0)}
         onClick={() => {
-          console.log("Play");
+          props.client.sendMsg("frame_ctrl", {action: "play"}, () => {});
         }}
       />}
-      <IconButtonS icon="keyboard_arrow_right" disabled={play}
+      <IconButtonS icon="keyboard_arrow_right" disabled={play || (currentTs >= (recLength - plannedFrameLength * 1000.0))}
         onClick={() => {
-          console.log("Step Forward");
+          props.client.sendMsg("frame_ctrl", {action: "step_forward"}, () => {});
         }}
       />
     </ButtonContainer>
 
     <VerticalContainerS>
       <SliderContainer>
-        <SliderS ref={refSlider} className={cn("mdc-slider", play ? "mdc-slider--disabled" : "")}>
+        <SliderS ref={refSlider} className="mdc-slider">
           <input
+            ref={refSliderInput}
             className="mdc-slider__input"
             type="range"
             min="0" 
             max={recLength}
-            value={playerTs}
+            value={currentTs}
             name="timestamp"
-            onChange={(evt) => {
-              console.log("Change to " + evt.target.value)
-            }}
-            disabled={play ? true : false}
+            readOnly
           />
           <div className="mdc-slider__track">
             <div className="mdc-slider__track--inactive"></div>
@@ -128,7 +157,7 @@ export function RecControls(props: {client: ICom}) {
           </div>
         </SliderS>
       </SliderContainer>
-      <InfoBox>{usToTime(playerTs)} [{playerTs} us]</InfoBox>
+      <InfoBox>{usToTime(slider !== undefined ? slider.getValue() : 0)} [{slider !== undefined ? slider.getValue(): 0} us]</InfoBox>
     </VerticalContainerS>
   </Container>
 }

@@ -1,6 +1,6 @@
 import * as fs from 'fs'
 import { encode } from 'fast-png'
-import { Img } from '../com/interface/proto/types'
+import { AppState } from '../redux/store'
 
 
 export function exportImg(imgData: ImageData, ts: number) {
@@ -38,4 +38,11 @@ export function convertImg(rawImgPayload: Uint8Array, width: number, height: num
     imageData.data[z++] = 0xFF; // alpha
   }
   return imageData;
+}
+
+export function getImgData(store: AppState, idx: number = 0) {
+  const validImg = store.frame.data != null && 
+    store.frame.data.camSensors.length > idx &&
+    store.frame.data.camSensors[idx].isValid;
+  return validImg ? store.frame.data.camSensors[idx].img : null;
 }

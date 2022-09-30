@@ -2,6 +2,7 @@ import * as React from 'react'
 import styled from 'styled-components'
 import { useSelector } from 'react-redux'
 import { AppState } from '../../redux/store'
+import { getImgData } from '../../util/img_data'
 
 
 const Container = styled.div`
@@ -19,7 +20,7 @@ const Container = styled.div`
 `
 
 export function ImageOverlay(props: any) {
-  const img = useSelector((store: AppState) => store.frame.data !== null ? store.frame.data.camSensors[0].img : null);
+  const img = useSelector((store: AppState) => getImgData(store, 0));
   const canvasRef = React.useRef<HTMLCanvasElement>();
 
   React.useEffect(() => {

@@ -21,7 +21,7 @@ const OverlayWrapper = styled.div`
 
 export function Overlay(props: {client: ICom}) {
   const showRuntimeMeas = useSelector((store: AppState) => store.settings.showRuntimeMeas);
-  const isRec = useSelector((store: AppState) => store.frame.data !== null ? store.frame.data.isRec : null);
+  const isRec = useSelector((store: AppState) => store.recMeta.isRec);
 
   return <OverlayWrapper>
     <Tabbar />
@@ -29,10 +29,10 @@ export function Overlay(props: {client: ICom}) {
       <RuntimeMeas />
     }
     <Menu />
-    {isRec !== null && !isRec &&
+    {!isRec &&
       <LiveControls client={props.client} />
     }
-    {isRec !== null && isRec &&
+    {isRec &&
       <RecControls client={props.client} />
     }
 

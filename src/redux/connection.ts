@@ -9,7 +9,10 @@ export interface IReduxConnection {
 
 const initialState: IReduxConnection = {
   serverName: "somesense_server",
-  topicSubs: ["somesense_app"],
+  topicSubs: [
+    "somesense_app",
+    "somesense_recmeta"
+  ],
   waitingForData: true,
 }
 
