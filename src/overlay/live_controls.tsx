@@ -3,6 +3,8 @@ import styled, { keyframes } from 'styled-components'
 import { useSelector, useDispatch } from 'react-redux'
 import { ICom } from '../com/icom'
 import { AppState } from '../redux/store'
+import { IconButton } from '../util/mdc/icon_button'
+import { setSaveToFile } from '../redux/frame'
 
 
 const Container = styled.div`
@@ -17,12 +19,13 @@ const Container = styled.div`
 const ButtonContainer = styled.div`
   display:flex;
   align-items:center;
-  padding: 10px;
+  padding: 5px;
+  padding-left: 15px;
 `
-// const IconButtonS = styled(IconButton)<IconButtonProps & IconButtonHTMLProps>`
-//   pointer-events: auto;
-//   color: #EEE;
-// `
+const IconButtonS = styled(IconButton)`
+  pointer-events: auto;
+  color: #EEE;
+`
 const InfoBox = styled.div`
   color: #aaa;
   font-size: 13px;
@@ -48,7 +51,6 @@ const RecLight = styled.div`
   animation: ${blinkLightAnimation} 1.0s cubic-bezier(.5, 0, 1, 1) infinite alternate;
 `
 
-
 function usToTime(durationUs: number) {
   var durationMs: number = Math.floor(durationUs / 1000);
   var milliseconds: number = Math.floor((durationMs % 1000));
@@ -68,58 +70,29 @@ export function LiveControls(props: {client: ICom}) {
   const dispatch = useDispatch();
 
   const currentTs = useSelector((store: AppState) => store.frame.data !== null ? store.frame.data.relTs : -1);
-
-  // Key handlers
-  // React.useEffect(() => {
-  //   function handleKeyDown(e: KeyboardEvent) {
-  //     if (e.keyCode === 49) { // 1
-  //       if (!isStoring) {
-  //         ipcClient.sendMessage("start_storing", null, (res: any) => {
-  //           const ctrlData: ICtrlData = parseCtrlData(res);
-  //           dispatch(updateCtrlData(ctrlData));
-  //         });
-  //       }
-  //     }
-  //     else if (e.keyCode === 50) { // 2
-  //       if (isStoring) {
-  //         ipcClient.sendMessage("stop_storing", null, (res: any) => {
-  //           const ctrlData: ICtrlData = parseCtrlData(res);
-  //           dispatch(updateCtrlData(ctrlData));
-  //         });
-  //       }
-  //     }
-  //   }
-  //   document.addEventListener("keydown", handleKeyDown, false);
-  //   return () => {
-  //     document.removeEventListener("keydown", handleKeyDown, false);
-  //   }
-  // })
+  const isSaving = useSelector((store: AppState) => store.frame.isSaving);
 
   return <Container>
-    {/* <ButtonContainer>
-      {isStoring?
+    <ButtonContainer>
+      {isSaving?
         <React.Fragment>
-          <IconButtonS icon="stop" label="StopStoring"
+          <IconButtonS icon="stop"
             onClick={() => {
-              ipcClient.sendMessage("stop_storing", null, (res: any) => {
-                const ctrlData: ICtrlData = parseCtrlData(res);
-                dispatch(updateCtrlData(ctrlData));
-              });
+              dispatch(setSaveToFile([false, ""]));
             }}
           />
           <RecLight />
         </React.Fragment>
       :
-        <IconButtonS icon="videocam" label="StartStoring"
+        <IconButtonS icon="videocam"
           onClick={() => {
-            ipcClient.sendMessage("start_storing", null, (res: any) => {
-              const ctrlData: ICtrlData = parseCtrlData(res);
-              dispatch(updateCtrlData(ctrlData));
-            });
+            const now = new Date();
+            const fileName = "rec_" + now.toISOString();
+            dispatch(setSaveToFile([true, fileName]));
           }}
         />
       }
-    </ButtonContainer> */}
+    </ButtonContainer>
 
     <InfoBox>{usToTime(currentTs)} [{currentTs} us]</InfoBox>
   </Container>

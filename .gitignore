@@ -4,6 +4,5 @@ node_modules
 dist
 tmp
 export/
-*.capnp.ts
-*.capnp.d.ts
-*.capnp.js
+*.somesense.json
+*.somesense.pb

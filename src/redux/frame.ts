@@ -2,6 +2,7 @@ import { createAction, createReducer } from '@reduxjs/toolkit'
 import { Frame, CamSensor } from '../com/interface/proto/frame'
 import { Img } from '../com/interface/proto/types'
 import { convertImg } from '../util/img_data'
+import { saveCurrMetaData } from '../util/save_protobuf'
 
 
 // We need to adapt the proto interface here in order to convert Uint8Arrays to ImageData
@@ -18,16 +19,21 @@ export interface FrameAdapted extends Omit<Frame, 'camSensors'> {
 
 
 export interface IReduxFrame {
+  isSaving: boolean,
+  fileName: string,
   data: FrameAdapted;
   storage: FrameAdapted[]
 }
 
 const initialState: IReduxFrame = {
+  isSaving: false,
+  fileName: "",
   data: null,
   storage: []
 }
 
 export const setData = createAction<Frame>('frame/setData');
+export const setSaveToFile = createAction<[boolean, string]>('frame/setSaveToFile');
 
 export const reducer = createReducer(initialState, (builder) => {
   builder
@@ -52,6 +58,13 @@ export const reducer = createReducer(initialState, (builder) => {
           state.storage[i].camSensors[ii].img.data = null;
         }
       }
+    })
+    .addCase(setSaveToFile, (state, action) => {
+      if (state.isSaving && !action.payload[0]) {
+        saveCurrMetaData(state.fileName);
+      }
+      state.isSaving = action.payload[0];
+      state.fileName = action.payload[1];
     })
     .addDefaultCase((state, _) => state)
 });
