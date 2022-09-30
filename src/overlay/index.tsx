@@ -9,6 +9,7 @@ import { Menu } from './menu'
 import { RuntimeMeas } from './runtime_meas'
 import { LiveControls } from './live_controls'
 import { RecControls } from './rec_controls'
+import { WaitForConnection } from './wait_for_connection'
 
 
 const OverlayWrapper = styled.div`
@@ -22,6 +23,7 @@ const OverlayWrapper = styled.div`
 export function Overlay(props: {client: ICom}) {
   const showRuntimeMeas = useSelector((store: AppState) => store.settings.showRuntimeMeas);
   const isRec = useSelector((store: AppState) => store.recMeta.isRec);
+  const connected = useSelector((store: AppState) => store.connection.connected);
 
   return <OverlayWrapper>
     <Tabbar />
@@ -29,12 +31,14 @@ export function Overlay(props: {client: ICom}) {
       <RuntimeMeas />
     }
     <Menu />
-    {!isRec &&
+    {!isRec && connected &&
       <LiveControls client={props.client} />
     }
-    {isRec &&
+    {isRec && connected &&
       <RecControls client={props.client} />
     }
-
+    {!connected && 
+      <WaitForConnection />
+    }
   </OverlayWrapper>
 }

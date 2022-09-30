@@ -1,6 +1,6 @@
 // MDC Theme
 @use "@material/theme" with (
-  $primary:  #791fa7,
+  $primary:  #49dbee,
   $secondary: #424242,
   $error: #e84e4e,
   $on-error: #fff,
@@ -24,7 +24,9 @@
 @use "@material/menu/mdc-menu";
 // Controls
 @use "@material/slider/slider";
+@use "@material/linear-progress";
 
+@include linear-progress.core-styles;
 @include fab.core-styles;
 @include icon-button.core-styles;
 @include slider.core-styles;

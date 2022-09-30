@@ -2,6 +2,7 @@ import * as ecal from "nodejs-ecal"
 import { ICom, IComCallback } from "./icom"
 import { store } from "./../redux/store"
 import { hanldeProtobufMsg } from "./msg_handler"
+import { setConnected } from "../redux/connection"
 
 
 export class Ecal extends ICom {
@@ -22,11 +23,18 @@ export class Ecal extends ICom {
     // on server and provides the last frame via its publisher. If sub is not active yet we will not receive it
     this.client = new ecal.Client(store.getState().connection.serverName);
     this.client.addResponseCallback(this.clientCallback.bind(this));
+    this.client.addEventCallback(ecal.eCAL_Client_Event.client_event_connected, this.clientEvent.bind(this));
+    this.client.addEventCallback(ecal.eCAL_Client_Event.client_event_disconnected, this.clientEvent.bind(this));
   }
 
   private subCallback(topic: string, msg: ArrayBuffer) {
     let payload = new Uint8Array(msg);
     hanldeProtobufMsg(topic, payload);
+  }
+
+  private clientEvent(_: string, event: ecal.SClientEventCallbackData) {
+    const connected = event.type == ecal.eCAL_Client_Event.client_event_connected;
+    store.dispatch(setConnected(connected));
   }
 
   private clientCallback(res: ecal.SServiceResponse) {
