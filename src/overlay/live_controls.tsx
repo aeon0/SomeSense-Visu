@@ -67,7 +67,7 @@ function usToTime(durationUs: number) {
 export function LiveControls(props: {client: ICom}) {
   const dispatch = useDispatch();
 
-  const currentTs = useSelector((store: AppState) => store.frame.data !== null ? store.frame.data.timestamp : -1);
+  const currentTs = useSelector((store: AppState) => store.frame.data !== null ? store.frame.data.relTs : -1);
 
   // Key handlers
   // React.useEffect(() => {

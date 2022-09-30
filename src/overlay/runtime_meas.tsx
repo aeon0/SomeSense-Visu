@@ -107,7 +107,7 @@ function createRuntimeMeasFrame(key: string, measFrame: IProtoFrameAdapted, pixe
     const meas = measFrame.runtimeMeas.find((val) => measName === val.name);
     if (meas) {
       // Start and end time in [ms] relative to frame start
-      let startTimeMs = usToMs(meas.start - measFrame.timestamp);
+      let startTimeMs = usToMs(meas.relStart - measFrame.relTs);
       let endTimeMs = startTimeMs + meas.duration;
 
       let background = "#73ab29";
