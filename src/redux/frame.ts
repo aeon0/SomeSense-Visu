@@ -1,6 +1,6 @@
 import { createAction, createReducer } from '@reduxjs/toolkit'
 import { Frame, CamSensor } from '../com/interface/proto/frame'
-import { Img } from '../com/interface/proto/types'
+import { Img } from '../com/interface/proto/camera'
 import { convertImg } from '../util/img_data'
 import { saveCurrMetaData } from '../util/save_protobuf'
 
