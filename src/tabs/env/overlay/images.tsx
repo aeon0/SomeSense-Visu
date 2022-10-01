@@ -21,7 +21,7 @@ const CanvasS = styled.canvas`
   margin-top: 10px;
 `
 
-export function ImageOverlay(props: any) {
+export function Images() {
   function isValid(store: AppState) {
     return store.frame.displayImgs !== null &&
       store.frame.displayImgs.length > 0;

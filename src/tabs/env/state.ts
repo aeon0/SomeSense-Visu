@@ -1,25 +1,25 @@
 import { createAction, createReducer } from '@reduxjs/toolkit'
 
 
-export interface IReduxVis {
+export interface IReduxEnvTab {
   showObstacles: boolean;
   showLane: boolean;
 }
 
-const initialState: IReduxVis = {
+const initialState: IReduxEnvTab = {
   showObstacles: true,
   showLane: true,
 }
 
-export const setObstacleVis = createAction<boolean>('vis/setObstacleVis');
-export const setLaneVis = createAction<boolean>('vis/setLaneVis');
+export const setEnvObstacleVis = createAction<boolean>('envTab/setEnvObstacleVis');
+export const setEnvLaneVis = createAction<boolean>('envTab/setEnvLaneVis');
 
 export const reducer = createReducer(initialState, (builder) => {
   builder
-    .addCase(setObstacleVis, (state, action) => {
+    .addCase(setEnvObstacleVis, (state, action) => {
       state.showObstacles = action.payload;
     })
-    .addCase(setLaneVis, (state, action) => {
+    .addCase(setEnvLaneVis, (state, action) => {
       state.showLane = action.payload;
     })
     .addDefaultCase((state, _) => state)

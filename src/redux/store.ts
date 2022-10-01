@@ -6,7 +6,8 @@ import { reducer as frameReducer, IReduxFrame } from './frame'
 import { reducer as settingsReducer, IReduxSettings } from './settings'
 import { reducer as recMetaReducer } from './recmeta'
 import { RecMeta } from '../com/interface/proto/recmeta'
-import { reducer as visRedcuer, IReduxVis } from './vis'
+// Redux store from tabs
+import { reducer as envTabRedcuer, IReduxEnvTab } from '../tabs/env/state'
 
 
 export interface AppState {
@@ -14,7 +15,7 @@ export interface AppState {
   frame: IReduxFrame,
   settings: IReduxSettings,
   recMeta: RecMeta,
-  vis: IReduxVis,
+  envTab: IReduxEnvTab,
 }
 
 const reducer = combineReducers<AppState>({
@@ -22,7 +23,7 @@ const reducer = combineReducers<AppState>({
   frame: frameReducer,
   settings: settingsReducer,
   recMeta: recMetaReducer,
-  vis: visRedcuer,
+  envTab: envTabRedcuer,
 });
 
 export const store = configureStore({

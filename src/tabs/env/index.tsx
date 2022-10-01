@@ -2,7 +2,8 @@
 import React from 'react';
 import styled from 'styled-components'
 import { World } from './3d/world'
-import { ImageOverlay } from './2d/image_overlay'
+import { Images } from './overlay/images'
+import { Config } from './overlay/config'
 
 
 const CanvasS = styled.canvas`
@@ -19,6 +20,7 @@ export function Env() {
 
   return (<>
       <CanvasS id="world" />
-      <ImageOverlay />
+      <Images />
+      <Config />
   </>);
 }

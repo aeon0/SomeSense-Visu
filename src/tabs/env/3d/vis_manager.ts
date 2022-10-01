@@ -12,14 +12,14 @@ export class VisManager {
   private vis3D: { [key: string]: {instance: IAlgoVis3D, active: boolean} } = {};
 
   constructor(private scene: Scene) {
-    const vis = store.getState().vis;
-    this.vis3D["point_cloud_obstacle"] = {instance: new SemsegObstacleVis(this.scene), active: vis.showObstacles};
-    this.vis3D["point_cloud_lane"] = {instance: new SemsegLaneMarkingVis(this.scene), active: vis.showLane};
+    const envTab = store.getState().envTab;
+    this.vis3D["point_cloud_obstacle"] = {instance: new SemsegObstacleVis(this.scene), active: envTab.showObstacles};
+    this.vis3D["point_cloud_lane"] = {instance: new SemsegLaneMarkingVis(this.scene), active: envTab.showLane};
 
     store.subscribe(() => {
-      const vis = store.getState().vis;
-      this.vis3D["point_cloud_obstacle"].active = vis.showObstacles;
-      this.vis3D["point_cloud_lane"].active = vis.showLane;
+      const envTab = store.getState().envTab;
+      this.vis3D["point_cloud_obstacle"].active = envTab.showObstacles;
+      this.vis3D["point_cloud_lane"].active = envTab.showLane;
     });
   }
 
