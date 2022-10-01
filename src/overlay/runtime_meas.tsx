@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { useDispatch, useSelector } from 'react-redux'
 import { setShowRuntimeMeas } from '../redux/settings'
 import { AppState } from '../redux/store'
-import { Frame } from '../com/interface/proto/frame'
+import { Frame, RuntimeMeas as ProtoRuntimeMeas } from '../com/interface/proto/frame'
 import * as v8 from 'v8'
 
 
@@ -85,8 +85,8 @@ function createMeasOrder(measFrameArr: Frame[]): string[] {
   let mapping: string[] = [];
   for (let i = 0; i < measFrameArr.length; ++i) {
     // Sort by start time
-    let rm = measFrameArr[i].runtimeMeas.map(item => v8.deserialize(v8.serialize(item)));
-    rm.sort((a, b) => a.start - b.start);
+    let rm: ProtoRuntimeMeas[] = measFrameArr[i].runtimeMeas.map(item => v8.deserialize(v8.serialize(item)));
+    rm.sort((a, b) => a.absStart - b.absStart);
     // If not found in list, add to list at new index
     for (var meas of rm) {
       if (!mapping.includes(meas.name)) {
@@ -107,7 +107,7 @@ function createRuntimeMeasFrame(key: string, measFrame: Frame, pixelPerMs: numbe
     const meas = measFrame.runtimeMeas.find((val) => measName === val.name);
     if (meas) {
       // Start and end time in [ms] relative to frame start
-      let startTimeMs = usToMs(meas.relStart - measFrame.relTs);
+      let startTimeMs = usToMs(meas.absStart - meas.relStart);
       let endTimeMs = startTimeMs + meas.duration;
 
       let background = "#73ab29";

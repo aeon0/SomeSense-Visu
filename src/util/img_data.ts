@@ -25,7 +25,7 @@ export function exportImg(imgData: ImageData, ts: number) {
 }
 
 export function convertImg(protoImg: ProtoImg) {
-  if (!protoImg)
+  if (!protoImg || !protoImg.data)
     return null;
   var imageData = new ImageData(protoImg.width, protoImg.height);
   let x = 0;

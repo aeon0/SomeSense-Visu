@@ -13,13 +13,14 @@ const MainWrapper = styled.div`
 `
 
 function InterfaceData() {
-  let data = useSelector((store: AppState) => store.frame.data !== null ? store.frame.data : null);
+  let data = useSelector((store: AppState) => store.frame.data ? store.frame.data : null);
   let jsonObj = {"info": "No Data avaiable"};
   if (data !== null) {
-    let jsonStr = JSON.stringify(data, (key, value) => {
-      if (key != "data") return value;
-      else return null;
-    });
+    // let jsonStr = JSON.stringify(data, (key, value) => {
+    //   if (key != "data") return value;
+    //   else return null;
+    // });
+    let jsonStr = JSON.stringify(data);
     jsonObj = JSON.parse(jsonStr);
   }
 
