@@ -1,5 +1,5 @@
 import { Scene, Vector3, Color4, MeshBuilder, SolidParticleSystem, Mesh, AbstractMesh } from 'babylonjs'
-import { Frame } from '../../com/interface/proto/frame'
+import { Frame } from '../../../com/interface/proto/frame'
 import { IAlgoVis3D } from './ivis'
 
 

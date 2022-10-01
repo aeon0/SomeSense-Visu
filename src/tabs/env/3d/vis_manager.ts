@@ -1,20 +1,15 @@
 // Access store and give to the different visus,
 // also holds references to the current image and babylon js environment to pass to the visus
 import { Scene } from 'babylonjs'
-import { store } from '../../redux/store'
-import { Frame } from '../../com/interface/proto/frame'
+import { store } from '../../../redux/store'
+import { Frame } from '../../../com/interface/proto/frame'
 import { IAlgoVis3D } from './ivis'
 import { SemsegObstacleVis } from './semseg_obstacle_vis'
 import { SemsegLaneMarkingVis } from './semseg_lane_marking_vis'
 
 
-interface IVisuMetaData {
-  instance: IAlgoVis3D;
-  active: boolean;
-}
-
 export class VisManager {
-  private vis3D: { [key: string]: IVisuMetaData } = {};
+  private vis3D: { [key: string]: {instance: IAlgoVis3D, active: boolean} } = {};
 
   constructor(private scene: Scene) {
     const vis = store.getState().vis;

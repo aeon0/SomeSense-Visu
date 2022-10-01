@@ -1,9 +1,9 @@
 import { Engine, Scene }from 'babylonjs'
-import { Lights } from '../../util/babylon/lights'
-import { Camera } from '../../util/babylon/camera'
-import { EgoVehicle } from '../../util/babylon/ego_vehicle'
-import { showAxis, showGrid } from '../../util/babylon/debug_mesh'
-import { store } from '../../redux/store'
+import { Lights } from '../../../util/babylon/lights'
+import { Camera } from '../../../util/babylon/camera'
+import { EgoVehicle } from '../../../util/babylon/ego_vehicle'
+import { showAxis, showGrid } from '../../../util/babylon/debug_mesh'
+import { store } from '../../../redux/store'
 import { VisManager } from './vis_manager'
 
 

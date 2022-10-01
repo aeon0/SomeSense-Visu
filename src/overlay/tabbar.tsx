@@ -47,8 +47,8 @@ export function Tabbar() {
         <div className="mdc-tab-scroller">
           <div className="mdc-tab-scroller__scroll-area">
             <div className="mdc-tab-scroller__scroll-content">
-              <Tab title="Default" link="/" idx={0}/>
-              <Tab title="Example" link="/example" idx={1}/>
+              <Tab title="Env" link="/" idx={0}/>
+              <Tab title="CNN" link="/cnn" idx={1}/>
             </div>
           </div>
         </div>

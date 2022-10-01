@@ -11,8 +11,8 @@ import { ICom } from './com/icom'
 // Global Overlays
 import { Overlay } from './overlay'
 // Tab Pages
-import { Default } from './tabs/default';
-import { Example } from './tabs/example';
+import { Env } from './tabs/env';
+import { Cnn } from './tabs/cnn';
 
 
 const MainWrapper = styled.div`
@@ -35,8 +35,8 @@ function App() {
     <HashRouter>
       <Routes>
         <Route path="/" element={<Layout />}>
-          <Route index element={<Default client={com} />} />
-          <Route path="example" element={<Example />} />
+          <Route index element={<Env/>} />
+          <Route path="cnn" element={<Cnn />} />
         </Route>
       </Routes>
     </HashRouter>

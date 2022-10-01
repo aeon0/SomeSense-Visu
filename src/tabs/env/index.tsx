@@ -1,9 +1,8 @@
 
 import React from 'react';
 import styled from 'styled-components'
-import { ICom } from '../../com/icom'
-import { World } from './world'
-import { ImageOverlay } from './image_overlay'
+import { World } from './3d/world'
+import { ImageOverlay } from './2d/image_overlay'
 
 
 const CanvasS = styled.canvas`
@@ -11,13 +10,7 @@ const CanvasS = styled.canvas`
   touch-action: none;
 `
 
-export function Default(props: any) {
-  const client: ICom = props.client;
-
-  const [absTs, setAbsTs] = React.useState(-1);
-
-  console.log("HERE");
-
+export function Env() {
   React.useEffect(() => {
     const world = new World(document.getElementById('world') as HTMLCanvasElement);
     world.load();
