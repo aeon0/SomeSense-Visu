@@ -1,8 +1,10 @@
 import { Engine, Scene }from 'babylonjs'
-import { Lights } from './lights'
-import { Camera } from './camera'
-import { EgoVehicle } from './ego_vehicle'
-import { showAxis, showGrid } from './debug_mesh'
+import { Lights } from '../../util/babylon/lights'
+import { Camera } from '../../util/babylon/camera'
+import { EgoVehicle } from '../../util/babylon/ego_vehicle'
+import { showAxis, showGrid } from '../../util/babylon/debug_mesh'
+import { store } from '../../redux/store'
+import { VisManager } from './vis_manager'
 
 
 export class World {
@@ -11,6 +13,8 @@ export class World {
   public camera: Camera;
   public lights: Lights;
   public egoVehicle: EgoVehicle;
+  private timestamp: number;
+  private visManager: VisManager;
 
   constructor(private canvas: HTMLCanvasElement) {
     this.engine = new Engine(this.canvas, true);
@@ -20,6 +24,9 @@ export class World {
     this.camera = new Camera(this.scene, this.engine);
     this.lights = new Lights(this.scene);
     this.egoVehicle = new EgoVehicle(this.scene);
+
+    this.timestamp = -1;
+    this.visManager = new VisManager(this.scene);
 
     window.addEventListener("resize", () => {
       this.engine.resize();
@@ -37,5 +44,18 @@ export class World {
 
     showAxis(4, this.scene);
     showGrid(this.scene);
+  }
+
+  public run(): void {
+    this.engine.runRenderLoop(() => {
+      const data = store.getState().frame.data;
+      if (data && (data.absTs != this.timestamp)) {
+        this.timestamp = data.absTs;
+        this.visManager.update(data);
+      }
+
+      this.scene.render();
+      // console.log(this.engine.getFps().toFixed());
+    });
   }
 }

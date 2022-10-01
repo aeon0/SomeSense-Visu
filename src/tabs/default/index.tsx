@@ -2,7 +2,7 @@
 import React from 'react';
 import styled from 'styled-components'
 import { ICom } from '../../com/icom'
-import { World } from '../../util/babylon/world'
+import { World } from './world'
 import { ImageOverlay } from './image_overlay'
 
 
@@ -14,12 +14,14 @@ const CanvasS = styled.canvas`
 export function Default(props: any) {
   const client: ICom = props.client;
 
+  const [absTs, setAbsTs] = React.useState(-1);
+
+  console.log("HERE");
+
   React.useEffect(() => {
-    const world: World = new World(document.getElementById('world') as HTMLCanvasElement);
+    const world = new World(document.getElementById('world') as HTMLCanvasElement);
     world.load();
-    world.engine.runRenderLoop(() => {
-      world.scene.render();
-    });
+    world.run();
   }, []);
 
   return (<>

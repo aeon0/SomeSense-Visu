@@ -72,6 +72,10 @@ export function LiveControls(props: {client: ICom}) {
   const currentTs = useSelector((store: AppState) => store.frame.data !== null ? store.frame.data.relTs : -1);
   const isSaving = useSelector((store: AppState) => store.frame.isSaving);
 
+  if (currentTs == -1) {
+    return;
+  }
+
   return <Container>
     <ButtonContainer>
       {isSaving?
