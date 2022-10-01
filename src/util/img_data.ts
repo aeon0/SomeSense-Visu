@@ -1,6 +1,6 @@
 import * as fs from 'fs'
 import { encode } from 'fast-png'
-import { AppState } from '../redux/store'
+import { Img as ProtoImg } from '../com/interface/proto/camera'
 
 
 export function exportImg(imgData: ImageData, ts: number) {
@@ -24,25 +24,29 @@ export function exportImg(imgData: ImageData, ts: number) {
   });
 }
 
-export function convertImg(rawImgPayload: Uint8Array, width: number, height: number) {
-  var imageData = new ImageData(width, height);
+export function convertImg(protoImg: ProtoImg) {
+  if (!protoImg)
+    return null;
+  var imageData = new ImageData(protoImg.width, protoImg.height);
   let x = 0;
   let z = 0;
-  while (x < rawImgPayload.length) {
-    const b = rawImgPayload[x++];
-    const g = rawImgPayload[x++];
-    const r = rawImgPayload[x++];
+  let b = 0, g = 0, r = 0;
+  while (x < protoImg.data.length) {
+    if (protoImg.channels == 3) {
+      b = protoImg.data[x++];
+      g = protoImg.data[x++];
+      r = protoImg.data[x++];
+    }
+    else if (protoImg.channels == 1) {
+      const value = protoImg.data[x++];
+      r = value;
+      b = value;
+      g = value;
+    }
     imageData.data[z++] = r; // red
     imageData.data[z++] = g; // green
     imageData.data[z++] = b; // blue
     imageData.data[z++] = 0xFF; // alpha
   }
   return imageData;
-}
-
-export function getImgData(store: AppState, idx: number = 0) {
-  const validImg = store.frame.data != null && 
-    store.frame.data.camSensors.length > idx &&
-    store.frame.data.camSensors[idx].isValid;
-  return validImg ? store.frame.data.camSensors[idx].img : null;
 }

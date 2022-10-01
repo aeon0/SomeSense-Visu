@@ -1,35 +1,30 @@
 import { createAction, createReducer } from '@reduxjs/toolkit'
-import { Frame, CamSensor } from '../com/interface/proto/frame'
-import { Img } from '../com/interface/proto/camera'
-import { convertImg } from '../util/img_data'
+import { Frame } from '../com/interface/proto/frame'
 import { saveCurrMetaData } from '../util/save_protobuf'
+import { convertImg } from '../util/img_data'
 
 
-// We need to adapt the proto interface here in order to convert Uint8Arrays to ImageData
-// otherwise we get into trouble with redux and the rgb channels are mixed up
-interface ImgAdapted extends Omit<Img, 'data'> {
-  data: ImageData | null
+interface ImgContainer {
+  key: string, // To be able to map it the a specific camSensor in the Frame data
+  img: ImageData,
+  semsegImg: ImageData,
+  depthImg: ImageData,
 }
-interface CamSensorAdapted extends Omit<CamSensor, 'img'> {
-  img: ImgAdapted
-}
-export interface FrameAdapted extends Omit<Frame, 'camSensors'> {
-  camSensors: CamSensorAdapted[]
-}
-
 
 export interface IReduxFrame {
   isSaving: boolean,
   fileName: string,
-  data: FrameAdapted;
-  storage: FrameAdapted[]
+  data: Frame;
+  displayImgs: ImgContainer[],
+  storage: Frame[],
 }
 
 const initialState: IReduxFrame = {
   isSaving: false,
   fileName: "",
   data: null,
-  storage: []
+  displayImgs: [],
+  storage: [],
 }
 
 export const setData = createAction<Frame>('frame/setData');
@@ -38,25 +33,29 @@ export const setSaveToFile = createAction<[boolean, string]>('frame/setSaveToFil
 export const reducer = createReducer(initialState, (builder) => {
   builder
     .addCase(setData, (state, action) => {
-      for (let i = 0; i < action.payload.camSensors.length; ++i) {
-        if (action.payload.camSensors[i].isValid && action.payload.camSensors[i].img.data !== undefined) {
-          const img = action.payload.camSensors[i].img;
-          action.payload.camSensors[i].img.data = convertImg(img.data, img.width, img.height) as any;
-        }
-        else {
-          action.payload.camSensors[i].img.data = null;
-        }
+      state.data = action.payload;
+      
+      // Convert all the Images to ImageData
+      state.displayImgs = []; // reset
+      for (let i = 0; i < (state.data.camSensors.length); ++i) {
+        let camSensor = state.data.camSensors[i];
+        state.displayImgs.push({
+          key: state.data.camSensors[i].key,
+          img: convertImg(camSensor.img),
+          semsegImg: convertImg(camSensor.semsegImg),
+          depthImg: convertImg(camSensor.depthImg),
+        });
+        if (camSensor.img) camSensor.img.data = null;
+        if (camSensor.semsegImg) camSensor.semsegImg.data = null;
+        if (camSensor.depthImg) camSensor.depthImg.data = null;
+        if (camSensor.semsegRaw) camSensor.semsegRaw.data = null;
+        if (camSensor.depthRaw) camSensor.depthRaw.data = null;
       }
-      state.data = action.payload as unknown as FrameAdapted;
-      // Save in storage, but set all other image data to null to save storage
+
+      // Save in storage
       state.storage.push(state.data);
       if (state.storage.length >= 30) {
         state.storage.shift();
-      }
-      for (let i = 0; i < (state.storage.length - 1); ++i) {
-        for (let ii = 0; ii < (state.storage[i].camSensors.length); ++ii) {
-          state.storage[i].camSensors[ii].img.data = null;
-        }
       }
     })
     .addCase(setSaveToFile, (state, action) => {

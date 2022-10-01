@@ -117,7 +117,6 @@ export function RecControls(props: {client: ICom}) {
       />
       {play && <IconButtonS icon="pause" disabled={currentTs >= (recLength - plannedFrameLength * 1000.0)}
         onClick={() => {
-          console.log("PAUSE");
           props.client.sendMsg("frame_ctrl", {action: "pause"}, () => {});
         }}
       />}

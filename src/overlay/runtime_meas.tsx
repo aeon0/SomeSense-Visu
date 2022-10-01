@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { useDispatch, useSelector } from 'react-redux'
 import { setShowRuntimeMeas } from '../redux/settings'
 import { AppState } from '../redux/store'
-import { FrameAdapted as IProtoFrameAdapted } from '../redux/frame'
+import { Frame } from '../com/interface/proto/frame'
 import * as v8 from 'v8'
 
 
@@ -81,7 +81,7 @@ function usToMs(us: number) {
   return us / 1000.0;
 }
 
-function createMeasOrder(measFrameArr: IProtoFrameAdapted[]): string[] {
+function createMeasOrder(measFrameArr: Frame[]): string[] {
   let mapping: string[] = [];
   for (let i = 0; i < measFrameArr.length; ++i) {
     // Sort by start time
@@ -97,7 +97,7 @@ function createMeasOrder(measFrameArr: IProtoFrameAdapted[]): string[] {
   return mapping;
 }
 
-function createRuntimeMeasFrame(key: string, measFrame: IProtoFrameAdapted, pixelPerMs: number, measOrder: string[]): JSX.Element {
+function createRuntimeMeasFrame(key: string, measFrame: Frame, pixelPerMs: number, measOrder: string[]): JSX.Element {
   // Calc length of frame, take plannedLength unless any of the measurements shows a later end time
   let measContent: JSX.Element[] = [];
   let maxTimeMs = measFrame.plannedFrameLength;
