@@ -3,6 +3,7 @@ import { ICom, IComCallback } from "./icom"
 import { store } from "./../redux/store"
 import { hanldeProtobufMsg } from "./msg_handler"
 import { setConnected } from "../redux/connection"
+import * as promises from "timers/promises"
 
 
 export class Ecal extends ICom {
@@ -39,7 +40,7 @@ export class Ecal extends ICom {
     };
   }
 
-  private isEverythingConnected() {
+  private async isEverythingConnected() {
     let allConnected = true;
     for (let k in this.subs) {
       allConnected &&= this.subs[k].connected;
@@ -47,8 +48,13 @@ export class Ecal extends ICom {
     allConnected &&= this.client.connected;
     store.dispatch(setConnected(allConnected));
     if (allConnected) {
+      // HACK!
+      // If we directly send it, most of the time the publisher wont receive anything, why??
+      await promises.setTimeout(750);
       console.log("Everything Connected, send sync command");
-      this.sendMsg("frame_ctrl", {"action": "sync"});
+      this.sendMsg("frame_ctrl", {"action": "sync"}, () => {
+        console.log("Synced it from ecal");
+      });
     }
   }
 

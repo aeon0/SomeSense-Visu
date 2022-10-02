@@ -8,6 +8,7 @@ import { setShowRuntimeMeas } from '../redux/settings'
 import { exportImg } from '../util/img_data'
 import { createInterfaceDataWindow } from '../popups/interface_data/main'
 import { initStateWithPrevTab } from 'redux-state-sync'
+import { ICom } from '../com/icom'
 
 
 const MenuSurfaceS = styled.div`
@@ -18,7 +19,7 @@ const MenuSurfaceS = styled.div`
   min-width: 300px;
 `
 
-export function Menu() {
+export function Menu(props: {client: ICom}) {
   const refMenu = React.useRef(null);
   const refFab = React.useRef(null);
 
@@ -48,6 +49,7 @@ export function Menu() {
           <MenuItem name="Export Image" onClick={() => exportImg(null, 0)}/>
           <MenuItem name="Show Interface Data" onClick={() => createInterfaceDataWindow(() => initStateWithPrevTab(store))}/>
           <MenuItem name={showRuntimeMeas ? "Hide Runtime Meas" : "Show Runtime Meas"} onClick={() => dispatch(setShowRuntimeMeas(!showRuntimeMeas))} />
+          <MenuItem name="Sync Frame" onClick={() => props.client.sendMsg("frame_ctrl", {"action": "sync"}, () => {})} />
         </ul>
       </div>
       <button ref={refFab} onClick={() => menu.open = true} className="mdc-fab" aria-label="Menu">

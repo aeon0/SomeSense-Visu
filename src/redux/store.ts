@@ -33,11 +33,10 @@ const reducer = combineReducers<AppState>({
 // }
 
 const stateSyncMiddleware = [createStateSyncMiddleware({
-  whitelist: ['frame/setData']
+  whitelist: ['frame/setData', 'recMeta/set']
 })];
 export const store = configureStore({
   reducer,
   middleware: stateSyncMiddleware,
 });
 initMessageListener(store);
-

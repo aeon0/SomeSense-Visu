@@ -30,7 +30,7 @@ export function Overlay(props: {client: ICom}) {
     {showRuntimeMeas &&
       <RuntimeMeas />
     }
-    <Menu />
+    <Menu client={props.client}/>
     {!isRec && connected &&
       <LiveControls client={props.client} />
     }

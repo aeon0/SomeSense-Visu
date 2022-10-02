@@ -2,7 +2,7 @@ import * as React from 'react'
 import styled from 'styled-components'
 import { useDispatch, useSelector } from 'react-redux'
 import { setShowRuntimeMeas } from '../redux/settings'
-import { AppState } from '../redux/store'
+import { AppState, store } from '../redux/store'
 import { Frame, RuntimeMeas as ProtoRuntimeMeas } from '../com/interface/proto/frame'
 import * as v8 from 'v8'
 
@@ -147,7 +147,7 @@ export function RuntimeMeas() {
   let lastUpdate: number = null;
   const delay: number = 400; // in [ms]
   const data = useSelector((store: AppState) => store.frame.storage, () => {
-    if (!lastUpdate || ((Date.now() - lastUpdate) > delay)) {
+    if (!lastUpdate || !store.getState().recMeta.isPlaying || ((Date.now() - lastUpdate) > delay)) {
       lastUpdate = Date.now();
       return false;
     }
