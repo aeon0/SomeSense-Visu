@@ -1,6 +1,6 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { AppState, store } from '../../redux/store'
 import { Frame, RuntimeMeas as ProtoRuntimeMeas } from '../../com/interface/proto/frame'
 import * as v8 from 'v8'
@@ -11,27 +11,11 @@ const WrapperDivS = styled.div`
   background: #101010b0;
   color: white;
   width: 100%;
-  height: auto;
-  position: relative;
-  user-select: none;
-`
-const CloseBtnS = styled.span`
+  height: 100%;
   position: absolute;
-  right: 50%;
-  bottom: -19px;
-  cursor: pointer;
-  color: #e2e2e2;
-  width: 30px;
-  background: #2d2d2d;
-  height: 18px;
-  line-height: 18px;
-  text-align: center;
-`
-const ContentS = styled.div`
-  width: 100%;
-  overflow: auto;
   white-space: nowrap;
   cursor: move;
+  overflow: auto;
 `
 const FrameS = styled.div`
   display: inline-block;
@@ -49,9 +33,9 @@ const MeasContentWrapperS = styled.div`
   margin-left: 215px;
 `
 const MeasS = styled.div`
-  height: 26px;
+  height: 42;
   font-size: 12px;
-  line-height: 26px;
+  line-height: 42px;
 `
 
 // To drag and drop scroll horizontal
@@ -158,8 +142,7 @@ export function RuntimeMeas() {
   let pixelPerMs: number = 10; // Scale of each frame, pixel per millisecond
   const measOrder: string[] = createMeasOrder(data);
 
-  return <WrapperDivS>
-    <ContentS ref={sliderRef} onMouseDown={onMouseDown} onMouseUp={onMouseUpOrLeave} onMouseLeave={onMouseUpOrLeave} onMouseMove={onMouseMove}>
+  return <WrapperDivS ref={sliderRef} onMouseDown={onMouseDown} onMouseUp={onMouseUpOrLeave} onMouseLeave={onMouseUpOrLeave} onMouseMove={onMouseMove}>
       <LegendS>
         {measOrder.map((value, idx) => <MeasS key={idx}>
           {value}
@@ -168,6 +151,5 @@ export function RuntimeMeas() {
       <MeasContentWrapperS>
         {data.map((value, idx) => createRuntimeMeasFrame(idx.toString(), value, pixelPerMs, measOrder))}
       </MeasContentWrapperS>
-    </ContentS>
   </WrapperDivS>
 }
