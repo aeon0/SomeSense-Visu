@@ -7,7 +7,7 @@ import { savePbToFile } from '../util/save_protobuf'
 
 
 export function hanldeProtobufMsg(topic: string, payload: Uint8Array) {
-  if (topic == "somesense_app") {
+  if (topic == "somesense_app" || topic == "somesense_app_sync") {
     const data = ProtoFrame.decode(payload);
     store.dispatch(setData(data));
     if (store.getState().frame.isSaving && store.getState().frame !== null) {

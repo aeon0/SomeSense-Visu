@@ -1,7 +1,7 @@
 import { app, BrowserWindow } from "electron";
 import * as path from "path";
-import installExtension, { REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } from 'electron-devtools-installer'
 import { initialize, enable } from '@electron/remote/main'
+import installExtension, { REDUX_DEVTOOLS } from 'electron-devtools-installer';
 
 
 function createMainWindow() {
@@ -30,6 +30,13 @@ function createMainWindow() {
     app.quit();
   });
 }
+
+// These dont work...
+app.whenReady().then(() => {
+  installExtension(REDUX_DEVTOOLS)
+      .then((name) => console.log(`Added Extension:  ${name}`))
+      .catch((err) => console.log('An error occurred: ', err));
+});
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.

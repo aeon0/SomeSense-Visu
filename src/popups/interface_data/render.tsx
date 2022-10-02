@@ -16,11 +16,12 @@ function InterfaceData() {
   let data = useSelector((store: AppState) => store.frame.data ? store.frame.data : null);
   let jsonObj = {"info": "No Data avaiable"};
   if (data !== null) {
-    // let jsonStr = JSON.stringify(data, (key, value) => {
-    //   if (key != "data") return value;
-    //   else return null;
-    // });
-    let jsonStr = JSON.stringify(data);
+    let jsonStr = JSON.stringify(data, (key, value) => {
+      if (key == "obstacles" || key == "laneMarkings") {
+        return "Not displayed because of performance reasons: " + value.length + " items";
+      }
+      return value;
+    });
     jsonObj = JSON.parse(jsonStr);
   }
 

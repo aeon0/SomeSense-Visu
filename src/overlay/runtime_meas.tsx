@@ -107,7 +107,7 @@ function createRuntimeMeasFrame(key: string, measFrame: Frame, pixelPerMs: numbe
     const meas = measFrame.runtimeMeas.find((val) => measName === val.name);
     if (meas) {
       // Start and end time in [ms] relative to frame start
-      let startTimeMs = usToMs(meas.absStart - meas.relStart);
+      let startTimeMs = usToMs(meas.absStart - meas.absFrameStart);
       let endTimeMs = startTimeMs + meas.duration;
 
       let background = "#73ab29";

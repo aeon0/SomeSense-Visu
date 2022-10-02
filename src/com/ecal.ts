@@ -6,8 +6,8 @@ import { setConnected } from "../redux/connection"
 
 
 export class Ecal extends ICom {
-  private subs: ecal.Subscriber[] = [];
-  private client: ecal.Client;
+  private subs: Record<string, {connected: boolean, instance: ecal.Subscriber}> = {};
+  private client: {connected: boolean, instance: ecal.Client};
   private cbCounter: number = 0;
   private callbacks: { [cbIndex: number]: IComCallback } = {}; // dict with key = cbIndex and callback function
 
@@ -17,14 +17,45 @@ export class Ecal extends ICom {
     store.getState().connection.topicSubs.forEach((value) => {
       let ecalSub = new ecal.Subscriber(value);
       ecalSub.addReceiveCallback(this.subCallback.bind(this));
-      this.subs.push(ecalSub);
+      ecalSub.addEventCallback(ecal.eCAL_Subscriber_Event.sub_event_connected, this.subEvent.bind(this));
+      ecalSub.addEventCallback(ecal.eCAL_Subscriber_Event.sub_event_disconnected, this.subEvent.bind(this));
+      ecalSub.addEventCallback(ecal.eCAL_Subscriber_Event.sub_event_corrupted, this.subEvent.bind(this));
+      ecalSub.addEventCallback(ecal.eCAL_Subscriber_Event.sub_event_dropped, this.subEvent.bind(this));
+      ecalSub.addEventCallback(ecal.eCAL_Subscriber_Event.sub_event_timeout, this.subEvent.bind(this));
+      this.subs[value] = {
+        connected: false,
+        instance: ecalSub
+      };
     });
-    // Client should be created after subs since server is checking new connection
-    // on server and provides the last frame via its publisher. If sub is not active yet we will not receive it
-    this.client = new ecal.Client(store.getState().connection.serverName);
-    this.client.addResponseCallback(this.clientCallback.bind(this));
-    this.client.addEventCallback(ecal.eCAL_Client_Event.client_event_connected, this.clientEvent.bind(this));
-    this.client.addEventCallback(ecal.eCAL_Client_Event.client_event_disconnected, this.clientEvent.bind(this));
+
+    let ecalClient = new ecal.Client(store.getState().connection.serverName);
+    ecalClient.addResponseCallback(this.clientCallback.bind(this));
+    ecalClient.addEventCallback(ecal.eCAL_Client_Event.client_event_connected, this.clientEvent.bind(this));
+    ecalClient.addEventCallback(ecal.eCAL_Client_Event.client_event_disconnected, this.clientEvent.bind(this));
+    ecalClient.addEventCallback(ecal.eCAL_Client_Event.client_event_timeout, this.clientEvent.bind(this));
+    this.client = {
+      connected: false,
+      instance: ecalClient
+    };
+  }
+
+  private isEverythingConnected() {
+    let allConnected = true;
+    for (let k in this.subs) {
+      allConnected &&= this.subs[k].connected;
+    }
+    allConnected &&= this.client.connected;
+    store.dispatch(setConnected(allConnected));
+    if (allConnected) {
+      console.log("Everything Connected, send sync command");
+      this.sendMsg("frame_ctrl", {"action": "sync"});
+    }
+  }
+
+  private subEvent(topic: string, event: ecal.SSubEventCallbackData) {
+    this.subs[topic].connected = event.type == ecal.eCAL_Subscriber_Event.sub_event_connected;
+    console.log(topic + " is connected: " + this.subs[topic].connected);
+    this.isEverythingConnected();
   }
 
   private subCallback(topic: string, msg: ArrayBuffer) {
@@ -33,8 +64,10 @@ export class Ecal extends ICom {
   }
 
   private clientEvent(_: string, event: ecal.SClientEventCallbackData) {
-    const connected = event.type == ecal.eCAL_Client_Event.client_event_connected;
-    store.dispatch(setConnected(connected));
+    this.client.connected = event.type == ecal.eCAL_Client_Event.client_event_connected;
+    console.log("Client is connected: " + this.client.connected);
+    this.isEverythingConnected();
+    
   }
 
   private clientCallback(res: ecal.SServiceResponse) {
@@ -66,7 +99,7 @@ export class Ecal extends ICom {
       "data": msg,
       "cbIndex": cbIndex
     });
-    this.client.callAsync(endpoint, jsonMsg, -1);
+    this.client.instance.callAsync(endpoint, jsonMsg, -1);
 
     if (this.cbCounter > 500000) {
       this.cbCounter = 0;

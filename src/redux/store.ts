@@ -26,8 +26,18 @@ const reducer = combineReducers<AppState>({
   envTab: envTabRedcuer,
 });
 
+// const debugMiddleware = store => next => action => {
+//   console.log(store.getState());
+//   console.log(action.type);
+//   next(action);
+// }
+
+const stateSyncMiddleware = [createStateSyncMiddleware({
+  whitelist: ['frame/setData']
+})];
 export const store = configureStore({
   reducer,
-  middleware: [createStateSyncMiddleware()],
+  middleware: stateSyncMiddleware,
 });
 initMessageListener(store);
+

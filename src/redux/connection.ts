@@ -11,6 +11,7 @@ const initialState: IReduxConnection = {
   serverName: "somesense_server",
   topicSubs: [
     "somesense_app",
+    "somesense_app_sync",
     "somesense_recmeta"
   ],
   connected: false,
