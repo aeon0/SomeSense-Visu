@@ -1,6 +1,6 @@
 import * as remote from '@electron/remote'
 
-export function createInterfaceDataWindow() {
+export function createRuntimeMeasWindow() {
   const win = new remote.BrowserWindow({
     width: 800,
     height: 800,
@@ -9,7 +9,7 @@ export function createInterfaceDataWindow() {
       contextIsolation: false
     }
   });
-  win.loadFile('./popups/interface_data/index.html');
+  win.loadFile('./popups/runtime_meas/index.html');
 
   // Open the Console
   // win.webContents.on('did-frame-finish-load', () => {

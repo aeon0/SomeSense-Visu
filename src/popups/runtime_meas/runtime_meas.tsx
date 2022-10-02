@@ -1,9 +1,8 @@
 import * as React from 'react'
 import styled from 'styled-components'
 import { useDispatch, useSelector } from 'react-redux'
-import { setShowRuntimeMeas } from '../redux/settings'
-import { AppState, store } from '../redux/store'
-import { Frame, RuntimeMeas as ProtoRuntimeMeas } from '../com/interface/proto/frame'
+import { AppState, store } from '../../redux/store'
+import { Frame, RuntimeMeas as ProtoRuntimeMeas } from '../../com/interface/proto/frame'
 import * as v8 from 'v8'
 
 
@@ -141,8 +140,6 @@ function createRuntimeMeasFrame(key: string, measFrame: Frame, pixelPerMs: numbe
 }
 
 export function RuntimeMeas() {
-  const dispatch = useDispatch();
-
   // Otherwise the update is too fast and we get performance issues
   let lastUpdate: number = null;
   const delay: number = 400; // in [ms]
@@ -162,7 +159,6 @@ export function RuntimeMeas() {
   const measOrder: string[] = createMeasOrder(data);
 
   return <WrapperDivS>
-    <CloseBtnS className="material-icons" onClick={() => dispatch(setShowRuntimeMeas(false))}>keyboard_arrow_up</CloseBtnS>
     <ContentS ref={sliderRef} onMouseDown={onMouseDown} onMouseUp={onMouseUpOrLeave} onMouseLeave={onMouseUpOrLeave} onMouseMove={onMouseMove}>
       <LegendS>
         {measOrder.map((value, idx) => <MeasS key={idx}>

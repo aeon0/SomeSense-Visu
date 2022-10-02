@@ -18,7 +18,7 @@ function createMainWindow() {
   // and load the index.html of the app.
   mainWindow.loadFile(path.join(__dirname, "./index.html"));
 
-  // Open the DevTools.
+  // Open the Console
   mainWindow.webContents.on('did-frame-finish-load', () => {
     mainWindow.webContents.openDevTools();
   });
