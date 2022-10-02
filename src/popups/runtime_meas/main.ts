@@ -3,8 +3,8 @@ import * as remote from '@electron/remote'
 
 export function createRuntimeMeasWindow() {
   const win = new remote.BrowserWindow({
-    width: 1200,
-    height: 500,
+    width: 1300,
+    height: 400,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false
