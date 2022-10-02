@@ -49,11 +49,13 @@ export class World {
   public run(): void {
     this.engine.runRenderLoop(() => {
       const data = store.getState().frame.data;
-      if (data && (data.absTs != this.timestamp)) {
-        this.timestamp = data.absTs;
+      if (data) {
+        if (data.absTs != this.timestamp) {
+          this.timestamp = data.absTs;
+          // Do more computational expensive stuff here
+        }
         this.visManager.update(data);
       }
-
       this.scene.render();
       // console.log(this.engine.getFps().toFixed());
     });

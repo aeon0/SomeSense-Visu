@@ -25,7 +25,19 @@
 // Controls
 @use "@material/slider/slider";
 @use "@material/linear-progress";
+// Drawers
+@use "@material/drawer";
+@use "@material/list";
+// Checkbox
+@use "@material/checkbox";
+@use "@material/form-field";
 
+@include form-field.core-styles;
+@include checkbox.core-styles;
+@include drawer.core-styles;
+@include drawer.dismissible-core-styles;
+@include drawer.modal-core-styles;
+@include list.deprecated-core-styles;
 @include linear-progress.core-styles;
 @include fab.core-styles;
 @include icon-button.core-styles;

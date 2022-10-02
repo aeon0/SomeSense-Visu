@@ -19,8 +19,8 @@ export function Env() {
   }, []);
 
   return (<>
-      <CanvasS id="world" />
       <Images />
       <Config />
+      <CanvasS id="world" />
   </>);
 }
