@@ -1,8 +1,8 @@
 import * as ecal from "nodejs-ecal"
-import { ICom, IComCallback } from "./icom"
-import { store } from "./../redux/store"
+import { ICom, IComCallback } from "./../icom"
+import { store } from "./../../redux/store"
 import { hanldeProtobufMsg } from "./msg_handler"
-import { setConnected } from "../redux/connection"
+import { setConnected } from "../../redux/connection"
 import * as promises from "timers/promises"
 
 
@@ -59,13 +59,19 @@ export class Ecal extends ICom {
   }
 
   private subEvent(topic: string, event: ecal.SSubEventCallbackData) {
-    this.subs[topic].connected = event.type == ecal.eCAL_Subscriber_Event.sub_event_connected;
-    console.log(topic + " is connected: " + this.subs[topic].connected);
-    this.isEverythingConnected();
+    if (event.type == ecal.eCAL_Subscriber_Event.sub_event_dropped) {
+      console.log("Frame dropped");
+    }
+    else {
+      this.subs[topic].connected = event.type == ecal.eCAL_Subscriber_Event.sub_event_connected;
+      console.log(topic + " is connected: " + this.subs[topic].connected);
+      this.isEverythingConnected();
+    }
   }
 
   private subCallback(topic: string, msg: ArrayBuffer) {
     let payload = new Uint8Array(msg);
+    console.log("GOT MESSAGE!");
     hanldeProtobufMsg(topic, payload);
   }
 

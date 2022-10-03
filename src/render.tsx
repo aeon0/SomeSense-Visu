@@ -6,7 +6,7 @@ import { store } from './redux/store'
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import {Outlet} from 'react-router-dom';
 // Communication
-import { Ecal } from './com/ecal'
+import { Ecal } from './com/ecal/ecal'
 import { ICom } from './com/icom'
 // Global Overlays
 import { Overlay } from './overlay'
