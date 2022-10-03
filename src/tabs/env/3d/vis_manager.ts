@@ -6,17 +6,17 @@ import { Frame } from '../../../com/interface/proto/frame'
 import { IAlgoVis3D } from './ivis'
 import { SemsegObstacleVis } from './semseg_obstacle_vis'
 import { SemsegLaneMarkingVis } from './semseg_lane_marking_vis'
-import { CameraFrustum } from './cam_frustum'
+import { CamFrustum } from './cam_frustum'
 
 
 export class VisManager {
-  private vis3D: { [key: string]: {instance: IAlgoVis3D, active: boolean} } = {};
+  public vis3D: { [key: string]: {instance: IAlgoVis3D, active: boolean} } = {};
 
   constructor(private scene: Scene) {
     const envTab = store.getState().envTab;
     this.vis3D["point_cloud_obstacle"] = {instance: new SemsegObstacleVis(this.scene), active: envTab.showObstacles};
     this.vis3D["point_cloud_lane"] = {instance: new SemsegLaneMarkingVis(this.scene), active: envTab.showLane};
-    this.vis3D["cam_furstum"] = {instance: new CameraFrustum(this.scene), active: envTab.showCamFrustum };
+    this.vis3D["cam_furstum"] = {instance: new CamFrustum(this.scene), active: envTab.showCamFrustum };
 
     store.subscribe(() => {
       const envTab = store.getState().envTab;

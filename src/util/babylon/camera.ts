@@ -2,7 +2,7 @@ import { Scene, ArcRotateCamera, Viewport, Vector3, Engine } from 'babylonjs'
 
 
 export class Camera {
-  private camera: ArcRotateCamera;
+  public camera: ArcRotateCamera;
   private canvas: any;
 
   constructor(private scene: Scene, private engine: Engine) {

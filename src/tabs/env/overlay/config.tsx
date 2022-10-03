@@ -11,7 +11,7 @@ import { Checkbox } from '../../../util/mdc/checkbox'
 
 const FabS = styled.button`
   pointer-events: auto;
-  position: fixed;
+  position: absolute;
   left: 25px;
   top: 145px;
 `

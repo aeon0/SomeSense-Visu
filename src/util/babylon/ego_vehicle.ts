@@ -2,7 +2,7 @@ import { Scene, Mesh, MeshBuilder, StandardMaterial, Vector3, Color4 } from 'bab
 
 
 export class EgoVehicle {
-  private mesh: Mesh;
+  public mesh: Mesh;
 
   constructor(private scene: Scene) {}
 

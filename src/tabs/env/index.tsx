@@ -4,11 +4,19 @@ import styled from 'styled-components'
 import { World } from './3d/world'
 import { Images } from './overlay/images'
 import { Config } from './overlay/config'
+import { SetView } from './overlay/set_view'
 
 
 const CanvasS = styled.canvas`
   all: inherit;
   touch-action: none;
+`
+const OverlayWrapperS = styled.div`
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  pointer-events: none;
 `
 
 export function Env() {
@@ -19,8 +27,11 @@ export function Env() {
   }, []);
 
   return (<>
-      <Images />
-      <Config />
+      <OverlayWrapperS>
+        <Images />
+        <Config />
+        <SetView />
+      </OverlayWrapperS>
       <CanvasS id="world" />
   </>);
 }

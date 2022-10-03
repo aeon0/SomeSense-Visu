@@ -1,10 +1,10 @@
 import { Scene, StandardMaterial, Mesh, VertexData, Color4 } from 'babylonjs'
-import { CameraSensor } from '../../../util/camsensor'
+import { CameraSensor } from '../../../util/camera_sensor'
 import { IAlgoVis3D } from './ivis'
 import { Frame } from '../../../com/interface/proto/frame'
 
 
-export class CameraFrustum extends IAlgoVis3D{
+export class CamFrustum extends IAlgoVis3D{
   private frustum : Mesh = null;
   private camSensor : CameraSensor = null;
   constructor(private scene: Scene) { super(); }

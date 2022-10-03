@@ -42,6 +42,7 @@
 @include fab.core-styles;
 @include icon-button.core-styles;
 @include slider.core-styles;
+@include theme.core-styles;
 
 // Change scrollbar for whole app
 *::-webkit-scrollbar {

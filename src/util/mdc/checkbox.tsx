@@ -25,11 +25,12 @@ export function Checkbox(props: {uniqueId: string, label: string, onChange: Func
     check.checked = props.checked;
   }, []);
 
+  console.log("Update to: " + props.checked);
   return <>
     <FormFieldS ref={refForm} className="mdc-form-field mdc-touch-target-wrapper">
       <div ref={ref} className="mdc-checkbox mdc-checkbox--touch">
         <input type="checkbox" className="mdc-checkbox__native-control" id={props.uniqueId}
-          onChange={(evt) => props.onChange(evt)} checked={props.checked} />
+          onChange={(evt) => {props.onChange(evt)}} checked={props.checked} />
         <div className="mdc-checkbox__background">
           <svg className="mdc-checkbox__checkmark" viewBox="0 0 24 24">
             <path className="mdc-checkbox__checkmark-path" fill="none" d="M1.73,12.91 8.1,19.28 22.79,4.59"/>
