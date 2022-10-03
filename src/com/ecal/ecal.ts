@@ -1,7 +1,7 @@
 import * as ecal from "nodejs-ecal"
 import { ICom, IComCallback } from "./../icom"
 import { store } from "./../../redux/store"
-import { hanldeProtobufMsg } from "./msg_handler"
+import { hanldeProtobufMsg } from "../msg_handler"
 import { setConnected } from "../../redux/connection"
 import * as promises from "timers/promises"
 
@@ -71,7 +71,6 @@ export class Ecal extends ICom {
 
   private subCallback(topic: string, msg: ArrayBuffer) {
     let payload = new Uint8Array(msg);
-    console.log("GOT MESSAGE!");
     hanldeProtobufMsg(topic, payload);
   }
 

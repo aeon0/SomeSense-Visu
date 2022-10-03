@@ -42,51 +42,53 @@
     }
   },
   "dependencies": {
-    "@electron/remote": "^2.0.8",
-    "@material/button": "^14.0.0",
-    "@material/checkbox": "^14.0.0",
-    "@material/drawer": "^14.0.0",
-    "@material/fab": "^14.0.0",
-    "@material/form-field": "^14.0.0",
-    "@material/icon-button": "^14.0.0",
-    "@material/linear-progress": "^14.0.0",
-    "@material/menu": "^14.0.0",
-    "@material/slider": "^14.0.0",
-    "@material/tab": "^14.0.0",
-    "@material/tab-bar": "^14.0.0",
-    "@material/theme": "^14.0.0",
-    "@reduxjs/toolkit": "^1.8.5",
+    "@electron/remote": "2.0.8",
+    "@material/button": "14.0.0",
+    "@material/checkbox": "14.0.0",
+    "@material/drawer": "14.0.0",
+    "@material/fab": "14.0.0",
+    "@material/form-field": "14.0.0",
+    "@material/icon-button": "14.0.0",
+    "@material/linear-progress": "14.0.0",
+    "@material/menu": "14.0.0",
+    "@material/slider": "14.0.0",
+    "@material/tab": "14.0.0",
+    "@material/tab-bar": "14.0.0",
+    "@material/theme": "14.0.0",
+    "@reduxjs/toolkit": "1.8.5",
     "babylonjs": "5.26.0",
     "babylonjs-gui": "5.26.0",
     "babylonjs-materials": "5.26.0",
-    "classnames": "^2.3.2",
+    "classnames": "2.3.2",
     "fast-png": "6.1.0",
+    "node-ipc": "9.2.1",
     "nodejs-ecal": "1.1.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-json-view": "^1.21.3",
+    "react-json-view": "1.21.3",
     "react-redux": "8.0.4",
-    "react-router-dom": "^6.4.1",
+    "react-router-dom": "6.4.1",
     "redux": "4.2.0",
-    "redux-state-sync": "^3.1.4",
+    "redux-state-sync": "3.1.4",
     "styled-components": "5.3.6",
-    "ts-proto": "^1.126.1"
+    "ts-proto": "1.126.1"
   },
   "devDependencies": {
     "@types/electron-devtools-installer": "2.2.2",
     "@types/node": "16.11.59",
+    "@types/node-ipc": "9.1.5",
     "@types/react": "18.0.21",
     "@types/react-dom": "18.0.6",
     "@types/react-redux": "7.1.24",
-    "@types/redux-state-sync": "^3.1.5",
+    "@types/redux-state-sync": "3.1.5",
     "@types/styled-components": "5.1.26",
-    "copyfiles": "^2.4.1",
-    "del-cli": "^5.0.0",
+    "copyfiles": "2.4.1",
+    "del-cli": "5.0.0",
     "electron": "20.1.4",
     "electron-builder": "23.3.3",
     "electron-devtools-installer": "3.2.0",
-    "sass": "^1.41.1",
-    "typescript": "~4.6.4"
+    "sass": "1.41.1",
+    "typescript": "4.6.4"
   },
   "overrides": {
     "react-json-view": {
@@ -96,6 +98,9 @@
     "flux": {
       "react": "18.2.0",
       "react-dom": "18.2.0"
+    },
+    "@electron/get": {
+      "got": "11.8.5"
     }
   }
 }

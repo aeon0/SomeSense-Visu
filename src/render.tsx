@@ -7,6 +7,7 @@ import { HashRouter, Routes, Route } from 'react-router-dom';
 import {Outlet} from 'react-router-dom';
 // Communication
 import { Ecal } from './com/ecal/ecal'
+import { IPCClient } from './com/custom/ipc_client'
 import { ICom } from './com/icom'
 // Global Overlays
 import { Overlay } from './overlay'
@@ -23,7 +24,8 @@ function App() {
   const [com, setCom] = React.useState<ICom>();
 
   React.useEffect(() => {
-    setCom(new Ecal());
+    // setCom(new Ecal());
+    setCom(new IPCClient());
   }, []);
 
   const Layout = () => (<>
