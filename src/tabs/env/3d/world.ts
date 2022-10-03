@@ -50,10 +50,7 @@ export class World {
     this.engine.runRenderLoop(() => {
       const data = store.getState().frame.data;
       if (data) {
-        if (data.absTs != this.timestamp) {
-          this.timestamp = data.absTs;
-          // Do more computational expensive stuff here
-        }
+        this.timestamp = data.absTs;
         this.visManager.update(data);
       }
       this.scene.render();

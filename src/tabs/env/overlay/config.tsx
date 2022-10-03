@@ -2,7 +2,7 @@ import * as React from 'react'
 import styled from 'styled-components'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppState } from '../../../redux/store'
-import { setEnvObstacleVis, setEnvLaneVis } from '../state'
+import { setEnvObstacleVis, setEnvLaneVis, setCamFrustum } from '../state'
 import { MDCRipple } from '@material/ripple'
 import { MDCDrawer } from '@material/drawer'
 import { IconButton } from '../../../util/mdc/icon_button'
@@ -32,6 +32,7 @@ export function Config() {
   const dispatch = useDispatch();
   const showObstacle = useSelector((store: AppState) => store.envTab.showObstacles);
   const showLane = useSelector((store: AppState) => store.envTab.showLane);
+  const showCamFrustum = useSelector((store: AppState) => store.envTab.showCamFrustum);
 
   React.useEffect(() => {
     new MDCRipple(refFab.current);
@@ -52,6 +53,8 @@ export function Config() {
               onChange={(evt) => dispatch(setEnvObstacleVis(evt.target.checked)) }/>
             <Checkbox uniqueId="env-settings-lanemarkings" label="Lanemarkings" checked={showLane}
               onChange={(evt) => dispatch(setEnvLaneVis(evt.target.checked))}/>
+            <Checkbox uniqueId="env-settings-camfrustum" label="Camera Frustum" checked={showCamFrustum}
+              onChange={(evt) => dispatch(setCamFrustum(evt.target.checked))}/>
           </ul>
         </div>
       </aside>
