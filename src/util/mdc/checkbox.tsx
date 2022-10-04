@@ -25,7 +25,6 @@ export function Checkbox(props: {uniqueId: string, label: string, onChange: Func
     check.checked = props.checked;
   }, []);
 
-  console.log("Update to: " + props.checked);
   return <>
     <FormFieldS ref={refForm} className="mdc-form-field mdc-touch-target-wrapper">
       <div ref={ref} className="mdc-checkbox mdc-checkbox--touch">
