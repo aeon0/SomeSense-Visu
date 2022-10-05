@@ -78,7 +78,6 @@ export class Ecal extends ICom {
     this.client.connected = event.type == ecal.eCAL_Client_Event.client_event_connected;
     console.log("Client is connected: " + this.client.connected);
     this.isEverythingConnected();
-    
   }
 
   private clientCallback(res: ecal.SServiceResponse) {

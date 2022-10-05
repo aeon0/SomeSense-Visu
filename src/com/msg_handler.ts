@@ -15,7 +15,7 @@ export async function hanldeProtobufMsg(type: string | MsgType, payload: Uint8Ar
       savePbToFile(store.getState().frame.fileName, payload, store.getState().frame.data.absTs);
     }
   }
-  else if (type == "somesense_recmeta" || type == MsgType.PROTO_RECMETA) {
+  else if (type == "somesense_app_recmeta" || type == MsgType.PROTO_RECMETA) {
     const data = ProtoRecMeta.decode(payload);
     store.dispatch(setRecMeta(data));
   }

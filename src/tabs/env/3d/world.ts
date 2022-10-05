@@ -52,7 +52,7 @@ export class World {
   public handleViewAction(data: Frame) {
     // Check if we might want to update the view based on user interaction
     const view = store.getState().envTab.camView;
-    if (view !== this.currentView) {
+    if (view !== this.currentView && data.camSensors[0] && data.camSensors[0].isValid) {
       console.log("Update Camera View to: " + view);
       if (view == ViewAction.EGO_FRONT) {
         const calib = data.camSensors[0].calib;

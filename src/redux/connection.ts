@@ -15,7 +15,7 @@ const initialState: IReduxConnection = {
   topicSubs: [
     "somesense_app",
     "somesense_app_sync",
-    "somesense_recmeta"
+    "somesense_app_recmeta"
   ],
   // Custom Tcp Sockets settings
   ip: "localhost", // 'localhost'

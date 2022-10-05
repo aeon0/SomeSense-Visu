@@ -10,12 +10,14 @@ export class CamFrustum extends IAlgoVis3D{
   constructor(private scene: Scene) { super(); }
 
   public update(data: Frame) {
-    let newCamSensor = new CameraSensor(data.camSensors[0].key, data.camSensors[0].calib);
-    if (!this.camSensor || !newCamSensor.equals(this.camSensor)) {
-      this.camSensor = newCamSensor;
-      if (this.frustum)
-        this.frustum.dispose();
-      this.init();
+    if (data.camSensors[0] && data.camSensors[0].isValid) {
+      let newCamSensor = new CameraSensor(data.camSensors[0].key, data.camSensors[0].calib);
+      if (!this.camSensor || !newCamSensor.equals(this.camSensor)) {
+        this.camSensor = newCamSensor;
+        if (this.frustum)
+          this.frustum.dispose();
+        this.init();
+      }
     }
   }
 
